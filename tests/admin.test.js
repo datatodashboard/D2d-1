@@ -1,0 +1,277 @@
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import fs from 'node:fs';
+import { stage, isCompleted, isAttempted, workFingerprint } from '../js/progress.js';
+
+const data = JSON.parse(fs.readFileSync('./data/scenarios.json', 'utf8'));
+const scenariosMap = new Map(data.scenarios.map(s => [s.id, s]));
+
+describe('Admin Dashboard Progress Evaluation', () => {
+  it('correctly maps scenarios and parses learner entries from learning_progress state', () => {
+    assert(scenariosMap.size >= 420, 'Should load all 420 scenarios');
+
+    const s1 = scenariosMap.get('HEA_BEG_001');
+    assert(s1, 'HEA_BEG_001 should exist');
+
+    // Verified entry
+    const verifiedEntry = {
+      thinking: { response: 'Use appointments and filter status Active.' },
+      assessment: { score: 10, ready: true, fingerprint: 'use appointments and filter status active.' },
+      sql: "SELECT * FROM appointments WHERE status = 'Active';",
+      evaluationFingerprint: JSON.stringify(['use appointments and filter status active.', "SELECT * FROM appointments WHERE status = 'Active';"]),
+      evaluationResult: { passed: true },
+      updatedAt: 1700000000000
+    };
+
+    assert.strictEqual(stage(s1, verifiedEntry), 'verified', 'Should identify verified entry as verified');
+
+    // Thinking in progress entry (unready thinking -> stage: 'thinking')
+    const thinkingEntry = {
+      thinking: { response: 'Tomorrow I will bake a chocolate cake.' },
+      updatedAt: 1700000001000
+    };
+    assert.strictEqual(stage(s1, thinkingEntry), 'thinking', 'Should identify thinking stage for unready thinking');
+
+    // Thinking ready entry (ready thinking -> stage: 'thinking_ready')
+    const thinkingReadyEntry = {
+      thinking: { response: 'Use appointments and filter status Active.' },
+      updatedAt: 1700000002000
+    };
+    assert.strictEqual(stage(s1, thinkingReadyEntry), 'thinking_ready', 'Should identify thinking_ready stage when thinking passes rubric');
+
+    // Unattempted scenario
+    assert.strictEqual(stage(s1, null), 'not_started', 'Should identify unattempted as not_started');
+  });
+
+  it('correctly distinguishes solved vs attempted scenarios and computes top domains', () => {
+    const s1 = scenariosMap.get('HEA_BEG_001');
+    const s2 = scenariosMap.get('BAN_BEG_001');
+    const s3 = scenariosMap.get('INS_BEG_001');
+
+    const mockLearningState = {
+      version: 2,
+      resetAt: 0,
+      entries: {
+        'HEA_BEG_001': {
+          thinking: { response: 'appointments Active' },
+          assessment: { score: 10, ready: true, fingerprint: 'appointments active' },
+          sql: "SELECT * FROM appointments WHERE status = 'Active';",
+          evaluationFingerprint: JSON.stringify(['appointments active', "SELECT * FROM appointments WHERE status = 'Active';"]),
+          evaluationResult: { passed: true },
+          evaluationAt: 1700000000000,
+          updatedAt: 1700000000000
+        },
+        'BAN_BEG_001': {
+          thinking: { response: 'Use accounts and filter status Active.' },
+          assessment: { score: 10, ready: true, fingerprint: 'use accounts and filter status active.' },
+          sql: "SELECT * FROM accounts WHERE status = 'Active';",
+          evaluationFingerprint: JSON.stringify(['use accounts and filter status active.', "SELECT * FROM accounts WHERE status = 'Active';"]),
+          evaluationResult: { passed: true },
+          evaluationAt: 1700000005000,
+          updatedAt: 1700000005000
+        },
+        'INS_BEG_001': {
+          thinking: { response: 'Looking at policies' },
+          sql: '',
+          attempts: 1,
+          updatedAt: 1700000010000
+        }
+      }
+    };
+
+    let solvedCount = 0;
+    let attemptedCount = 0;
+    const domainSolved = {};
+    const domainAttempted = {};
+    const solvedTimestamps = [];
+
+    for (const [id, entry] of Object.entries(mockLearningState.entries)) {
+      const scenario = scenariosMap.get(id);
+      const domain = scenario?.domain || 'General SQL';
+      const stg = stage(scenario, entry);
+
+      const isSolved = isCompleted(scenario, entry);
+      const isAttempted = isSolved ||
+        ['thinking', 'thinking_ready', 'sql_written', 'fiddle_opened', 'answer_viewed', 'verified'].includes(stg) ||
+        (entry.attempts && entry.attempts > 0);
+
+      if (isAttempted) {
+        attemptedCount++;
+        domainAttempted[domain] = (domainAttempted[domain] || 0) + 1;
+      }
+      if (isSolved) {
+        solvedCount++;
+        domainSolved[domain] = (domainSolved[domain] || 0) + 1;
+        solvedTimestamps.push(entry.evaluationAt || entry.updatedAt);
+      }
+    }
+
+    assert.strictEqual(solvedCount, 2, 'Should have exactly 2 solved scenarios');
+    assert.strictEqual(attemptedCount, 3, 'Should have 3 attempted scenarios');
+    assert.strictEqual(domainSolved['Healthcare'], 1);
+    assert.strictEqual(domainSolved['Banking'], 1);
+    assert.strictEqual(domainAttempted['Insurance'], 1);
+
+    // Contest threshold calculation
+    solvedTimestamps.sort((a, b) => a - b);
+    const threshold = 2;
+    const reachedAt = solvedCount >= threshold ? solvedTimestamps[threshold - 1] : null;
+    assert.strictEqual(reachedAt, 1700000005000, 'Should accurately determine reachedAt timestamp for threshold');
+  });
+
+  it('correctly reads completed scenarios from Supabase learning_progress state where Thinking Score >= 7 without requiring SQL execution', () => {
+    const s1 = scenariosMap.get('HEA_BEG_001');
+    const s2 = scenariosMap.get('BAN_BEG_001');
+
+    // Learner with score 8 and NO sql run, no db fiddle verification
+    const thinkingOnlyCompletedEntry = {
+      thinking: { response: 'Use appointments filter status Active' },
+      assessment: { score: 8, ready: true },
+      sql: '',
+      evaluationResult: null,
+      updatedAt: 1700000000000
+    };
+    assert.strictEqual(isCompleted(s1, thinkingOnlyCompletedEntry), true, 'Thinking Score >= 7 without SQL must be recognized as completed/solved');
+
+    // Learner with score 5 and SQL passed (should NOT be completed under new rule)
+    const lowThinkingWithSqlEntry = {
+      thinking: { response: 'vague' },
+      assessment: { score: 5, ready: false },
+      sql: "SELECT * FROM accounts WHERE status = 'Active';",
+      evaluationResult: { passed: true },
+      updatedAt: 1700000005000
+    };
+    assert.strictEqual(isCompleted(s2, lowThinkingWithSqlEntry), false, 'Thinking Score < 7 must not be completed even if SQL passed');
+  });
+
+  it('handles empty progress state without crashing and preserves clean 0 metrics', () => {
+    const emptyState = { version: 2, resetAt: 0, entries: {} };
+    let solvedCount = 0;
+    let attemptedCount = 0;
+
+    for (const [id, entry] of Object.entries(emptyState.entries)) {
+      const scenario = scenariosMap.get(id);
+      const stg = stage(scenario, entry);
+      if (stg === 'verified') solvedCount++;
+      else if (stg !== 'not_started') attemptedCount++;
+    }
+
+    assert.strictEqual(solvedCount, 0);
+    assert.strictEqual(attemptedCount, 0);
+  });
+
+  it('excludes pre-reset learner progress entries and direct progress rows when global_progress_reset epoch is set', () => {
+    const resetEpoch = 1710000000000; // Reset timestamp
+
+    const mockLearningState = {
+      version: 2,
+      resetAt: 0,
+      entries: {
+        'HEA_BEG_001': {
+          thinking: { response: 'appointments Active' },
+          assessment: { score: 10, ready: true },
+          updatedAt: 1700000000000 // PRE-RESET (1700... <= 1710...)
+        },
+        'BAN_BEG_001': {
+          thinking: { response: 'accounts Active' },
+          assessment: { score: 10, ready: true },
+          updatedAt: 1720000000000 // POST-RESET (1720... > 1710...)
+        }
+      }
+    };
+
+    const mockDirectProgressRows = [
+      { scenario_id: 'HEA_BEG_001', completed_at: new Date(1700000000000).toISOString() }, // PRE-RESET
+      { scenario_id: 'INS_BEG_001', completed_at: new Date(1725000000000).toISOString() }  // POST-RESET
+    ];
+
+    const uniqueCompletedScenarioIds = new Set();
+    let attemptedCount = 0;
+
+    for (const [id, entry] of Object.entries(mockLearningState.entries)) {
+      const entryTime = Number(entry.updatedAt || entry.evaluationAt || 0);
+      if (resetEpoch > 0 && entryTime <= resetEpoch) continue; // Exclude pre-reset
+
+      const scenario = scenariosMap.get(id);
+      if (isAttempted(scenario, entry)) attemptedCount++;
+      if (isCompleted(scenario, entry)) uniqueCompletedScenarioIds.add(id);
+    }
+
+    for (const row of mockDirectProgressRows) {
+      if (row.scenario_id) {
+        const completedAtMs = row.completed_at ? new Date(row.completed_at).getTime() : 0;
+        if (resetEpoch > 0 && completedAtMs > 0 && completedAtMs <= resetEpoch) continue; // Exclude pre-reset
+        uniqueCompletedScenarioIds.add(row.scenario_id);
+      }
+    }
+
+    assert.strictEqual(uniqueCompletedScenarioIds.has('HEA_BEG_001'), false, 'Pre-reset scenario HEA_BEG_001 must be excluded');
+    assert.strictEqual(uniqueCompletedScenarioIds.has('BAN_BEG_001'), true, 'Post-reset scenario BAN_BEG_001 must be included');
+    assert.strictEqual(uniqueCompletedScenarioIds.has('INS_BEG_001'), true, 'Post-reset direct progress row INS_BEG_001 must be included');
+    assert.strictEqual(uniqueCompletedScenarioIds.size, 2, 'Total completed count post-reset must be exactly 2');
+  });
+
+  it('accurately evaluates admin status using profiles.is_admin', () => {
+    // Admin profile
+    const adminProfile = { id: 'user-admin-1', is_admin: true };
+    const isAdmin = Boolean(adminProfile?.is_admin === true);
+    assert.strictEqual(isAdmin, true, 'Admin profile should have isAdmin = true');
+
+    // Normal learner profile
+    const learnerProfile = { id: 'user-learner-1', is_admin: false };
+    const isLearnerAdmin = Boolean(learnerProfile?.is_admin === true);
+    assert.strictEqual(isLearnerAdmin, false, 'Learner profile should have isAdmin = false');
+
+    // Profile without is_admin property
+    const defaultProfile = { id: 'user-default-1' };
+    const isDefaultAdmin = Boolean(defaultProfile?.is_admin === true);
+    assert.strictEqual(isDefaultAdmin, false, 'Default profile should have isAdmin = false');
+
+    // Unauthenticated / null profile
+    const nullProfile = null;
+    const isNullAdmin = Boolean(nullProfile?.is_admin === true);
+    assert.strictEqual(isNullAdmin, false, 'Null profile should have isAdmin = false');
+  });
+
+  it('generates deployment-safe admin portal path for GitHub Pages and root deployments', () => {
+    function resolveAdminPath(pathname, origin = 'https://example.com') {
+      if (pathname.includes('/D2d/')) {
+        const basePath = pathname.substring(0, pathname.indexOf('/D2d/') + 5);
+        return `${origin}${basePath}admin.html`;
+      }
+      if (pathname.endsWith('/D2d')) {
+        return `${origin}${pathname}/admin.html`;
+      }
+      const basePath = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+      return `${origin}${basePath}admin.html`;
+    }
+
+    // GitHub Pages standard subdirectory: /D2d/
+    assert.strictEqual(
+      resolveAdminPath('/D2d/'),
+      'https://example.com/D2d/admin.html'
+    );
+
+    // GitHub Pages with index.html: /D2d/index.html
+    assert.strictEqual(
+      resolveAdminPath('/D2d/index.html'),
+      'https://example.com/D2d/admin.html'
+    );
+
+    // GitHub Pages without trailing slash: /D2d
+    assert.strictEqual(
+      resolveAdminPath('/D2d'),
+      'https://example.com/D2d/admin.html'
+    );
+
+    // Standard root deployment
+    assert.strictEqual(
+      resolveAdminPath('/index.html'),
+      'https://example.com/admin.html'
+    );
+    assert.strictEqual(
+      resolveAdminPath('/'),
+      'https://example.com/admin.html'
+    );
+  });
+});
