@@ -4,11 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "build": "node copy-vendor.js && node build-dist.js",
+    "build": "node copy-vendor.js && node build-dist.js && node verify-dist.js",
     "start": "node server.js",
-    "lint": "node -e \"const fs=require('fs'),cp=require('child_process'),files=['server.js','copy-vendor.js','sw.js',...fs.readdirSync('js').filter(f=>f.endsWith('.js')||f.endsWith('.mjs')).map(f=>'js/'+f)];for(const f of files){const r=cp.spawnSync(process.execPath,['--check',f],{stdio:'inherit'});if(r.status!==0)process.exit(r.status||1);}\"",
+    "lint": "node -e \"const fs=require('fs'),cp=require('child_process'),files=['server.js','copy-vendor.js','build-dist.js','verify-dist.js','sw.js',...fs.readdirSync('js').filter(f=>f.endsWith('.js')||f.endsWith('.mjs')).map(f=>'js/'+f)];for(const f of files){const r=cp.spawnSync(process.execPath,['--check',f],{stdio:'inherit'});if(r.status!==0)process.exit(r.status||1);}\"",
     "test": "node --test tests/*.test.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "npm run build && playwright test"
   },
   "packageManager": "pnpm@10.34.5",
   "dependencies": {

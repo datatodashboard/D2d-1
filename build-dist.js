@@ -13,15 +13,14 @@ if (fs.existsSync(distDir)) {
 }
 fs.mkdirSync(distDir, { recursive: true });
 
-// Copy essential runtime files and folders
-const runtimeEntries = [
+// 1. Top-level runtime files
+const topLevelFiles = [
   'index.html',
   'admin.html',
   'verify.html',
   'styles.css',
   'sw.js',
   'manifest.json',
-  'metadata.json',
   'd2d-logo.svg',
   'apple-touch-icon.png',
   'favicon-64.png',
@@ -29,33 +28,78 @@ const runtimeEntries = [
   'icon-192.png',
   'icon-512.png',
   'icon-maskable-512.png',
-  'thinking-chime.mp3',
-  'js',
-  'data',
-  'public',
-  'vendor'
+  'thinking-chime.mp3'
 ];
 
-function copyRecursive(src, dest) {
-  const stat = fs.statSync(src);
-  if (stat.isDirectory()) {
-    fs.mkdirSync(dest, { recursive: true });
-    for (const file of fs.readdirSync(src)) {
-      copyRecursive(path.join(src, file), path.join(dest, file));
-    }
-  } else {
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.copyFileSync(src, dest);
+// 2. Public assets directory
+const publicFiles = [
+  'public/logo.png'
+];
+
+// 3. Browser runtime JS modules (excludes Node-only build-scenarios.mjs)
+const jsRuntimeFiles = [
+  'js/admin.js',
+  'js/app.js',
+  'js/certificate.js',
+  'js/cloud.js',
+  'js/contest-ai-evaluator.js',
+  'js/contest.js',
+  'js/curriculum.js',
+  'js/notifications.js',
+  'js/progress.js',
+  'js/schema.js',
+  'js/sql-evaluator.js',
+  'js/thinking.js',
+  'js/util.js'
+];
+
+// 4. Scenario data files loaded by the app at runtime (excludes test-only scenarios-metadata.json)
+const domainSlugs = [
+  'banking',
+  'capital-markets',
+  'education',
+  'healthcare',
+  'insurance',
+  'retail',
+  'semiconductor'
+];
+
+const dataRuntimeFiles = [
+  'data/Crack_SQL_420_Simple.json',
+  'data/scenarios.json',
+  ...domainSlugs.flatMap(slug => [
+    `data/domains/${slug}.json`,
+    `data/domains/${slug}.sql.json`
+  ])
+];
+
+function copyFileChecked(relPath) {
+  const srcPath = path.join(__dirname, relPath);
+  const destPath = path.join(distDir, relPath);
+  if (!fs.existsSync(srcPath)) {
+    throw new Error(`[Build] Required runtime file missing: ${relPath}`);
   }
+  fs.mkdirSync(path.dirname(destPath), { recursive: true });
+  fs.copyFileSync(srcPath, destPath);
 }
 
-for (const entry of runtimeEntries) {
-  const srcPath = path.join(__dirname, entry);
-  const destPath = path.join(distDir, entry);
-  if (fs.existsSync(srcPath)) {
-    copyRecursive(srcPath, destPath);
-  } else {
-    console.warn(`[Build] Warning: ${entry} not found on disk.`);
+for (const rel of [
+  ...topLevelFiles,
+  ...publicFiles,
+  ...jsRuntimeFiles,
+  ...dataRuntimeFiles
+]) {
+  copyFileChecked(rel);
+}
+
+// 5. Vendor PGlite runtime files
+const vendorSrcDir = path.join(__dirname, 'vendor', 'pglite');
+if (!fs.existsSync(vendorSrcDir)) {
+  throw new Error('[Build] Required directory missing: vendor/pglite');
+}
+for (const entry of fs.readdirSync(vendorSrcDir, { withFileTypes: true })) {
+  if (entry.isFile()) {
+    copyFileChecked(path.posix.join('vendor/pglite', entry.name));
   }
 }
 

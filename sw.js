@@ -1,4 +1,4 @@
-const CACHE = 'crack-sql-v2-cssfix';
+const CACHE = 'crack-sql-v3-netlify';
 const ROOT = new URL('./', self.location).href;
 const SHELL = [
   'index.html',
@@ -20,7 +20,7 @@ self.addEventListener('activate', event => {
     caches.keys()
       .then(keys => Promise.all(
         keys
-          .filter(k => k.startsWith('crack-sql-') && k !== CACHE)
+          .filter(k => k !== CACHE)
           .map(k => caches.delete(k))
       ))
       .then(() => self.clients.claim())
