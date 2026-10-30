@@ -1,3 +1,11 @@
+-- ==============================================================================
+-- ⚠️ CRITICAL WARNING: ONE-TIME DESTRUCTIVE RESET - DO NOT RUN ON PRODUCTION!
+-- ------------------------------------------------------------------------------
+-- This migration script resets learning progress and active certificates.
+-- It must NEVER be executed against production during deployment or sync.
+-- Running this script against production will wipe active progress and certificates.
+-- ==============================================================================
+--
 -- ============================================================
 -- Migration 017: Global Learning Reset for Thinking Engine 2.0
 -- Auditable Migration ID: 017_thinking_engine_2_0_global_reset

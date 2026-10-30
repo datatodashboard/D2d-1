@@ -2,6 +2,7 @@ import http from 'http';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import zlib from 'zlib';
 import { fileURLToPath } from 'url';
 import { evaluateThinking, PASS_THRESHOLD } from './js/thinking.js';
 
@@ -13,6 +14,48 @@ const HOST = '0.0.0.0';
 
 // Enable JSON request body parsing
 app.use(express.json());
+
+// Lightweight in-memory gzip cache for compressible static files
+const compressedFileCache = new Map();
+const COMPRESSIBLE_EXT_RE = /\.(html|js|mjs|json|css|svg|wasm|data|txt)$/i;
+
+function sendPossiblyCompressedFile(req, res, filePath, cacheControl) {
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).type('text/plain').send('Not Found');
+  }
+  if (cacheControl) {
+    res.setHeader('Cache-Control', cacheControl);
+  }
+  if (filePath.endsWith('.wasm')) {
+    res.setHeader('Content-Type', 'application/wasm');
+  } else if (filePath.endsWith('.data')) {
+    res.setHeader('Content-Type', 'application/octet-stream');
+  } else {
+    res.type(path.extname(filePath));
+  }
+
+  const acceptEncoding = String(req.headers['accept-encoding'] || '');
+  if (req.method === 'GET' && COMPRESSIBLE_EXT_RE.test(filePath) && /\bgzip\b/i.test(acceptEncoding)) {
+    try {
+      const stat = fs.statSync(filePath);
+      const cacheKey = `${filePath}:${stat.mtimeMs}:${stat.size}`;
+      let gzBuf = compressedFileCache.get(cacheKey);
+      if (!gzBuf) {
+        const rawBuf = fs.readFileSync(filePath);
+        gzBuf = zlib.gzipSync(rawBuf, { level: 6 });
+        if (compressedFileCache.size > 64) compressedFileCache.clear();
+        compressedFileCache.set(cacheKey, gzBuf);
+      }
+      res.setHeader('Vary', 'Accept-Encoding');
+      res.setHeader('Content-Encoding', 'gzip');
+      res.setHeader('Content-Length', String(gzBuf.length));
+      return res.end(gzBuf);
+    } catch (_) {
+      // Fall back to standard sendFile if compression fails
+    }
+  }
+  return res.sendFile(filePath);
+}
 
 // Load authoritative scenario catalog
 const scenariosPathSimple = path.join(__dirname, 'data', 'Crack_SQL_420_Simple.json');
@@ -128,8 +171,37 @@ app.post('/api/progress/complete', (req, res) => {
 // Trusted Backend Gmail Sender Route
 app.post('/api/admin/send-gmail', async (req, res) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({ success: false, error: 'Unauthorized: Missing authorization header', code: 'UNAUTHORIZED' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ success: false, error: 'Unauthorized: Missing or invalid authorization header', code: 'UNAUTHORIZED' });
+  }
+
+  const token = authHeader.split(' ')[1];
+  if (!token || token.trim() === '' || token === 'undefined' || token === 'null') {
+    return res.status(401).json({ success: false, error: 'Unauthorized: Missing access token', code: 'UNAUTHORIZED' });
+  }
+
+  // Verify Supabase Auth user identity
+  const supabaseUrl = process.env.SUPABASE_URL || 'https://qklnaqfspvmnlequqagf.supabase.co';
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'sb_publishable_dthVX8zmvd1HvWaYWBaojA_2YbvHWe1';
+
+  try {
+    const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': supabaseAnonKey
+      }
+    });
+
+    if (!userRes.ok) {
+      return res.status(401).json({ success: false, error: 'Unauthorized: Invalid authentication session or expired token', code: 'UNAUTHORIZED' });
+    }
+
+    const userData = await userRes.json();
+    if (!userData || !userData.id) {
+      return res.status(401).json({ success: false, error: 'Unauthorized: Invalid user profile', code: 'UNAUTHORIZED' });
+    }
+  } catch (authErr) {
+    console.warn('[Server] Supabase token verification warning:', authErr.message);
   }
 
   const { action, to, subject, message } = req.body || {};
@@ -266,36 +338,47 @@ app.post('/api/admin/send-gmail', async (req, res) => {
   }
 });
 
-// Static assets options
-const staticOptions = {
-  dotfiles: 'ignore',
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.wasm')) {
-      res.setHeader('Content-Type', 'application/wasm');
-    } else if (filePath.endsWith('.data')) {
-      res.setHeader('Content-Type', 'application/octet-stream');
-    } else if (filePath.endsWith('.js') || filePath.endsWith('.json') || filePath.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    }
-  }
-};
+// Serve compressible static assets with gzip + appropriate Cache-Control
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  if (!/^\/(js|data|vendor|public)\//.test(req.path)) return next();
 
-// Serve strictly allow-listed static directories
-app.use('/js', express.static(path.join(__dirname, 'js'), staticOptions));
-app.use('/data', express.static(path.join(__dirname, 'data'), staticOptions));
-app.use('/vendor', express.static(path.join(__dirname, 'vendor'), staticOptions));
-app.use('/public', express.static(path.join(__dirname, 'public'), staticOptions));
+  const relPath = decodeURIComponent(req.path).replace(/^\/+/, '');
+  if (relPath.includes('..')) return res.status(400).send('Bad Request');
+
+  // Backward-compatible redirect/fallback for legacy logo path
+  if (relPath === 'public/assets/aistudio/image_4d5085b1.png') {
+    return sendPossiblyCompressedFile(req, res, path.join(__dirname, 'public', 'logo.png'), 'public, max-age=86400');
+  }
+
+  const fullPath = path.join(__dirname, relPath);
+  if (!fs.existsSync(fullPath) || fs.statSync(fullPath).isDirectory()) {
+    return next();
+  }
+
+  const isImmutableVendorOrMedia =
+    relPath.startsWith('vendor/pglite/') ||
+    /\.(png|jpe?g|svg|ico|webp|mp3|woff2?)$/i.test(relPath);
+  const cacheControl = isImmutableVendorOrMedia
+    ? 'public, max-age=86400'
+    : 'no-cache, must-revalidate';
+
+  return sendPossiblyCompressedFile(req, res, fullPath, cacheControl);
+});
 
 // Explicitly allow-listed root assets
 const ALLOWED_ROOT_FILES = [
   'index.html',
+  'styles.css',
   'admin.html',
   'manifest.json',
   'sw.js',
   'apple-touch-icon.png',
+  'icon-192.png',
   'icon-512.png',
   'icon-maskable-512.png',
-  'icon-maskable-512.jpeg',
+  'favicon.ico',
+  'favicon-64.png',
   'd2d-logo.svg',
   'thinking-chime.mp3'
 ];
@@ -303,23 +386,19 @@ const ALLOWED_ROOT_FILES = [
 ALLOWED_ROOT_FILES.forEach(fileName => {
   app.get(`/${fileName}`, (req, res) => {
     const filePath = path.join(__dirname, fileName);
-    if (!fs.existsSync(filePath)) return res.status(404).type('text/plain').send('Not Found');
-    if (fileName.endsWith('.js') || fileName.endsWith('.json') || fileName.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    }
-    res.sendFile(filePath);
+    const isCodeOrDoc = fileName.endsWith('.js') || fileName.endsWith('.css') || fileName.endsWith('.json') || fileName.endsWith('.html');
+    const cacheControl = isCodeOrDoc ? 'no-cache, must-revalidate' : 'public, max-age=86400';
+    return sendPossiblyCompressedFile(req, res, filePath, cacheControl);
   });
 });
 
 // Explicit navigation routes
 app.get(['/', '/index.html'], (req, res) => {
-  res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-  res.sendFile(path.join(__dirname, 'index.html'));
+  return sendPossiblyCompressedFile(req, res, path.join(__dirname, 'index.html'), 'no-cache, must-revalidate');
 });
 
 app.get(['/admin', '/admin.html'], (req, res) => {
-  res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  return sendPossiblyCompressedFile(req, res, path.join(__dirname, 'admin.html'), 'no-cache, must-revalidate');
 });
 
 // Unknown /api/* paths -> 404 JSON
@@ -331,8 +410,7 @@ app.use('/api', (req, res) => {
 app.use((req, res) => {
   const ext = path.extname(req.path);
   if (!ext) {
-    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    return res.sendFile(path.join(__dirname, 'index.html'));
+    return sendPossiblyCompressedFile(req, res, path.join(__dirname, 'index.html'), 'no-cache, must-revalidate');
   }
   res.status(404).type('text/plain').send('Not Found');
 });

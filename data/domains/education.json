@@ -1,0 +1,602 @@
+[
+  {
+    "id": "EDU_BEG_001",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow the recorded details of enrollments whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only enrollments whose status is Active.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active enrollment’s full details, or just the number of Active enrollments?",
+    "manager_reply": "The full recorded details of each Active enrollment, please."
+  },
+  {
+    "id": "EDU_BEG_002",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow the recorded details of enrollments with course fee above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter enrollments where course fee is greater than 50000.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an enrollment has a course fee of exactly 50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only enrollments with a course fee above 50,000."
+  },
+  {
+    "id": "EDU_BEG_003",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of students.\n\nShow the recorded details of students whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep students whose city is Chennai.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should I include only students whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for students located in Chennai."
+  },
+  {
+    "id": "EDU_BEG_004",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nFind the total number of enrollments on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the enrollments table.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should the total count include enrollments in every status, or only active ones?",
+    "manager_reply": "Count every recorded enrollment once regardless of status, and show one single total."
+  },
+  {
+    "id": "EDU_BEG_005",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow all enrollments with their recorded details, arranged by course fee, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order enrollments by course fee from highest to lowest.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should all enrollments be listed from the highest course fee down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all enrollments with the highest course fee first."
+  },
+  {
+    "id": "EDU_BEG_006",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of courses.\n\nPrepare a list of the different category values found in the courses records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from courses.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If several courses belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several courses belong to it."
+  },
+  {
+    "id": "EDU_BEG_007",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow the recorded details of enrollments with enrollment date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter enrollments with enrollment date on or after 1 January 2026.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should enrollments with an enrollment date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later enrollment date."
+  },
+  {
+    "id": "EDU_BEG_008",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of assessments.\n\nShow the recorded details of assessments whose assessment type is Quiz. Exclude other assessment type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep assessments whose assessment type equals Quiz.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Do you want only assessments recorded as Quiz, leaving out all other assessment type values?",
+    "manager_reply": "Yes. Show the recorded details only for Quiz assessments."
+  },
+  {
+    "id": "EDU_BEG_009",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of students.\n\nShow up to 5 students with their recorded details, arranged by student number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by student id and limit the result to five rows.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 students starting from the smallest student number?",
+    "manager_reply": "Yes. Arrange students from the smallest student number first and show up to 5 records."
+  },
+  {
+    "id": "EDU_BEG_010",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow the recorded details of enrollments with course fee from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep enrollments whose course fee is between 25000 and 75000.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Are enrollments with a course fee of exactly 25,000 or 75,000 included in this range?",
+    "manager_reply": "Yes. Include both 25,000 and 75,000 as well as any course fee in between."
+  },
+  {
+    "id": "EDU_BEG_011",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of students.\n\nShow the recorded details of students whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep students names starting with A.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should I match only student names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only students whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "EDU_BEG_012",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow the recorded details of enrollments whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep enrollments when status is either Active or Pending.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending enrollments be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any enrollment marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "EDU_BEG_013",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of students.\n\nShow the recorded details of students whose student group is Premium. Exclude other student group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter students to the Premium segment only.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should I include only students in the Premium student group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for students marked as Premium."
+  },
+  {
+    "id": "EDU_BEG_014",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of assessments.\n\nShow the recorded details of assessments with assessment date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter assessments to dates between January and June 2026.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should assessments dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all assessments recorded between them."
+  },
+  {
+    "id": "EDU_BEG_015",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nFind the average course fee across all enrollments. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average course fee across all enrollments.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should the average course fee cover enrollments of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing course fee values, and return one overall average."
+  },
+  {
+    "id": "EDU_BEG_016",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of assessments.\n\nFind the largest recorded assessment points across all assessments. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should I look across all assessment statuses to find the single largest recorded assessment points?",
+    "manager_reply": "Yes. Check all recorded assessments and return the single highest recorded assessment points."
+  },
+  {
+    "id": "EDU_BEG_017",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator wants to understand where the registered students live.\n\nFind how many different cities are recorded for these students. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in students.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If several students live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "EDU_BEG_018",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of assessments.\n\nShow the recorded details of assessments whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep assessments whose status is Completed.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed assessments be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for assessments whose status is Completed."
+  },
+  {
+    "id": "EDU_BEG_019",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator wants to organize enrollments into three review groups.\n\nShow each enrollment number, course fee and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on course fee with 100000 and 50000 boundaries.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Which group should an enrollment with a course fee of exactly 100,000 or 50,000 be placed in?",
+    "manager_reply": "Use High for 100,000 or more, Medium from 50,000 up to below 100,000, and Low for below 50,000 or missing."
+  },
+  {
+    "id": "EDU_BEG_020",
+    "domain": "Education",
+    "level": "Beginner",
+    "business_scenario": "A college administrator is preparing a review of enrollments.\n\nShow the recorded details of enrollments marked Active with a course fee of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and course fee of at least 50000.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Does an enrollment marked Active with a course fee of exactly 50,000 qualify?",
+    "manager_reply": "Yes. Include Active enrollments whose course fee is 50,000 or higher."
+  },
+  {
+    "id": "EDU_INT_001",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to see related records clearly. The team has records of students, enrollments and assessments.\n\nShow the student name alongside each of their enrollments, including the enrollment number, status and course fee. Include all statuses. Show a separate entry for each enrollment, arranged by student number and then enrollment number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students to enrollments using student id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If a student has multiple enrollments, should each enrollment appear as a separate entry?",
+    "manager_reply": "Yes. Show each enrollment separately across all statuses, ordered by student number and enrollment number."
+  },
+  {
+    "id": "EDU_INT_002",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to check which records need attention. The team has records of students, enrollments and assessments.\n\nFor each entry in the courses directory, show its name and the number of linked enrollments. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join courses to enrollments by course id. I will group each courses item and count matching enrollments.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an item in courses has no linked enrollments, should it still appear in the count?",
+    "manager_reply": "Yes. Include every courses entry and show zero when it has no linked enrollments."
+  },
+  {
+    "id": "EDU_INT_003",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to compare recorded totals. The team has records of students, enrollments and assessments.\n\nFind enrollments with no assessments recorded at all. Show their enrollment numbers. Any recorded assessment disqualifies a enrollment, regardless of its status or date. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join assessments to enrollments on enrollment id and keep enrollments with a null assessment id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed assessment still count as activity that disqualifies the enrollment?",
+    "manager_reply": "Yes. Keep only enrollments that have no recorded assessments in any status."
+  },
+  {
+    "id": "EDU_INT_004",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to organize a review list. The team has records of students, enrollments and assessments.\n\nFor every enrollment, show its number and the total recorded assessment points across its assessments. Show zero when no value is available. Include all assessment types and statuses and use the values as recorded. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join enrollments to assessments using enrollment id. I will group by enrollment id and sum event amounts.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "What total should appear for an enrollment that has no recorded assessments?",
+    "manager_reply": "Include every enrollment and show zero as its total when no assessments exist."
+  },
+  {
+    "id": "EDU_INT_005",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to compare activity amounts. The team has records of students, enrollments and assessments.\n\nAdd the recorded assessment points across the assessments linked to each enrollment. Show the enrollment number and total only when above 20,000; exclude exactly 20,000. Include all assessment types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join enrollments and assessments and group by enrollment id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an enrollment’s combined recorded assessment points is exactly 20,000, should it be included?",
+    "manager_reply": "No. Show only enrollments whose total recorded assessment points is strictly above 20,000, largest total first."
+  },
+  {
+    "id": "EDU_INT_006",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to prepare a progress summary. The team has records of students, enrollments and assessments.\n\nFor each group recorded in the students directory, show the group label and the number of linked enrollments, including every status. Count each enrollment once. Show zero for a represented group with no enrollments. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link enrollments to students by student id. I will group by segment and count the matching enrollments.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should student segments with no linked enrollments still show a count of zero?",
+    "manager_reply": "Yes. Include every represented student segment and show zero if it has no linked enrollments."
+  },
+  {
+    "id": "EDU_INT_007",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to review the largest values. The team has records of students, enrollments and assessments.\n\nFor each courses category with linked enrollments, show the category and average course fee. Give each enrollment equal weight and include all statuses. Leave out categories with no linked enrollments. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join courses and enrollments by course id. I will group by category and average course fee.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should courses categories that have no linked enrollments be left out?",
+    "manager_reply": "Yes. Include only categories that have linked enrollments when calculating the average course fee."
+  },
+  {
+    "id": "EDU_INT_008",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to understand the contribution of each record. The team has records of students, enrollments and assessments.\n\nShow each student name alongside their enrollment number, the name of its linked courses entry, and the enrollment status. Include all statuses and keep each enrollment separate. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students, enrollments and courses through student id and course id to show student name, course name, and status.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the enrollment status or the courses status?",
+    "manager_reply": "Show the enrollment status alongside the student name, enrollment number, and courses name."
+  },
+  {
+    "id": "EDU_INT_009",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to compare values within related groups. The team has records of students, enrollments and assessments.\n\nFor each student with at least one enrollment, add the course fee across their enrollments. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every enrollment status and omit students without enrollments.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students and enrollments and sum course fee for each students.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If two students have the same name, should their course fee totals be kept separate?",
+    "manager_reply": "Yes. Keep each student separate by their student number, and omit students without enrollments."
+  },
+  {
+    "id": "EDU_INT_010",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to compare the recorded values. The team has records of students, enrollments and assessments.\n\nFind enrollments whose course fee is above the average course fee of all recorded enrollments. Include every status when calculating the average. Show the enrollment number and course fee, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each course fee in enrollments with the overall average from a subquery.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should enrollments of all statuses be included when computing the overall average course fee?",
+    "manager_reply": "Yes, use all enrollments for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "EDU_INT_011",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to review the sequence of activity. The team has records of students, enrollments and assessments.\n\nShow each assessment number, date, type and recorded assessment points, together with the status of the enrollment it belongs to. Use the enrollment's status, which may differ from the assessment's status. Include every assessment and arrange by assessment number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join assessments to enrollments using the parent key.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each assessment be the parent enrollment’s status?",
+    "manager_reply": "Yes. Display each assessment’s details together with the status of its parent enrollment."
+  },
+  {
+    "id": "EDU_INT_012",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to prepare a status report. The team has records of students, enrollments and assessments.\n\nFor every enrollment, show its number and two separate totals of recorded assessment points: one for assessments marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no assessments exist in a status. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join enrollments and assessments and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "How should Pending assessments or enrollments with no assessments be reflected in the two totals?",
+    "manager_reply": "Pending assessments add to neither total, and enrollments without matching assessments should show zero."
+  },
+  {
+    "id": "EDU_INT_013",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to compare results across groups. The team has records of students, enrollments and assessments.\n\nCount the assessments recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded assessments need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from assessment date, group assessments and count each month.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include assessments of every type and status?",
+    "manager_reply": "Yes. Count all assessments in each calendar month and list the months in date order."
+  },
+  {
+    "id": "EDU_INT_014",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to check the recorded history. The team has records of students, enrollments and assessments.\n\nShow the number and name of each registered student who has no enrollments at all. If even one enrollment exists, exclude that student, regardless of status. Arrange by student number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join enrollments to students on student id and keep students with no enrollments key.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If a student only has a Closed or Pending enrollment, should they still be excluded?",
+    "manager_reply": "Yes. Show only students who have no linked enrollments at all."
+  },
+  {
+    "id": "EDU_INT_015",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to review how activity is distributed. The team has records of students, enrollments and assessments.\n\nShow the number and name of entries in the courses directory that have no linked enrollments. A linked enrollment in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join enrollments to courses on course id and keep courses with no matching enrollments.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending enrollment count as using a course entry?",
+    "manager_reply": "Yes. Show only courses entries that have zero linked enrollments across all statuses."
+  },
+  {
+    "id": "EDU_INT_016",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to prepare a summary for each group. The team has records of students, enrollments and assessments.\n\nFor each student with enrollments, find the earliest recorded enrollment date among them. Show the student number, name and earliest date, arranged by student number. Include all statuses; omit students without enrollments.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students and enrollments, group by student id and take the minimum enrollment date.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should enrollments of all statuses be considered when finding each student’s earliest enrollment date?",
+    "manager_reply": "Yes. Check all enrollment statuses for each student, and omit students who have no enrollments."
+  },
+  {
+    "id": "EDU_INT_017",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to identify records needing a closer look. The team has records of students, enrollments and assessments.\n\nFor every enrollment, show its number and most recent recorded assessment date. Include all assessment statuses. Leave the date empty when no dated activity is available. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join assessments to enrollments, group by enrollment id and take the maximum assessment date.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should enrollments with no recorded assessments still be listed?",
+    "manager_reply": "Yes. Include every enrollment and leave its latest assessment date empty when no assessments exist."
+  },
+  {
+    "id": "EDU_INT_018",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to review the people represented in the records. The team has records of students, enrollments and assessments.\n\nFind students who have at least one assessment marked Completed through any of their enrollments. Show each qualifying student's number and name once, even if several assessments qualify. Arrange by student number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students, enrollments and assessments, keep Completed events and remove duplicate students.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If a student has multiple Completed assessments, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying student’s number and name only once."
+  },
+  {
+    "id": "EDU_INT_019",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to compare activity across categories. The team has records of students, enrollments and assessments.\n\nFor each courses category with assessments linked through its enrollments, show the average recorded assessment points. Give every assessment equal weight. Include all assessment types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join courses, enrollments and assessments through their keys. I will group by category and average event amount.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded assessments be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have assessments, averaging across all assessment statuses."
+  },
+  {
+    "id": "EDU_INT_020",
+    "domain": "Education",
+    "level": "Intermediate",
+    "business_scenario": "A college administrator wants to prepare an up-to-date review. The team has records of students, enrollments and assessments.\n\nCount enrollments for each combination of student group and enrollment status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students and enrollments and group counts by segment and status.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should combinations of student segment and enrollment status with zero enrollments be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "EDU_EXP_001",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to see related records clearly. The team has records of students, enrollments and assessments.\n\nFor each student with assessments, add the recorded assessment points across all their enrollments. Show the student number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller student number first. Keep people with the same name separate and omit those without activity. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students, enrollments and assessments and total event amounts per students. I will rank the totals from highest to lowest.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If two students tie on total recorded assessment points, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied students by smaller student number."
+  },
+  {
+    "id": "EDU_EXP_002",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to check which records need attention. The team has records of students, enrollments and assessments.\n\nFind enrollments whose most recent assessment date is before 1 January 2026, or that have no recorded assessment date. Show the enrollment number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join assessments to enrollments using enrollment id so enrollments without activity remain. I will group each enrollments by enrollment id and use HAVING on its latest assessment date.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an enrollment’s latest assessment date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only enrollments whose latest assessment date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "EDU_EXP_003",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to compare recorded totals. The team has records of students, enrollments and assessments.\n\nAdd the course fee across each student's enrollments. Find the average of these person-level totals, giving each student equal weight and excluding students without enrollments. Show the student number and total only when above this average, largest totals first. Exclude equal totals and include all enrollment statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total course fee by student id in enrollments. I will keep students totals above the average total.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should students without any enrollments be left out when calculating the average student total?",
+    "manager_reply": "Yes. Average across students who have enrollments, and return those strictly above that average."
+  },
+  {
+    "id": "EDU_EXP_004",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to organize a review list. The team has records of students, enrollments and assessments.\n\nShow each enrollment number, course fee and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify enrollments using CASE with 100000 and 50000 course fee boundaries.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of 50,000 and 100,000 be classified into bands?",
+    "manager_reply": "Use High for 100,000 or above, Medium from 50,000 up to below 100,000, and Low for below 50,000."
+  },
+  {
+    "id": "EDU_EXP_005",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to compare activity amounts. The team has records of students, enrollments and assessments.\n\nFor each enrollment and calendar month with assessments, add the recorded assessment points. Show the enrollment number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by enrollment number and then month. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in assessments by enrollment id and month in a CTE. I will use LAG partitioned by enrollment id and ordered by event month.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an enrollment has no assessments in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that enrollment, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "EDU_EXP_006",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to prepare a progress summary. The team has records of students, enrollments and assessments.\n\nFor each enrollment, follow its assessments in date order, using the smaller assessment number first when dates match. Beside each assessment, show the total recorded assessment points accumulated so far, including that assessment. Show the enrollment number, assessment number, date, value and running total. Arrange by enrollment number and that activity sequence. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in assessments partitioned by enrollment id and ordered by assessment date and assessment id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "When two assessments for the same enrollment share the same assessment date, which one comes first in the running total?",
+    "manager_reply": "Order same-day assessments by the smaller assessment number first, and include the current assessment in the running total."
+  },
+  {
+    "id": "EDU_EXP_007",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to review the largest values. The team has records of students, enrollments and assessments.\n\nFor each enrollment with assessments, select up to two with the largest recorded assessment points. When values tie, choose the smaller assessment number first. Show the assessment number, enrollment number and value. If only one exists, show it. Arrange by enrollment number, then selected value highest first. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each enrollment id in assessments by descending amount. I will keep row numbers 1 and 2 for every enrollment id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "What if an enrollment has only one assessment, or a tie for the second-largest recorded assessment points?",
+    "manager_reply": "Return the single assessment if only one exists, and break any amount ties by choosing the smaller assessment number first."
+  },
+  {
+    "id": "EDU_EXP_008",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to understand the contribution of each record. The team has records of students, enrollments and assessments.\n\nFor every enrollment, total the recorded assessment points from its assessments, using zero if no value is available. Show the enrollment number, total and its percentage of the combined total across all enrollments. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all assessment types and statuses and use the values as recorded. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join enrollments and assessments to total amounts for each enrollments in a CTE. I will divide each enrollments total by the windowed grand total.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should enrollments with zero assessments be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each enrollment’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "EDU_EXP_009",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to compare values within related groups. The team has records of students, enrollments and assessments.\n\nWithin each student's enrollments, rank the course fee highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the student number, enrollment number, course fee and rank. Arrange by student number, rank and then enrollment number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank enrollments within each student id by descending course fee.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "When two enrollments for the same student have equal course fee, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each student, and order ties by enrollment number."
+  },
+  {
+    "id": "EDU_EXP_010",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to compare the recorded values. The team has records of students, enrollments and assessments.\n\nFor each enrollment, follow assessments by date and then by assessment number when dates match. Show its number, each assessment number, date, recorded assessment points, and the previous assessment's value for that same enrollment. Leave the previous value empty for the first assessment. Arrange by enrollment number and that sequence. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in assessments partitioned by enrollment id ordered by assessment date and assessment id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first assessment of an enrollment?",
+    "manager_reply": "Leave the previous amount empty for each enrollment’s first assessment, ordering same-day activity by assessment number."
+  },
+  {
+    "id": "EDU_EXP_011",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to review the sequence of activity. The team has records of students, enrollments and assessments.\n\nFollow each enrollment's assessments by date, using the smaller assessment number first when dates match. At each step, average the current recorded assessment points and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the enrollment number, assessment number, date, value and average. Arrange by enrollment number and that sequence. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in assessments partitioned by enrollment id ordered by assessment date and assessment id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "For the first two assessments of an enrollment, should the moving average use only the assessments recorded so far?",
+    "manager_reply": "Yes. Average the current assessment with up to two immediately preceding assessments available for that enrollment."
+  },
+  {
+    "id": "EDU_EXP_012",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to prepare a status report. The team has records of students, enrollments and assessments.\n\nShow the number and name of each student who has at least one enrollment and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the student. Exclude students with no enrollments. Arrange by student number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each students has at least one enrollments. I will use NOT EXISTS to exclude students with a non-Active enrollments.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should students with no enrollments at all be excluded even though they have no non-Active enrollments?",
+    "manager_reply": "Yes. A student must have at least one enrollment, and every one of their enrollments must be Active."
+  },
+  {
+    "id": "EDU_EXP_013",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to compare results across groups. The team has records of students, enrollments and assessments.\n\nFor each enrollment, compare its course fee with the average course fee of enrollments sharing its status. Show its number, status and course fee only when above that average. Include the enrollment itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then course fee, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each enrollments with the average course fee for its own status.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should each enrollment be compared only against the average course fee of enrollments with the same status?",
+    "manager_reply": "Yes. Compare each enrollment to the average course fee of its own status group, excluding exact ties."
+  },
+  {
+    "id": "EDU_EXP_014",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to check the recorded history. The team has records of students, enrollments and assessments.\n\nFor every enrollment with assessments, show its number, earliest assessment date, latest assessment date and elapsed calendar days between them. The same first and last date gives zero days. Omit enrollments without assessments. Include all activity statuses. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join enrollments and assessments, group by enrollment id and take minimum and maximum assessment date. I will subtract the first date from the last date to get active days.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an enrollment’s earliest and latest assessment date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit enrollments that have no assessments."
+  },
+  {
+    "id": "EDU_EXP_015",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to review how activity is distributed. The team has records of students, enrollments and assessments.\n\nFor every assessment, show its number, linked enrollment number, recorded assessment points and percentage contribution to that enrollment's total recorded assessment points. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by enrollment number and then assessment number. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each assessments amount by the total amount within its enrollment id partition.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should each assessment’s percentage be measured against its parent enrollment’s total rather than all enrollments?",
+    "manager_reply": "Yes. Divide each assessment amount by that enrollment’s total recorded assessment points and round to two decimal places."
+  },
+  {
+    "id": "EDU_EXP_016",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to prepare a summary for each group. The team has records of students, enrollments and assessments.\n\nAdd the course fee across each student's enrollments, including all statuses. Within each student group, select the one with the largest total. Break ties by choosing the smaller student number. Show their number, name, group and total. Exclude students without enrollments, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join students and enrollments to total course fee for every students and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If two students in the same segment tie for the highest total course fee, which one should I return?",
+    "manager_reply": "Select the tied student with the smaller student number, and exclude students without enrollments."
+  },
+  {
+    "id": "EDU_EXP_017",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to identify records needing a closer look. The team has records of students, enrollments and assessments.\n\nFind assessments whose recorded assessment points is above the average for all assessments belonging to the same enrollment. Include the current assessment when calculating that average. Show the assessment number, enrollment number and value. Exclude values equal to the average. Arrange by enrollment number and then value highest first. Include all assessment types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each assessments amount with the average amount for its parent enrollment id.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should each assessment be compared with the average amount for its own parent enrollment?",
+    "manager_reply": "Yes. Include only assessments whose amount is strictly above the average for their parent enrollment."
+  },
+  {
+    "id": "EDU_EXP_018",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to review the people represented in the records. The team has records of students, enrollments and assessments.\n\nCount the enrollments belonging to every registered student, including zero for those with none. Average those counts, giving each student equal weight. Show the number, name and count for students above that average. Include all enrollment statuses. Sort by count highest first, using the smaller student number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join students and enrollments and count enrollments for every students in a CTE. I will keep students counts above the average master count.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should students with zero enrollments be included when calculating the overall average enrollment count?",
+    "manager_reply": "Yes. Include zero-count students in the average calculation, then list students strictly above that average."
+  },
+  {
+    "id": "EDU_EXP_019",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to compare activity across categories. The team has records of students, enrollments and assessments.\n\nFor every enrollment, show its number and separate totals of recorded assessment points for assessments marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no assessments. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join enrollments and assessments to conditionally sum Completed, Pending and Failed event amounts per enrollments.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "Should every enrollment display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every enrollment, using zero whenever no matching assessments exist."
+  },
+  {
+    "id": "EDU_EXP_020",
+    "domain": "Education",
+    "level": "Expert",
+    "business_scenario": "A college administrator wants to prepare an up-to-date review. The team has records of students, enrollments and assessments.\n\nFor each enrollment with assessments, select the one with the latest date. If several share that date, select the largest assessment number. Show its assessment number, enrollment number, date, type, recorded assessment points and status. Include all activity statuses and omit enrollments without activity. Arrange the list by enrollment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number assessments partitioned by enrollment id from newest to oldest by assessment date and assessment id. I will keep row number 1 as the latest event.",
+    "schema": "students(student_id PK, student_name, city, segment, joined_date); courses(course_id PK, course_name, category, status, base_value); enrollments(enrollment_id PK, student_id FK, course_id FK, enrollment_date, status, course_fee); assessments(assessment_id PK, enrollment_id FK, assessment_date, assessment_type, quantity, amount, status)",
+    "learner_question": "If an enrollment has multiple assessments on its latest assessment date, which one should be selected?",
+    "manager_reply": "Pick the assessment with the largest assessment number on that latest date, and omit enrollments without assessments."
+  }
+]

@@ -484,7 +484,9 @@
         "accounts",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active account’s full details, or just the number of Active accounts?",
+      "manager_reply": "The full recorded details of each Active account, please."
     },
     {
       "id": "BAN_BEG_002",
@@ -507,7 +509,9 @@
         "accounts",
         "balance",
         "50000"
-      ]
+      ],
+      "learner_question": "If an account has exactly ₹50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only accounts with a balance above ₹50,000."
     },
     {
       "id": "BAN_BEG_003",
@@ -530,7 +534,9 @@
         "customers",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only customers whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for customers located in Chennai."
     },
     {
       "id": "BAN_BEG_004",
@@ -550,7 +556,9 @@
       ],
       "relevantColumns": [
         "accounts"
-      ]
+      ],
+      "learner_question": "Should the total count include accounts in every status, or only active ones?",
+      "manager_reply": "Count every recorded account once regardless of status, and show one single total."
     },
     {
       "id": "BAN_BEG_005",
@@ -572,7 +580,9 @@
       "relevantColumns": [
         "accounts",
         "balance"
-      ]
+      ],
+      "learner_question": "Should all accounts be listed from the highest balance down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all accounts with the highest balance first."
     },
     {
       "id": "BAN_BEG_006",
@@ -594,7 +604,9 @@
       "relevantColumns": [
         "account_products",
         "category"
-      ]
+      ],
+      "learner_question": "If several products belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several products belong to it."
     },
     {
       "id": "BAN_BEG_007",
@@ -618,7 +630,9 @@
         "open_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should accounts with an open date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later open date."
     },
     {
       "id": "BAN_BEG_008",
@@ -641,7 +655,9 @@
         "transactions",
         "transaction_type",
         "Credit"
-      ]
+      ],
+      "learner_question": "Do you want only transactions recorded as Credit, leaving out all other transaction type values?",
+      "manager_reply": "Yes. Show the recorded details only for Credit transactions."
     },
     {
       "id": "BAN_BEG_009",
@@ -663,7 +679,9 @@
       "relevantColumns": [
         "customers",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 customers starting from the smallest customer number?",
+      "manager_reply": "Yes. Arrange customers from the smallest customer number first and show up to 5 records."
     },
     {
       "id": "BAN_BEG_010",
@@ -687,7 +705,9 @@
         "balance",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are accounts with a balance of exactly ₹25,000 or ₹75,000 included in this range?",
+      "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any balance in between."
     },
     {
       "id": "BAN_BEG_011",
@@ -710,7 +730,9 @@
         "customers",
         "customer_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only customer names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only customers whose recorded name starts with uppercase A."
     },
     {
       "id": "BAN_BEG_012",
@@ -734,7 +756,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending accounts be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any account marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "BAN_BEG_013",
@@ -757,7 +781,9 @@
         "customers",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only customers in the Premium customer group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for customers marked as Premium."
     },
     {
       "id": "BAN_BEG_014",
@@ -782,7 +808,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should transactions dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all transactions recorded between them."
     },
     {
       "id": "BAN_BEG_015",
@@ -803,7 +831,9 @@
       "relevantColumns": [
         "accounts",
         "balance"
-      ]
+      ],
+      "learner_question": "Should the average balance include accounts across all statuses?",
+      "manager_reply": "Yes. Include all recorded accounts regardless of status in the average balance."
     },
     {
       "id": "BAN_BEG_016",
@@ -824,7 +854,9 @@
       "relevantColumns": [
         "transactions",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all transaction statuses to find the single largest transaction amount?",
+      "manager_reply": "Yes. Check all recorded transactions and return the single highest transaction amount."
     },
     {
       "id": "BAN_BEG_017",
@@ -845,7 +877,9 @@
       "relevantColumns": [
         "customers",
         "city"
-      ]
+      ],
+      "learner_question": "If several customers live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "BAN_BEG_018",
@@ -868,7 +902,9 @@
         "transactions",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed transactions be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for transactions whose status is Completed."
     },
     {
       "id": "BAN_BEG_019",
@@ -896,7 +932,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What balance thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000, ordered by account number."
     },
     {
       "id": "BAN_BEG_020",
@@ -921,7 +959,9 @@
         "balance",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does an account marked Active with a balance of exactly ₹50,000 qualify?",
+      "manager_reply": "Yes. Include Active accounts whose balance is ₹50,000 or higher."
     },
     {
       "id": "BAN_INT_001",
@@ -948,7 +988,9 @@
         "status",
         "balance",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Which account fields should appear alongside each customer name?",
+      "manager_reply": "Show the customer name with each account number, status, and balance, ordered by customer and account number."
     },
     {
       "id": "BAN_INT_002",
@@ -974,7 +1016,9 @@
         "product_name",
         "account_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "If an item in account products has no linked accounts, should it still appear in the count?",
+      "manager_reply": "Yes. Include every account products entry and show zero when it has no linked accounts."
     },
     {
       "id": "BAN_INT_003",
@@ -999,7 +1043,9 @@
         "transactions",
         "account_id",
         "transaction_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed transaction still count as activity that disqualifies the account?",
+      "manager_reply": "Yes. Keep only accounts that have no recorded transactions in any status."
     },
     {
       "id": "BAN_INT_004",
@@ -1024,7 +1070,9 @@
         "transactions",
         "account_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for an account that has no recorded transactions?",
+      "manager_reply": "Include every account and show zero as its total when no transactions exist."
     },
     {
       "id": "BAN_INT_005",
@@ -1050,7 +1098,9 @@
         "account_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If an account’s combined transaction amount is exactly ₹20,000, should it be included?",
+      "manager_reply": "No. Show only accounts whose total transaction amount is strictly above ₹20,000, largest total first."
     },
     {
       "id": "BAN_INT_006",
@@ -1076,7 +1126,9 @@
         "segment",
         "account_id",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should customer segments with no linked accounts still show a count of zero?",
+      "manager_reply": "Yes. Include every represented customer segment and show zero if it has no linked accounts."
     },
     {
       "id": "BAN_INT_007",
@@ -1102,7 +1154,9 @@
         "category",
         "balance",
         "product_id"
-      ]
+      ],
+      "learner_question": "Should account products categories that have no linked accounts be left out?",
+      "manager_reply": "Yes. Include only categories that have linked accounts when calculating the average balance."
     },
     {
       "id": "BAN_INT_008",
@@ -1132,7 +1186,9 @@
         "status",
         "customer_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the account status or the account products status?",
+      "manager_reply": "Show the account status alongside the customer name, account number, and account products name."
     },
     {
       "id": "BAN_INT_009",
@@ -1158,7 +1214,9 @@
         "customer_id",
         "customer_name",
         "balance"
-      ]
+      ],
+      "learner_question": "If two customers have the same name, should their balance totals be kept separate?",
+      "manager_reply": "Yes. Keep each customer separate by their customer number, and omit customers without accounts."
     },
     {
       "id": "BAN_INT_010",
@@ -1180,7 +1238,9 @@
         "accounts",
         "account_id",
         "balance"
-      ]
+      ],
+      "learner_question": "Should accounts of all statuses be included when computing the overall average balance?",
+      "manager_reply": "Yes, use all accounts for the overall average and return only those strictly above it."
     },
     {
       "id": "BAN_INT_011",
@@ -1208,7 +1268,9 @@
         "amount",
         "status",
         "account_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each transaction be the parent account’s status?",
+      "manager_reply": "Yes. Display each transaction’s details together with the status of its parent account."
     },
     {
       "id": "BAN_INT_012",
@@ -1235,7 +1297,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending transactions or accounts with no transactions be reflected in the two totals?",
+      "manager_reply": "Pending transactions add to neither total, and accounts without matching transactions should show zero."
     },
     {
       "id": "BAN_INT_013",
@@ -1257,7 +1321,9 @@
         "transactions",
         "transaction_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include transactions of every type and status?",
+      "manager_reply": "Yes. Count all transactions in each calendar month and list the months in date order."
     },
     {
       "id": "BAN_INT_014",
@@ -1282,7 +1348,9 @@
         "customer_id",
         "customer_name",
         "account_id"
-      ]
+      ],
+      "learner_question": "If a customer only has a Closed or Pending account, should they still be excluded?",
+      "manager_reply": "Yes. Show only customers who have no linked accounts at all."
     },
     {
       "id": "BAN_INT_015",
@@ -1307,7 +1375,9 @@
         "product_id",
         "product_name",
         "account_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending account count as using a product entry?",
+      "manager_reply": "Yes. Show only account products entries that have zero linked accounts across all statuses."
     },
     {
       "id": "BAN_INT_016",
@@ -1332,7 +1402,9 @@
         "customer_id",
         "customer_name",
         "open_date"
-      ]
+      ],
+      "learner_question": "Should accounts of all statuses be considered when finding each customer’s earliest open date?",
+      "manager_reply": "Yes. Check all account statuses for each customer, and omit customers who have no accounts."
     },
     {
       "id": "BAN_INT_017",
@@ -1356,7 +1428,9 @@
         "transactions",
         "account_id",
         "transaction_date"
-      ]
+      ],
+      "learner_question": "Should accounts with no recorded transactions still be listed?",
+      "manager_reply": "Yes. Include every account and leave its latest transaction date empty when no transactions exist."
     },
     {
       "id": "BAN_INT_018",
@@ -1385,7 +1459,9 @@
         "account_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a customer has multiple Completed transactions, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying customer’s number and name only once."
     },
     {
       "id": "BAN_INT_019",
@@ -1413,7 +1489,9 @@
         "amount",
         "product_id",
         "account_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded transactions be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have transactions, averaging across all transaction statuses."
     },
     {
       "id": "BAN_INT_020",
@@ -1438,7 +1516,9 @@
         "segment",
         "status",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should combinations of customer segment and account status with zero accounts be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "BAN_EXP_001",
@@ -1467,7 +1547,9 @@
         "customer_name",
         "amount",
         "account_id"
-      ]
+      ],
+      "learner_question": "If two customers tie on total transaction amount, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied customers by smaller customer number."
     },
     {
       "id": "BAN_EXP_002",
@@ -1494,7 +1576,9 @@
         "transaction_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If an account’s latest transaction date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only accounts whose latest transaction date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "BAN_EXP_003",
@@ -1518,7 +1602,9 @@
         "accounts",
         "customer_id",
         "balance"
-      ]
+      ],
+      "learner_question": "Should customers without any accounts be left out when calculating the average customer total?",
+      "manager_reply": "Yes. Average across customers who have accounts, and return those strictly above that average."
     },
     {
       "id": "BAN_EXP_004",
@@ -1545,7 +1631,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+      "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
     },
     {
       "id": "BAN_EXP_005",
@@ -1570,7 +1658,9 @@
         "transaction_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If an account has no transactions in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that account, leaving the first month’s prior total empty."
     },
     {
       "id": "BAN_EXP_006",
@@ -1595,7 +1685,9 @@
         "transaction_id",
         "transaction_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two transactions for the same account share the same transaction date, which one comes first in the running total?",
+      "manager_reply": "Order same-day transactions by the smaller transaction number first, and include the current transaction in the running total."
     },
     {
       "id": "BAN_EXP_007",
@@ -1619,7 +1711,9 @@
         "account_id",
         "amount",
         "transaction_id"
-      ]
+      ],
+      "learner_question": "What if an account has only one transaction, or a tie for the second-largest transaction amount?",
+      "manager_reply": "Return the single transaction if only one exists, and break any amount ties by choosing the smaller transaction number first."
     },
     {
       "id": "BAN_EXP_008",
@@ -1644,7 +1738,9 @@
         "account_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should accounts with zero transactions be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each account’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "BAN_EXP_009",
@@ -1667,7 +1763,9 @@
         "customer_id",
         "account_id",
         "balance"
-      ]
+      ],
+      "learner_question": "When two accounts for the same customer have equal balance, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each customer, and order ties by account number."
     },
     {
       "id": "BAN_EXP_010",
@@ -1691,7 +1789,9 @@
         "transaction_id",
         "transaction_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first transaction of an account?",
+      "manager_reply": "Leave the previous amount empty for each account’s first transaction, ordering same-day activity by transaction number."
     },
     {
       "id": "BAN_EXP_011",
@@ -1715,7 +1815,9 @@
         "transaction_id",
         "transaction_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two transactions of an account, should the moving average use only the transactions recorded so far?",
+      "manager_reply": "Yes. Average the current transaction with up to two immediately preceding transactions available for that account."
     },
     {
       "id": "BAN_EXP_012",
@@ -1742,7 +1844,9 @@
         "customer_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should customers with no accounts at all be excluded even though they have no non-Active accounts?",
+      "manager_reply": "Yes. A customer must have at least one account, and every one of their accounts must be Active."
     },
     {
       "id": "BAN_EXP_013",
@@ -1765,7 +1869,9 @@
         "balance",
         "status",
         "account_id"
-      ]
+      ],
+      "learner_question": "Should each account be compared only against the average balance of accounts with the same status?",
+      "manager_reply": "Yes. Compare each account to the average balance of its own status group, excluding exact ties."
     },
     {
       "id": "BAN_EXP_014",
@@ -1790,7 +1896,9 @@
         "transactions",
         "account_id",
         "transaction_date"
-      ]
+      ],
+      "learner_question": "If an account’s earliest and latest transaction date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit accounts that have no transactions."
     },
     {
       "id": "BAN_EXP_015",
@@ -1814,7 +1922,9 @@
         "account_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each transaction’s percentage be measured against its parent account’s total rather than all accounts?",
+      "manager_reply": "Yes. Divide each transaction amount by that account’s total transaction amount and round to two decimal places."
     },
     {
       "id": "BAN_EXP_016",
@@ -1841,7 +1951,9 @@
         "customer_name",
         "segment",
         "balance"
-      ]
+      ],
+      "learner_question": "If two customers in the same segment tie for the highest total balance, which one should I return?",
+      "manager_reply": "Select the tied customer with the smaller customer number, and exclude customers without accounts."
     },
     {
       "id": "BAN_EXP_017",
@@ -1864,7 +1976,9 @@
         "amount",
         "account_id",
         "transaction_id"
-      ]
+      ],
+      "learner_question": "Should each transaction be compared with the average amount for its own parent account?",
+      "manager_reply": "Yes. Include only transactions whose amount is strictly above the average for their parent account."
     },
     {
       "id": "BAN_EXP_018",
@@ -1890,7 +2004,9 @@
         "customer_id",
         "customer_name",
         "account_id"
-      ]
+      ],
+      "learner_question": "Should customers with zero accounts be included when calculating the overall average account count?",
+      "manager_reply": "Yes. Include zero-count customers in the average calculation, then list customers strictly above that average."
     },
     {
       "id": "BAN_EXP_019",
@@ -1918,7 +2034,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every account display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every account, using zero whenever no matching transactions exist."
     },
     {
       "id": "BAN_EXP_020",
@@ -1945,7 +2063,9 @@
         "transaction_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If an account has multiple transactions on its latest transaction date, which one should be selected?",
+      "manager_reply": "Pick the transaction with the largest transaction number on that latest date, and omit accounts without transactions."
     },
     {
       "id": "HEA_BEG_001",
@@ -1969,7 +2089,9 @@
         "appointments",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active appointment’s full details, or just the number of Active appointments?",
+      "manager_reply": "The full recorded details of each Active appointment, please."
     },
     {
       "id": "HEA_BEG_002",
@@ -1992,7 +2114,9 @@
         "appointments",
         "bill_amount",
         "50000"
-      ]
+      ],
+      "learner_question": "If an appointment has a bill amount of exactly ₹50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only appointments with a bill amount above ₹50,000."
     },
     {
       "id": "HEA_BEG_003",
@@ -2015,7 +2139,9 @@
         "patients",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only patients whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for patients located in Chennai."
     },
     {
       "id": "HEA_BEG_004",
@@ -2035,7 +2161,9 @@
       ],
       "relevantColumns": [
         "appointments"
-      ]
+      ],
+      "learner_question": "Should the total count include appointments in every status, or only active ones?",
+      "manager_reply": "Count every recorded appointment once regardless of status, and show one single total."
     },
     {
       "id": "HEA_BEG_005",
@@ -2057,7 +2185,9 @@
       "relevantColumns": [
         "appointments",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "Should all appointments be listed from the highest bill amount down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all appointments with the highest bill amount first."
     },
     {
       "id": "HEA_BEG_006",
@@ -2079,7 +2209,9 @@
       "relevantColumns": [
         "doctors",
         "category"
-      ]
+      ],
+      "learner_question": "If several doctors belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several doctors belong to it."
     },
     {
       "id": "HEA_BEG_007",
@@ -2103,7 +2235,9 @@
         "appointment_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should appointments with an appointment date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later appointment date."
     },
     {
       "id": "HEA_BEG_008",
@@ -2126,7 +2260,9 @@
         "visits",
         "visit_type",
         "Consultation"
-      ]
+      ],
+      "learner_question": "Do you want only visits recorded as Consultation, leaving out all other visit type values?",
+      "manager_reply": "Yes. Show the recorded details only for Consultation visits."
     },
     {
       "id": "HEA_BEG_009",
@@ -2148,7 +2284,9 @@
       "relevantColumns": [
         "patients",
         "patient_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 patients starting from the smallest patient number?",
+      "manager_reply": "Yes. Arrange patients from the smallest patient number first and show up to 5 records."
     },
     {
       "id": "HEA_BEG_010",
@@ -2172,7 +2310,9 @@
         "bill_amount",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are appointments with a bill amount of exactly ₹25,000 or ₹75,000 included in this range?",
+      "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any bill amount in between."
     },
     {
       "id": "HEA_BEG_011",
@@ -2195,7 +2335,9 @@
         "patients",
         "patient_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only patient names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only patients whose recorded name starts with uppercase A."
     },
     {
       "id": "HEA_BEG_012",
@@ -2219,7 +2361,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending appointments be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any appointment marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "HEA_BEG_013",
@@ -2242,7 +2386,9 @@
         "patients",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only patients in the Premium patient group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for patients marked as Premium."
     },
     {
       "id": "HEA_BEG_014",
@@ -2267,7 +2413,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should visits dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all visits recorded between them."
     },
     {
       "id": "HEA_BEG_015",
@@ -2288,7 +2436,9 @@
       "relevantColumns": [
         "appointments",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "Should the average bill amount include appointments across all statuses?",
+      "manager_reply": "Yes. Include all recorded appointments regardless of status in the average bill amount."
     },
     {
       "id": "HEA_BEG_016",
@@ -2309,7 +2459,9 @@
       "relevantColumns": [
         "visits",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all visit statuses to find the single largest visit amount?",
+      "manager_reply": "Yes. Check all recorded visits and return the single highest visit amount."
     },
     {
       "id": "HEA_BEG_017",
@@ -2330,7 +2482,9 @@
       "relevantColumns": [
         "patients",
         "city"
-      ]
+      ],
+      "learner_question": "If several patients live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "HEA_BEG_018",
@@ -2353,7 +2507,9 @@
         "visits",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed visits be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for visits whose status is Completed."
     },
     {
       "id": "HEA_BEG_019",
@@ -2381,7 +2537,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What bill amount thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000, ordered by appointment number."
     },
     {
       "id": "HEA_BEG_020",
@@ -2406,7 +2564,9 @@
         "bill_amount",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does an appointment marked Active with a bill amount of exactly ₹50,000 qualify?",
+      "manager_reply": "Yes. Include Active appointments whose bill amount is ₹50,000 or higher."
     },
     {
       "id": "HEA_INT_001",
@@ -2433,7 +2593,9 @@
         "status",
         "bill_amount",
         "patient_id"
-      ]
+      ],
+      "learner_question": "Which appointment fields should appear alongside each patient name?",
+      "manager_reply": "Show the patient name with each appointment number, status, and bill amount, ordered by patient and appointment number."
     },
     {
       "id": "HEA_INT_002",
@@ -2459,7 +2621,9 @@
         "doctor_name",
         "appointment_id",
         "doctor_id"
-      ]
+      ],
+      "learner_question": "If an item in doctors has no linked appointments, should it still appear in the count?",
+      "manager_reply": "Yes. Include every doctors entry and show zero when it has no linked appointments."
     },
     {
       "id": "HEA_INT_003",
@@ -2484,7 +2648,9 @@
         "visits",
         "appointment_id",
         "visit_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed visit still count as activity that disqualifies the appointment?",
+      "manager_reply": "Yes. Keep only appointments that have no recorded visits in any status."
     },
     {
       "id": "HEA_INT_004",
@@ -2509,7 +2675,9 @@
         "visits",
         "appointment_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for an appointment that has no recorded visits?",
+      "manager_reply": "Include every appointment and show zero as its total when no visits exist."
     },
     {
       "id": "HEA_INT_005",
@@ -2535,7 +2703,9 @@
         "appointment_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If an appointment’s combined visit amount is exactly ₹20,000, should it be included?",
+      "manager_reply": "No. Show only appointments whose total visit amount is strictly above ₹20,000, largest total first."
     },
     {
       "id": "HEA_INT_006",
@@ -2561,7 +2731,9 @@
         "segment",
         "appointment_id",
         "patient_id"
-      ]
+      ],
+      "learner_question": "Should patient segments with no linked appointments still show a count of zero?",
+      "manager_reply": "Yes. Include every represented patient segment and show zero if it has no linked appointments."
     },
     {
       "id": "HEA_INT_007",
@@ -2587,7 +2759,9 @@
         "category",
         "bill_amount",
         "doctor_id"
-      ]
+      ],
+      "learner_question": "Should doctors categories that have no linked appointments be left out?",
+      "manager_reply": "Yes. Include only categories that have linked appointments when calculating the average bill amount."
     },
     {
       "id": "HEA_INT_008",
@@ -2617,7 +2791,9 @@
         "status",
         "patient_id",
         "doctor_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the appointment status or the doctors status?",
+      "manager_reply": "Show the appointment status alongside the patient name, appointment number, and doctors name."
     },
     {
       "id": "HEA_INT_009",
@@ -2643,7 +2819,9 @@
         "patient_id",
         "patient_name",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "If two patients have the same name, should their bill amount totals be kept separate?",
+      "manager_reply": "Yes. Keep each patient separate by their patient number, and omit patients without appointments."
     },
     {
       "id": "HEA_INT_010",
@@ -2665,7 +2843,9 @@
         "appointments",
         "appointment_id",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "Should appointments of all statuses be included when computing the overall average bill amount?",
+      "manager_reply": "Yes, use all appointments for the overall average and return only those strictly above it."
     },
     {
       "id": "HEA_INT_011",
@@ -2693,7 +2873,9 @@
         "amount",
         "status",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each visit be the parent appointment’s status?",
+      "manager_reply": "Yes. Display each visit’s details together with the status of its parent appointment."
     },
     {
       "id": "HEA_INT_012",
@@ -2720,7 +2902,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending visits or appointments with no visits be reflected in the two totals?",
+      "manager_reply": "Pending visits add to neither total, and appointments without matching visits should show zero."
     },
     {
       "id": "HEA_INT_013",
@@ -2742,7 +2926,9 @@
         "visits",
         "visit_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include visits of every type and status?",
+      "manager_reply": "Yes. Count all visits in each calendar month and list the months in date order."
     },
     {
       "id": "HEA_INT_014",
@@ -2767,7 +2953,9 @@
         "patient_id",
         "patient_name",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "If a patient only has a Closed or Pending appointment, should they still be excluded?",
+      "manager_reply": "Yes. Show only patients who have no linked appointments at all."
     },
     {
       "id": "HEA_INT_015",
@@ -2792,7 +2980,9 @@
         "doctor_id",
         "doctor_name",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending appointment count as using a doctor entry?",
+      "manager_reply": "Yes. Show only doctors entries that have zero linked appointments across all statuses."
     },
     {
       "id": "HEA_INT_016",
@@ -2817,7 +3007,9 @@
         "patient_id",
         "patient_name",
         "appointment_date"
-      ]
+      ],
+      "learner_question": "Should appointments of all statuses be considered when finding each patient’s earliest appointment date?",
+      "manager_reply": "Yes. Check all appointment statuses for each patient, and omit patients who have no appointments."
     },
     {
       "id": "HEA_INT_017",
@@ -2841,7 +3033,9 @@
         "visits",
         "appointment_id",
         "visit_date"
-      ]
+      ],
+      "learner_question": "Should appointments with no recorded visits still be listed?",
+      "manager_reply": "Yes. Include every appointment and leave its latest visit date empty when no visits exist."
     },
     {
       "id": "HEA_INT_018",
@@ -2870,7 +3064,9 @@
         "appointment_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a patient has multiple Completed visits, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying patient’s number and name only once."
     },
     {
       "id": "HEA_INT_019",
@@ -2898,7 +3094,9 @@
         "amount",
         "doctor_id",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded visits be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have visits, averaging across all visit statuses."
     },
     {
       "id": "HEA_INT_020",
@@ -2923,7 +3121,9 @@
         "segment",
         "status",
         "patient_id"
-      ]
+      ],
+      "learner_question": "Should combinations of patient segment and appointment status with zero appointments be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "HEA_EXP_001",
@@ -2952,7 +3152,9 @@
         "patient_name",
         "amount",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "If two patients tie on total visit amount, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied patients by smaller patient number."
     },
     {
       "id": "HEA_EXP_002",
@@ -2979,7 +3181,9 @@
         "visit_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If an appointment’s latest visit date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only appointments whose latest visit date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "HEA_EXP_003",
@@ -3003,7 +3207,9 @@
         "appointments",
         "patient_id",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "Should patients without any appointments be left out when calculating the average patient total?",
+      "manager_reply": "Yes. Average across patients who have appointments, and return those strictly above that average."
     },
     {
       "id": "HEA_EXP_004",
@@ -3030,7 +3236,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+      "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
     },
     {
       "id": "HEA_EXP_005",
@@ -3055,7 +3263,9 @@
         "visit_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If an appointment has no visits in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that appointment, leaving the first month’s prior total empty."
     },
     {
       "id": "HEA_EXP_006",
@@ -3080,7 +3290,9 @@
         "visit_id",
         "visit_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two visits for the same appointment share the same visit date, which one comes first in the running total?",
+      "manager_reply": "Order same-day visits by the smaller visit number first, and include the current visit in the running total."
     },
     {
       "id": "HEA_EXP_007",
@@ -3104,7 +3316,9 @@
         "appointment_id",
         "amount",
         "visit_id"
-      ]
+      ],
+      "learner_question": "What if an appointment has only one visit, or a tie for the second-largest visit amount?",
+      "manager_reply": "Return the single visit if only one exists, and break any amount ties by choosing the smaller visit number first."
     },
     {
       "id": "HEA_EXP_008",
@@ -3129,7 +3343,9 @@
         "appointment_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should appointments with zero visits be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each appointment’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "HEA_EXP_009",
@@ -3152,7 +3368,9 @@
         "patient_id",
         "appointment_id",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "When two appointments for the same patient have equal bill amount, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each patient, and order ties by appointment number."
     },
     {
       "id": "HEA_EXP_010",
@@ -3176,7 +3394,9 @@
         "visit_id",
         "visit_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first visit of an appointment?",
+      "manager_reply": "Leave the previous amount empty for each appointment’s first visit, ordering same-day activity by visit number."
     },
     {
       "id": "HEA_EXP_011",
@@ -3200,7 +3420,9 @@
         "visit_id",
         "visit_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two visits of an appointment, should the moving average use only the visits recorded so far?",
+      "manager_reply": "Yes. Average the current visit with up to two immediately preceding visits available for that appointment."
     },
     {
       "id": "HEA_EXP_012",
@@ -3227,7 +3449,9 @@
         "patient_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should patients with no appointments at all be excluded even though they have no non-Active appointments?",
+      "manager_reply": "Yes. A patient must have at least one appointment, and every one of their appointments must be Active."
     },
     {
       "id": "HEA_EXP_013",
@@ -3250,7 +3474,9 @@
         "bill_amount",
         "status",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "Should each appointment be compared only against the average bill amount of appointments with the same status?",
+      "manager_reply": "Yes. Compare each appointment to the average bill amount of its own status group, excluding exact ties."
     },
     {
       "id": "HEA_EXP_014",
@@ -3275,7 +3501,9 @@
         "visits",
         "appointment_id",
         "visit_date"
-      ]
+      ],
+      "learner_question": "If an appointment’s earliest and latest visit date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit appointments that have no visits."
     },
     {
       "id": "HEA_EXP_015",
@@ -3299,7 +3527,9 @@
         "appointment_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each visit’s percentage be measured against its parent appointment’s total rather than all appointments?",
+      "manager_reply": "Yes. Divide each visit amount by that appointment’s total visit amount and round to two decimal places."
     },
     {
       "id": "HEA_EXP_016",
@@ -3326,7 +3556,9 @@
         "patient_name",
         "segment",
         "bill_amount"
-      ]
+      ],
+      "learner_question": "If two patients in the same segment tie for the highest total bill amount, which one should I return?",
+      "manager_reply": "Select the tied patient with the smaller patient number, and exclude patients without appointments."
     },
     {
       "id": "HEA_EXP_017",
@@ -3349,7 +3581,9 @@
         "amount",
         "appointment_id",
         "visit_id"
-      ]
+      ],
+      "learner_question": "Should each visit be compared with the average amount for its own parent appointment?",
+      "manager_reply": "Yes. Include only visits whose amount is strictly above the average for their parent appointment."
     },
     {
       "id": "HEA_EXP_018",
@@ -3375,7 +3609,9 @@
         "patient_id",
         "patient_name",
         "appointment_id"
-      ]
+      ],
+      "learner_question": "Should patients with zero appointments be included when calculating the overall average appointment count?",
+      "manager_reply": "Yes. Include zero-count patients in the average calculation, then list patients strictly above that average."
     },
     {
       "id": "HEA_EXP_019",
@@ -3403,7 +3639,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every appointment display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every appointment, using zero whenever no matching visits exist."
     },
     {
       "id": "HEA_EXP_020",
@@ -3430,7 +3668,9 @@
         "visit_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If an appointment has multiple visits on its latest visit date, which one should be selected?",
+      "manager_reply": "Pick the visit with the largest visit number on that latest date, and omit appointments without visits."
     },
     {
       "id": "INS_BEG_001",
@@ -3454,7 +3694,9 @@
         "policies",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active policy’s full details, or just the number of Active policies?",
+      "manager_reply": "The full recorded details of each Active policy, please."
     },
     {
       "id": "INS_BEG_002",
@@ -3477,7 +3719,9 @@
         "policies",
         "premium_amount",
         "50000"
-      ]
+      ],
+      "learner_question": "If a policy has a premium amount of exactly ₹50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only policies with a premium amount above ₹50,000."
     },
     {
       "id": "INS_BEG_003",
@@ -3500,7 +3744,9 @@
         "customers",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only customers whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for customers located in Chennai."
     },
     {
       "id": "INS_BEG_004",
@@ -3520,7 +3766,9 @@
       ],
       "relevantColumns": [
         "policies"
-      ]
+      ],
+      "learner_question": "Should the total count include policies in every status, or only active ones?",
+      "manager_reply": "Count every recorded policy once regardless of status, and show one single total."
     },
     {
       "id": "INS_BEG_005",
@@ -3542,7 +3790,9 @@
       "relevantColumns": [
         "policies",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "Should all policies be listed from the highest premium amount down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all policies with the highest premium amount first."
     },
     {
       "id": "INS_BEG_006",
@@ -3564,7 +3814,9 @@
       "relevantColumns": [
         "insurance_products",
         "category"
-      ]
+      ],
+      "learner_question": "If several insurance products belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several insurance products belong to it."
     },
     {
       "id": "INS_BEG_007",
@@ -3588,7 +3840,9 @@
         "start_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should policies with a start date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later start date."
     },
     {
       "id": "INS_BEG_008",
@@ -3611,7 +3865,9 @@
         "claims",
         "claim_type",
         "Medical"
-      ]
+      ],
+      "learner_question": "Do you want only claims recorded as Medical, leaving out all other claim type values?",
+      "manager_reply": "Yes. Show the recorded details only for Medical claims."
     },
     {
       "id": "INS_BEG_009",
@@ -3633,7 +3889,9 @@
       "relevantColumns": [
         "customers",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 customers starting from the smallest customer number?",
+      "manager_reply": "Yes. Arrange customers from the smallest customer number first and show up to 5 records."
     },
     {
       "id": "INS_BEG_010",
@@ -3657,7 +3915,9 @@
         "premium_amount",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are policies with a premium amount of exactly ₹25,000 or ₹75,000 included in this range?",
+      "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any premium amount in between."
     },
     {
       "id": "INS_BEG_011",
@@ -3680,7 +3940,9 @@
         "customers",
         "customer_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only customer names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only customers whose recorded name starts with uppercase A."
     },
     {
       "id": "INS_BEG_012",
@@ -3704,7 +3966,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending policies be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any policy marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "INS_BEG_013",
@@ -3727,7 +3991,9 @@
         "customers",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only customers in the Premium customer group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for customers marked as Premium."
     },
     {
       "id": "INS_BEG_014",
@@ -3752,7 +4018,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should claims dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all claims recorded between them."
     },
     {
       "id": "INS_BEG_015",
@@ -3773,7 +4041,9 @@
       "relevantColumns": [
         "policies",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "Should the average premium amount include policies across all statuses?",
+      "manager_reply": "Yes. Include all recorded policies regardless of status in the average premium amount."
     },
     {
       "id": "INS_BEG_016",
@@ -3794,7 +4064,9 @@
       "relevantColumns": [
         "claims",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all claim statuses to find the single largest claim amount?",
+      "manager_reply": "Yes. Check all recorded claims and return the single highest claim amount."
     },
     {
       "id": "INS_BEG_017",
@@ -3815,7 +4087,9 @@
       "relevantColumns": [
         "customers",
         "city"
-      ]
+      ],
+      "learner_question": "If several customers live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "INS_BEG_018",
@@ -3838,7 +4112,9 @@
         "claims",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed claims be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for claims whose status is Completed."
     },
     {
       "id": "INS_BEG_019",
@@ -3866,7 +4142,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What premium amount thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000, ordered by policy number."
     },
     {
       "id": "INS_BEG_020",
@@ -3891,7 +4169,9 @@
         "premium_amount",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does a policy marked Active with a premium amount of exactly ₹50,000 qualify?",
+      "manager_reply": "Yes. Include Active policies whose premium amount is ₹50,000 or higher."
     },
     {
       "id": "INS_INT_001",
@@ -3918,7 +4198,9 @@
         "status",
         "premium_amount",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Which policy fields should appear alongside each customer name?",
+      "manager_reply": "Show the customer name with each policy number, status, and premium amount, ordered by customer and policy number."
     },
     {
       "id": "INS_INT_002",
@@ -3944,7 +4226,9 @@
         "product_name",
         "policy_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "If an item in insurance products has no linked policies, should it still appear in the count?",
+      "manager_reply": "Yes. Include every insurance products entry and show zero when it has no linked policies."
     },
     {
       "id": "INS_INT_003",
@@ -3969,7 +4253,9 @@
         "claims",
         "policy_id",
         "claim_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed claim still count as activity that disqualifies the policy?",
+      "manager_reply": "Yes. Keep only policies that have no recorded claims in any status."
     },
     {
       "id": "INS_INT_004",
@@ -3994,7 +4280,9 @@
         "claims",
         "policy_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for a policy that has no recorded claims?",
+      "manager_reply": "Include every policy and show zero as its total when no claims exist."
     },
     {
       "id": "INS_INT_005",
@@ -4020,7 +4308,9 @@
         "policy_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If a policy’s combined claim amount is exactly ₹20,000, should it be included?",
+      "manager_reply": "No. Show only policies whose total claim amount is strictly above ₹20,000, largest total first."
     },
     {
       "id": "INS_INT_006",
@@ -4046,7 +4336,9 @@
         "segment",
         "policy_id",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should customer segments with no linked policies still show a count of zero?",
+      "manager_reply": "Yes. Include every represented customer segment and show zero if it has no linked policies."
     },
     {
       "id": "INS_INT_007",
@@ -4072,7 +4364,9 @@
         "category",
         "premium_amount",
         "product_id"
-      ]
+      ],
+      "learner_question": "Should insurance products categories that have no linked policies be left out?",
+      "manager_reply": "Yes. Include only categories that have linked policies when calculating the average premium amount."
     },
     {
       "id": "INS_INT_008",
@@ -4102,7 +4396,9 @@
         "status",
         "customer_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the policy status or the insurance products status?",
+      "manager_reply": "Show the policy status alongside the customer name, policy number, and insurance products name."
     },
     {
       "id": "INS_INT_009",
@@ -4128,7 +4424,9 @@
         "customer_id",
         "customer_name",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "If two customers have the same name, should their premium amount totals be kept separate?",
+      "manager_reply": "Yes. Keep each customer separate by their customer number, and omit customers without policies."
     },
     {
       "id": "INS_INT_010",
@@ -4150,7 +4448,9 @@
         "policies",
         "policy_id",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "Should policies of all statuses be included when computing the overall average premium amount?",
+      "manager_reply": "Yes, use all policies for the overall average and return only those strictly above it."
     },
     {
       "id": "INS_INT_011",
@@ -4178,7 +4478,9 @@
         "amount",
         "status",
         "policy_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each claim be the parent policy’s status?",
+      "manager_reply": "Yes. Display each claim’s details together with the status of its parent policy."
     },
     {
       "id": "INS_INT_012",
@@ -4205,7 +4507,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending claims or policies with no claims be reflected in the two totals?",
+      "manager_reply": "Pending claims add to neither total, and policies without matching claims should show zero."
     },
     {
       "id": "INS_INT_013",
@@ -4227,7 +4531,9 @@
         "claims",
         "claim_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include claims of every type and status?",
+      "manager_reply": "Yes. Count all claims in each calendar month and list the months in date order."
     },
     {
       "id": "INS_INT_014",
@@ -4252,7 +4558,9 @@
         "customer_id",
         "customer_name",
         "policy_id"
-      ]
+      ],
+      "learner_question": "If a customer only has a Closed or Pending policy, should they still be excluded?",
+      "manager_reply": "Yes. Show only customers who have no linked policies at all."
     },
     {
       "id": "INS_INT_015",
@@ -4277,7 +4585,9 @@
         "product_id",
         "product_name",
         "policy_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending policy count as using an insurance product entry?",
+      "manager_reply": "Yes. Show only insurance products entries that have zero linked policies across all statuses."
     },
     {
       "id": "INS_INT_016",
@@ -4302,7 +4612,9 @@
         "customer_id",
         "customer_name",
         "start_date"
-      ]
+      ],
+      "learner_question": "Should policies of all statuses be considered when finding each customer’s earliest start date?",
+      "manager_reply": "Yes. Check all policy statuses for each customer, and omit customers who have no policies."
     },
     {
       "id": "INS_INT_017",
@@ -4326,7 +4638,9 @@
         "claims",
         "policy_id",
         "claim_date"
-      ]
+      ],
+      "learner_question": "Should policies with no recorded claims still be listed?",
+      "manager_reply": "Yes. Include every policy and leave its latest claim date empty when no claims exist."
     },
     {
       "id": "INS_INT_018",
@@ -4355,7 +4669,9 @@
         "policy_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a customer has multiple Completed claims, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying customer’s number and name only once."
     },
     {
       "id": "INS_INT_019",
@@ -4383,7 +4699,9 @@
         "amount",
         "product_id",
         "policy_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded claims be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have claims, averaging across all claim statuses."
     },
     {
       "id": "INS_INT_020",
@@ -4408,7 +4726,9 @@
         "segment",
         "status",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should combinations of customer segment and policy status with zero policies be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "INS_EXP_001",
@@ -4437,7 +4757,9 @@
         "customer_name",
         "amount",
         "policy_id"
-      ]
+      ],
+      "learner_question": "If two customers tie on total claim amount, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied customers by smaller customer number."
     },
     {
       "id": "INS_EXP_002",
@@ -4464,7 +4786,9 @@
         "claim_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If a policy’s latest claim date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only policies whose latest claim date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "INS_EXP_003",
@@ -4488,7 +4812,9 @@
         "policies",
         "customer_id",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "Should customers without any policies be left out when calculating the average customer total?",
+      "manager_reply": "Yes. Average across customers who have policies, and return those strictly above that average."
     },
     {
       "id": "INS_EXP_004",
@@ -4515,7 +4841,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+      "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
     },
     {
       "id": "INS_EXP_005",
@@ -4540,7 +4868,9 @@
         "claim_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If a policy has no claims in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that policy, leaving the first month’s prior total empty."
     },
     {
       "id": "INS_EXP_006",
@@ -4565,7 +4895,9 @@
         "claim_id",
         "claim_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two claims for the same policy share the same claim date, which one comes first in the running total?",
+      "manager_reply": "Order same-day claims by the smaller claim number first, and include the current claim in the running total."
     },
     {
       "id": "INS_EXP_007",
@@ -4589,7 +4921,9 @@
         "policy_id",
         "amount",
         "claim_id"
-      ]
+      ],
+      "learner_question": "What if a policy has only one claim, or a tie for the second-largest claim amount?",
+      "manager_reply": "Return the single claim if only one exists, and break any amount ties by choosing the smaller claim number first."
     },
     {
       "id": "INS_EXP_008",
@@ -4614,7 +4948,9 @@
         "policy_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should policies with zero claims be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each policy’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "INS_EXP_009",
@@ -4637,7 +4973,9 @@
         "customer_id",
         "policy_id",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "When two policies for the same customer have equal premium amount, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each customer, and order ties by policy number."
     },
     {
       "id": "INS_EXP_010",
@@ -4661,7 +4999,9 @@
         "claim_id",
         "claim_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first claim of a policy?",
+      "manager_reply": "Leave the previous amount empty for each policy’s first claim, ordering same-day activity by claim number."
     },
     {
       "id": "INS_EXP_011",
@@ -4685,7 +5025,9 @@
         "claim_id",
         "claim_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two claims of a policy, should the moving average use only the claims recorded so far?",
+      "manager_reply": "Yes. Average the current claim with up to two immediately preceding claims available for that policy."
     },
     {
       "id": "INS_EXP_012",
@@ -4712,7 +5054,9 @@
         "customer_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should customers with no policies at all be excluded even though they have no non-Active policies?",
+      "manager_reply": "Yes. A customer must have at least one policy, and every one of their policies must be Active."
     },
     {
       "id": "INS_EXP_013",
@@ -4735,7 +5079,9 @@
         "premium_amount",
         "status",
         "policy_id"
-      ]
+      ],
+      "learner_question": "Should each policy be compared only against the average premium amount of policies with the same status?",
+      "manager_reply": "Yes. Compare each policy to the average premium amount of its own status group, excluding exact ties."
     },
     {
       "id": "INS_EXP_014",
@@ -4760,7 +5106,9 @@
         "claims",
         "policy_id",
         "claim_date"
-      ]
+      ],
+      "learner_question": "If a policy’s earliest and latest claim date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit policies that have no claims."
     },
     {
       "id": "INS_EXP_015",
@@ -4784,7 +5132,9 @@
         "policy_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each claim’s percentage be measured against its parent policy’s total rather than all policies?",
+      "manager_reply": "Yes. Divide each claim amount by that policy’s total claim amount and round to two decimal places."
     },
     {
       "id": "INS_EXP_016",
@@ -4811,7 +5161,9 @@
         "customer_name",
         "segment",
         "premium_amount"
-      ]
+      ],
+      "learner_question": "If two customers in the same segment tie for the highest total premium amount, which one should I return?",
+      "manager_reply": "Select the tied customer with the smaller customer number, and exclude customers without policies."
     },
     {
       "id": "INS_EXP_017",
@@ -4834,7 +5186,9 @@
         "amount",
         "policy_id",
         "claim_id"
-      ]
+      ],
+      "learner_question": "Should each claim be compared with the average amount for its own parent policy?",
+      "manager_reply": "Yes. Include only claims whose amount is strictly above the average for their parent policy."
     },
     {
       "id": "INS_EXP_018",
@@ -4860,7 +5214,9 @@
         "customer_id",
         "customer_name",
         "policy_id"
-      ]
+      ],
+      "learner_question": "Should customers with zero policies be included when calculating the overall average policy count?",
+      "manager_reply": "Yes. Include zero-count customers in the average calculation, then list customers strictly above that average."
     },
     {
       "id": "INS_EXP_019",
@@ -4888,7 +5244,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every policy display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every policy, using zero whenever no matching claims exist."
     },
     {
       "id": "INS_EXP_020",
@@ -4915,7 +5273,9 @@
         "claim_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If a policy has multiple claims on its latest claim date, which one should be selected?",
+      "manager_reply": "Pick the claim with the largest claim number on that latest date, and omit policies without claims."
     },
     {
       "id": "CAP_BEG_001",
@@ -4939,7 +5299,9 @@
         "holdings",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active holding’s full details, or just the number of Active holdings?",
+      "manager_reply": "The full recorded details of each Active holding, please."
     },
     {
       "id": "CAP_BEG_002",
@@ -4962,7 +5324,9 @@
         "holdings",
         "market_value",
         "50000"
-      ]
+      ],
+      "learner_question": "If a holding has a market value of exactly ₹50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only holdings with a market value above ₹50,000."
     },
     {
       "id": "CAP_BEG_003",
@@ -4985,7 +5349,9 @@
         "investors",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only investors whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for investors located in Chennai."
     },
     {
       "id": "CAP_BEG_004",
@@ -5005,7 +5371,9 @@
       ],
       "relevantColumns": [
         "holdings"
-      ]
+      ],
+      "learner_question": "Should the total count include holdings in every status, or only active ones?",
+      "manager_reply": "Count every recorded holding once regardless of status, and show one single total."
     },
     {
       "id": "CAP_BEG_005",
@@ -5027,7 +5395,9 @@
       "relevantColumns": [
         "holdings",
         "market_value"
-      ]
+      ],
+      "learner_question": "Should all holdings be listed from the highest market value down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all holdings with the highest market value first."
     },
     {
       "id": "CAP_BEG_006",
@@ -5049,7 +5419,9 @@
       "relevantColumns": [
         "securities",
         "category"
-      ]
+      ],
+      "learner_question": "If several securities belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several securities belong to it."
     },
     {
       "id": "CAP_BEG_007",
@@ -5073,7 +5445,9 @@
         "acquired_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should holdings with an acquired date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later acquired date."
     },
     {
       "id": "CAP_BEG_008",
@@ -5096,7 +5470,9 @@
         "trades",
         "trade_type",
         "Buy"
-      ]
+      ],
+      "learner_question": "Do you want only trades recorded as Buy, leaving out all other trade type values?",
+      "manager_reply": "Yes. Show the recorded details only for Buy trades."
     },
     {
       "id": "CAP_BEG_009",
@@ -5118,7 +5494,9 @@
       "relevantColumns": [
         "investors",
         "investor_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 investors starting from the smallest investor number?",
+      "manager_reply": "Yes. Arrange investors from the smallest investor number first and show up to 5 records."
     },
     {
       "id": "CAP_BEG_010",
@@ -5142,7 +5520,9 @@
         "market_value",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are holdings with a market value of exactly ₹25,000 or ₹75,000 included in this range?",
+      "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any market value in between."
     },
     {
       "id": "CAP_BEG_011",
@@ -5165,7 +5545,9 @@
         "investors",
         "investor_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only investor names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only investors whose recorded name starts with uppercase A."
     },
     {
       "id": "CAP_BEG_012",
@@ -5189,7 +5571,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending holdings be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any holding marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "CAP_BEG_013",
@@ -5212,7 +5596,9 @@
         "investors",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only investors in the Premium investor group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for investors marked as Premium."
     },
     {
       "id": "CAP_BEG_014",
@@ -5237,7 +5623,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should trades dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all trades recorded between them."
     },
     {
       "id": "CAP_BEG_015",
@@ -5258,7 +5646,9 @@
       "relevantColumns": [
         "holdings",
         "market_value"
-      ]
+      ],
+      "learner_question": "Should the average market value include holdings across all statuses?",
+      "manager_reply": "Yes. Include all recorded holdings regardless of status in the average market value."
     },
     {
       "id": "CAP_BEG_016",
@@ -5279,7 +5669,9 @@
       "relevantColumns": [
         "trades",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all trade statuses to find the single largest trade amount?",
+      "manager_reply": "Yes. Check all recorded trades and return the single highest trade amount."
     },
     {
       "id": "CAP_BEG_017",
@@ -5300,7 +5692,9 @@
       "relevantColumns": [
         "investors",
         "city"
-      ]
+      ],
+      "learner_question": "If several investors live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "CAP_BEG_018",
@@ -5323,7 +5717,9 @@
         "trades",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed trades be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for trades whose status is Completed."
     },
     {
       "id": "CAP_BEG_019",
@@ -5351,7 +5747,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What market value thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000, ordered by holding number."
     },
     {
       "id": "CAP_BEG_020",
@@ -5376,7 +5774,9 @@
         "market_value",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does a holding marked Active with a market value of exactly ₹50,000 qualify?",
+      "manager_reply": "Yes. Include Active holdings whose market value is ₹50,000 or higher."
     },
     {
       "id": "CAP_INT_001",
@@ -5403,7 +5803,9 @@
         "status",
         "market_value",
         "investor_id"
-      ]
+      ],
+      "learner_question": "Which holding fields should appear alongside each investor name?",
+      "manager_reply": "Show the investor name with each holding number, status, and market value, ordered by investor and holding number."
     },
     {
       "id": "CAP_INT_002",
@@ -5429,7 +5831,9 @@
         "security_name",
         "holding_id",
         "security_id"
-      ]
+      ],
+      "learner_question": "If an item in securities has no linked holdings, should it still appear in the count?",
+      "manager_reply": "Yes. Include every securities entry and show zero when it has no linked holdings."
     },
     {
       "id": "CAP_INT_003",
@@ -5454,7 +5858,9 @@
         "trades",
         "holding_id",
         "trade_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed trade still count as activity that disqualifies the holding?",
+      "manager_reply": "Yes. Keep only holdings that have no recorded trades in any status."
     },
     {
       "id": "CAP_INT_004",
@@ -5479,7 +5885,9 @@
         "trades",
         "holding_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for a holding that has no recorded trades?",
+      "manager_reply": "Include every holding and show zero as its total when no trades exist."
     },
     {
       "id": "CAP_INT_005",
@@ -5505,7 +5913,9 @@
         "holding_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If a holding’s combined trade amount is exactly ₹20,000, should it be included?",
+      "manager_reply": "No. Show only holdings whose total trade amount is strictly above ₹20,000, largest total first."
     },
     {
       "id": "CAP_INT_006",
@@ -5531,7 +5941,9 @@
         "segment",
         "holding_id",
         "investor_id"
-      ]
+      ],
+      "learner_question": "Should investor segments with no linked holdings still show a count of zero?",
+      "manager_reply": "Yes. Include every represented investor segment and show zero if it has no linked holdings."
     },
     {
       "id": "CAP_INT_007",
@@ -5557,7 +5969,9 @@
         "category",
         "market_value",
         "security_id"
-      ]
+      ],
+      "learner_question": "Should securities categories that have no linked holdings be left out?",
+      "manager_reply": "Yes. Include only categories that have linked holdings when calculating the average market value."
     },
     {
       "id": "CAP_INT_008",
@@ -5587,7 +6001,9 @@
         "status",
         "investor_id",
         "security_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the holding status or the securities status?",
+      "manager_reply": "Show the holding status alongside the investor name, holding number, and securities name."
     },
     {
       "id": "CAP_INT_009",
@@ -5613,7 +6029,9 @@
         "investor_id",
         "investor_name",
         "market_value"
-      ]
+      ],
+      "learner_question": "If two investors have the same name, should their market value totals be kept separate?",
+      "manager_reply": "Yes. Keep each investor separate by their investor number, and omit investors without holdings."
     },
     {
       "id": "CAP_INT_010",
@@ -5635,7 +6053,9 @@
         "holdings",
         "holding_id",
         "market_value"
-      ]
+      ],
+      "learner_question": "Should holdings of all statuses be included when computing the overall average market value?",
+      "manager_reply": "Yes, use all holdings for the overall average and return only those strictly above it."
     },
     {
       "id": "CAP_INT_011",
@@ -5663,7 +6083,9 @@
         "amount",
         "status",
         "holding_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each trade be the parent holding’s status?",
+      "manager_reply": "Yes. Display each trade’s details together with the status of its parent holding."
     },
     {
       "id": "CAP_INT_012",
@@ -5690,7 +6112,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending trades or holdings with no trades be reflected in the two totals?",
+      "manager_reply": "Pending trades add to neither total, and holdings without matching trades should show zero."
     },
     {
       "id": "CAP_INT_013",
@@ -5712,7 +6136,9 @@
         "trades",
         "trade_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include trades of every type and status?",
+      "manager_reply": "Yes. Count all trades in each calendar month and list the months in date order."
     },
     {
       "id": "CAP_INT_014",
@@ -5737,7 +6163,9 @@
         "investor_id",
         "investor_name",
         "holding_id"
-      ]
+      ],
+      "learner_question": "If a investor only has a Closed or Pending holding, should they still be excluded?",
+      "manager_reply": "Yes. Show only investors who have no linked holdings at all."
     },
     {
       "id": "CAP_INT_015",
@@ -5762,7 +6190,9 @@
         "security_id",
         "security_name",
         "holding_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending holding count as using a security entry?",
+      "manager_reply": "Yes. Show only securities entries that have zero linked holdings across all statuses."
     },
     {
       "id": "CAP_INT_016",
@@ -5787,7 +6217,9 @@
         "investor_id",
         "investor_name",
         "acquired_date"
-      ]
+      ],
+      "learner_question": "Should holdings of all statuses be considered when finding each investor’s earliest acquired date?",
+      "manager_reply": "Yes. Check all holding statuses for each investor, and omit investors who have no holdings."
     },
     {
       "id": "CAP_INT_017",
@@ -5811,7 +6243,9 @@
         "trades",
         "holding_id",
         "trade_date"
-      ]
+      ],
+      "learner_question": "Should holdings with no recorded trades still be listed?",
+      "manager_reply": "Yes. Include every holding and leave its latest trade date empty when no trades exist."
     },
     {
       "id": "CAP_INT_018",
@@ -5840,7 +6274,9 @@
         "holding_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a investor has multiple Completed trades, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying investor’s number and name only once."
     },
     {
       "id": "CAP_INT_019",
@@ -5868,7 +6304,9 @@
         "amount",
         "security_id",
         "holding_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded trades be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have trades, averaging across all trade statuses."
     },
     {
       "id": "CAP_INT_020",
@@ -5893,7 +6331,9 @@
         "segment",
         "status",
         "investor_id"
-      ]
+      ],
+      "learner_question": "Should combinations of investor segment and holding status with zero holdings be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "CAP_EXP_001",
@@ -5922,7 +6362,9 @@
         "investor_name",
         "amount",
         "holding_id"
-      ]
+      ],
+      "learner_question": "If two investors tie on total trade amount, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied investors by smaller investor number."
     },
     {
       "id": "CAP_EXP_002",
@@ -5949,7 +6391,9 @@
         "trade_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If a holding’s latest trade date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only holdings whose latest trade date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "CAP_EXP_003",
@@ -5973,7 +6417,9 @@
         "holdings",
         "investor_id",
         "market_value"
-      ]
+      ],
+      "learner_question": "Should investors without any holdings be left out when calculating the average investor total?",
+      "manager_reply": "Yes. Average across investors who have holdings, and return those strictly above that average."
     },
     {
       "id": "CAP_EXP_004",
@@ -6000,7 +6446,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+      "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
     },
     {
       "id": "CAP_EXP_005",
@@ -6025,7 +6473,9 @@
         "trade_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If a holding has no trades in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that holding, leaving the first month’s prior total empty."
     },
     {
       "id": "CAP_EXP_006",
@@ -6050,7 +6500,9 @@
         "trade_id",
         "trade_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two trades for the same holding share the same trade date, which one comes first in the running total?",
+      "manager_reply": "Order same-day trades by the smaller trade number first, and include the current trade in the running total."
     },
     {
       "id": "CAP_EXP_007",
@@ -6074,7 +6526,9 @@
         "holding_id",
         "amount",
         "trade_id"
-      ]
+      ],
+      "learner_question": "What if a holding has only one trade, or a tie for the second-largest trade amount?",
+      "manager_reply": "Return the single trade if only one exists, and break any amount ties by choosing the smaller trade number first."
     },
     {
       "id": "CAP_EXP_008",
@@ -6099,7 +6553,9 @@
         "holding_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should holdings with zero trades be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each holding’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "CAP_EXP_009",
@@ -6122,7 +6578,9 @@
         "investor_id",
         "holding_id",
         "market_value"
-      ]
+      ],
+      "learner_question": "When two holdings for the same investor have equal market value, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each investor, and order ties by holding number."
     },
     {
       "id": "CAP_EXP_010",
@@ -6146,7 +6604,9 @@
         "trade_id",
         "trade_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first trade of a holding?",
+      "manager_reply": "Leave the previous amount empty for each holding’s first trade, ordering same-day activity by trade number."
     },
     {
       "id": "CAP_EXP_011",
@@ -6170,7 +6630,9 @@
         "trade_id",
         "trade_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two trades of a holding, should the moving average use only the trades recorded so far?",
+      "manager_reply": "Yes. Average the current trade with up to two immediately preceding trades available for that holding."
     },
     {
       "id": "CAP_EXP_012",
@@ -6197,7 +6659,9 @@
         "investor_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should investors with no holdings at all be excluded even though they have no non-Active holdings?",
+      "manager_reply": "Yes. A investor must have at least one holding, and every one of their holdings must be Active."
     },
     {
       "id": "CAP_EXP_013",
@@ -6220,7 +6684,9 @@
         "market_value",
         "status",
         "holding_id"
-      ]
+      ],
+      "learner_question": "Should each holding be compared only against the average market value of holdings with the same status?",
+      "manager_reply": "Yes. Compare each holding to the average market value of its own status group, excluding exact ties."
     },
     {
       "id": "CAP_EXP_014",
@@ -6245,7 +6711,9 @@
         "trades",
         "holding_id",
         "trade_date"
-      ]
+      ],
+      "learner_question": "If a holding’s earliest and latest trade date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit holdings that have no trades."
     },
     {
       "id": "CAP_EXP_015",
@@ -6269,7 +6737,9 @@
         "holding_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each trade’s percentage be measured against its parent holding’s total rather than all holdings?",
+      "manager_reply": "Yes. Divide each trade amount by that holding’s total trade amount and round to two decimal places."
     },
     {
       "id": "CAP_EXP_016",
@@ -6296,7 +6766,9 @@
         "investor_name",
         "segment",
         "market_value"
-      ]
+      ],
+      "learner_question": "If two investors in the same segment tie for the highest total market value, which one should I return?",
+      "manager_reply": "Select the tied investor with the smaller investor number, and exclude investors without holdings."
     },
     {
       "id": "CAP_EXP_017",
@@ -6319,7 +6791,9 @@
         "amount",
         "holding_id",
         "trade_id"
-      ]
+      ],
+      "learner_question": "Should each trade be compared with the average amount for its own parent holding?",
+      "manager_reply": "Yes. Include only trades whose amount is strictly above the average for their parent holding."
     },
     {
       "id": "CAP_EXP_018",
@@ -6345,7 +6819,9 @@
         "investor_id",
         "investor_name",
         "holding_id"
-      ]
+      ],
+      "learner_question": "Should investors with zero holdings be included when calculating the overall average holding count?",
+      "manager_reply": "Yes. Include zero-count investors in the average calculation, then list investors strictly above that average."
     },
     {
       "id": "CAP_EXP_019",
@@ -6373,7 +6849,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every holding display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every holding, using zero whenever no matching trades exist."
     },
     {
       "id": "CAP_EXP_020",
@@ -6400,7 +6878,9 @@
         "trade_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If a holding has multiple trades on its latest trade date, which one should be selected?",
+      "manager_reply": "Pick the trade with the largest trade number on that latest date, and omit holdings without trades."
     },
     {
       "id": "SEM_BEG_001",
@@ -6424,7 +6904,9 @@
         "production_batches",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active production batch’s full details, or just the number of Active production batches?",
+      "manager_reply": "The full recorded details of each Active production batch, please."
     },
     {
       "id": "SEM_BEG_002",
@@ -6447,7 +6929,9 @@
         "production_batches",
         "batch_cost",
         "50000"
-      ]
+      ],
+      "learner_question": "If a production batch has a batch cost of exactly 50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only production batches with a batch cost above 50,000."
     },
     {
       "id": "SEM_BEG_003",
@@ -6470,7 +6954,9 @@
         "clients",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only clients whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for clients located in Chennai."
     },
     {
       "id": "SEM_BEG_004",
@@ -6490,7 +6976,9 @@
       ],
       "relevantColumns": [
         "production_batches"
-      ]
+      ],
+      "learner_question": "Should the total count include production batches in every status, or only active ones?",
+      "manager_reply": "Count every recorded production batch once regardless of status, and show one single total."
     },
     {
       "id": "SEM_BEG_005",
@@ -6512,7 +7000,9 @@
       "relevantColumns": [
         "production_batches",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "Should all production batches be listed from the highest batch cost down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all production batches with the highest batch cost first."
     },
     {
       "id": "SEM_BEG_006",
@@ -6534,7 +7024,9 @@
       "relevantColumns": [
         "chip_products",
         "category"
-      ]
+      ],
+      "learner_question": "If several chip products belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several chip products belong to it."
     },
     {
       "id": "SEM_BEG_007",
@@ -6558,7 +7050,9 @@
         "production_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should production batches with a production date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later production date."
     },
     {
       "id": "SEM_BEG_008",
@@ -6581,7 +7075,9 @@
         "test_results",
         "test_type",
         "Functional"
-      ]
+      ],
+      "learner_question": "Do you want only test results recorded as Functional, leaving out all other test type values?",
+      "manager_reply": "Yes. Show the recorded details only for Functional test results."
     },
     {
       "id": "SEM_BEG_009",
@@ -6603,7 +7099,9 @@
       "relevantColumns": [
         "clients",
         "client_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 clients starting from the smallest client number?",
+      "manager_reply": "Yes. Arrange clients from the smallest client number first and show up to 5 records."
     },
     {
       "id": "SEM_BEG_010",
@@ -6627,7 +7125,9 @@
         "batch_cost",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are production batches with a batch cost of exactly 25,000 or 75,000 included in this range?",
+      "manager_reply": "Yes. Include both 25,000 and 75,000 as well as any batch cost in between."
     },
     {
       "id": "SEM_BEG_011",
@@ -6650,7 +7150,9 @@
         "clients",
         "client_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only client names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only clients whose recorded name starts with uppercase A."
     },
     {
       "id": "SEM_BEG_012",
@@ -6674,7 +7176,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending production batches be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any production batch marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "SEM_BEG_013",
@@ -6697,7 +7201,9 @@
         "clients",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only clients in the Premium client group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for clients marked as Premium."
     },
     {
       "id": "SEM_BEG_014",
@@ -6722,7 +7228,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should test results dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all test results recorded between them."
     },
     {
       "id": "SEM_BEG_015",
@@ -6743,7 +7251,9 @@
       "relevantColumns": [
         "production_batches",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "Should the average batch cost include production batches across all statuses?",
+      "manager_reply": "Yes. Include all recorded production batches regardless of status in the average batch cost."
     },
     {
       "id": "SEM_BEG_016",
@@ -6764,7 +7274,9 @@
       "relevantColumns": [
         "test_results",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all test result statuses to find the single largest recorded test value?",
+      "manager_reply": "Yes. Check all recorded test results and return the single highest recorded test value."
     },
     {
       "id": "SEM_BEG_017",
@@ -6785,7 +7297,9 @@
       "relevantColumns": [
         "clients",
         "city"
-      ]
+      ],
+      "learner_question": "If several clients live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "SEM_BEG_018",
@@ -6808,7 +7322,9 @@
         "test_results",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed test results be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for test results whose status is Completed."
     },
     {
       "id": "SEM_BEG_019",
@@ -6836,7 +7352,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What batch cost thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for 100,000 or more, Medium from 50,000 up to below 100,000, and Low for below 50,000, ordered by production batch number."
     },
     {
       "id": "SEM_BEG_020",
@@ -6861,7 +7379,9 @@
         "batch_cost",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does a production batch marked Active with a batch cost of exactly 50,000 qualify?",
+      "manager_reply": "Yes. Include Active production batches whose batch cost is 50,000 or higher."
     },
     {
       "id": "SEM_INT_001",
@@ -6888,7 +7408,9 @@
         "status",
         "batch_cost",
         "client_id"
-      ]
+      ],
+      "learner_question": "Which production batch fields should appear alongside each client name?",
+      "manager_reply": "Show the client name with each production batch number, status, and batch cost, ordered by client and production batch number."
     },
     {
       "id": "SEM_INT_002",
@@ -6914,7 +7436,9 @@
         "product_name",
         "batch_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "If an item in chip products has no linked production batches, should it still appear in the count?",
+      "manager_reply": "Yes. Include every chip products entry and show zero when it has no linked production batches."
     },
     {
       "id": "SEM_INT_003",
@@ -6939,7 +7463,9 @@
         "test_results",
         "batch_id",
         "test_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed test result still count as activity that disqualifies the production batch?",
+      "manager_reply": "Yes. Keep only production batches that have no recorded test results in any status."
     },
     {
       "id": "SEM_INT_004",
@@ -6964,7 +7490,9 @@
         "test_results",
         "batch_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for a production batch that has no recorded test results?",
+      "manager_reply": "Include every production batch and show zero as its total when no test results exist."
     },
     {
       "id": "SEM_INT_005",
@@ -6990,7 +7518,9 @@
         "batch_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If a production batch’s combined recorded test value is exactly 20,000, should it be included?",
+      "manager_reply": "No. Show only production batches whose total recorded test value is strictly above 20,000, largest total first."
     },
     {
       "id": "SEM_INT_006",
@@ -7016,7 +7546,9 @@
         "segment",
         "batch_id",
         "client_id"
-      ]
+      ],
+      "learner_question": "Should client segments with no linked production batches still show a count of zero?",
+      "manager_reply": "Yes. Include every represented client segment and show zero if it has no linked production batches."
     },
     {
       "id": "SEM_INT_007",
@@ -7042,7 +7574,9 @@
         "category",
         "batch_cost",
         "product_id"
-      ]
+      ],
+      "learner_question": "Should chip products categories that have no linked production batches be left out?",
+      "manager_reply": "Yes. Include only categories that have linked production batches when calculating the average batch cost."
     },
     {
       "id": "SEM_INT_008",
@@ -7072,7 +7606,9 @@
         "status",
         "client_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the production batch status or the chip products status?",
+      "manager_reply": "Show the production batch status alongside the client name, production batch number, and chip products name."
     },
     {
       "id": "SEM_INT_009",
@@ -7098,7 +7634,9 @@
         "client_id",
         "client_name",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "If two clients have the same name, should their batch cost totals be kept separate?",
+      "manager_reply": "Yes. Keep each client separate by their client number, and omit clients without production batches."
     },
     {
       "id": "SEM_INT_010",
@@ -7120,7 +7658,9 @@
         "production_batches",
         "batch_id",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "Should production batches of all statuses be included when computing the overall average batch cost?",
+      "manager_reply": "Yes, use all production batches for the overall average and return only those strictly above it."
     },
     {
       "id": "SEM_INT_011",
@@ -7148,7 +7688,9 @@
         "amount",
         "status",
         "batch_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each test result be the parent production batch’s status?",
+      "manager_reply": "Yes. Display each test result’s details together with the status of its parent production batch."
     },
     {
       "id": "SEM_INT_012",
@@ -7175,7 +7717,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending test results or production batches with no test results be reflected in the two totals?",
+      "manager_reply": "Pending test results add to neither total, and production batches without matching test results should show zero."
     },
     {
       "id": "SEM_INT_013",
@@ -7197,7 +7741,9 @@
         "test_results",
         "test_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include test results of every type and status?",
+      "manager_reply": "Yes. Count all test results in each calendar month and list the months in date order."
     },
     {
       "id": "SEM_INT_014",
@@ -7222,7 +7768,9 @@
         "client_id",
         "client_name",
         "batch_id"
-      ]
+      ],
+      "learner_question": "If a client only has a Closed or Pending production batch, should they still be excluded?",
+      "manager_reply": "Yes. Show only clients who have no linked production batches at all."
     },
     {
       "id": "SEM_INT_015",
@@ -7247,7 +7795,9 @@
         "product_id",
         "product_name",
         "batch_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending production batch count as using a chip product entry?",
+      "manager_reply": "Yes. Show only chip products entries that have zero linked production batches across all statuses."
     },
     {
       "id": "SEM_INT_016",
@@ -7272,7 +7822,9 @@
         "client_id",
         "client_name",
         "production_date"
-      ]
+      ],
+      "learner_question": "Should production batches of all statuses be considered when finding each client’s earliest production date?",
+      "manager_reply": "Yes. Check all production batch statuses for each client, and omit clients who have no production batches."
     },
     {
       "id": "SEM_INT_017",
@@ -7296,7 +7848,9 @@
         "test_results",
         "batch_id",
         "test_date"
-      ]
+      ],
+      "learner_question": "Should production batches with no recorded test results still be listed?",
+      "manager_reply": "Yes. Include every production batch and leave its latest test date empty when no test results exist."
     },
     {
       "id": "SEM_INT_018",
@@ -7325,7 +7879,9 @@
         "batch_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a client has multiple Completed test results, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying client’s number and name only once."
     },
     {
       "id": "SEM_INT_019",
@@ -7353,7 +7909,9 @@
         "amount",
         "product_id",
         "batch_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded test results be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have test results, averaging across all test result statuses."
     },
     {
       "id": "SEM_INT_020",
@@ -7378,7 +7936,9 @@
         "segment",
         "status",
         "client_id"
-      ]
+      ],
+      "learner_question": "Should combinations of client segment and production batch status with zero production batches be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "SEM_EXP_001",
@@ -7407,7 +7967,9 @@
         "client_name",
         "amount",
         "batch_id"
-      ]
+      ],
+      "learner_question": "If two clients tie on total recorded test value, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied clients by smaller client number."
     },
     {
       "id": "SEM_EXP_002",
@@ -7434,7 +7996,9 @@
         "test_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If a production batch’s latest test date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only production batches whose latest test date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "SEM_EXP_003",
@@ -7458,7 +8022,9 @@
         "production_batches",
         "client_id",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "Should clients without any production batches be left out when calculating the average client total?",
+      "manager_reply": "Yes. Average across clients who have production batches, and return those strictly above that average."
     },
     {
       "id": "SEM_EXP_004",
@@ -7485,7 +8051,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of 50,000 and 100,000 be classified into bands?",
+      "manager_reply": "Use High for 100,000 or above, Medium from 50,000 up to below 100,000, and Low for below 50,000."
     },
     {
       "id": "SEM_EXP_005",
@@ -7510,7 +8078,9 @@
         "test_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If a production batch has no test results in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that production batch, leaving the first month’s prior total empty."
     },
     {
       "id": "SEM_EXP_006",
@@ -7535,7 +8105,9 @@
         "test_id",
         "test_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two test results for the same production batch share the same test date, which one comes first in the running total?",
+      "manager_reply": "Order same-day test results by the smaller test result number first, and include the current test result in the running total."
     },
     {
       "id": "SEM_EXP_007",
@@ -7559,7 +8131,9 @@
         "batch_id",
         "amount",
         "test_id"
-      ]
+      ],
+      "learner_question": "What if a production batch has only one test result, or a tie for the second-largest recorded test value?",
+      "manager_reply": "Return the single test result if only one exists, and break any amount ties by choosing the smaller test result number first."
     },
     {
       "id": "SEM_EXP_008",
@@ -7584,7 +8158,9 @@
         "batch_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should production batches with zero test results be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each production batch’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "SEM_EXP_009",
@@ -7607,7 +8183,9 @@
         "client_id",
         "batch_id",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "When two production batches for the same client have equal batch cost, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each client, and order ties by production batch number."
     },
     {
       "id": "SEM_EXP_010",
@@ -7631,7 +8209,9 @@
         "test_id",
         "test_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first test result of a production batch?",
+      "manager_reply": "Leave the previous amount empty for each production batch’s first test result, ordering same-day activity by test result number."
     },
     {
       "id": "SEM_EXP_011",
@@ -7655,7 +8235,9 @@
         "test_id",
         "test_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two test results of a production batch, should the moving average use only the test results recorded so far?",
+      "manager_reply": "Yes. Average the current test result with up to two immediately preceding test results available for that production batch."
     },
     {
       "id": "SEM_EXP_012",
@@ -7682,7 +8264,9 @@
         "client_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should clients with no production batches at all be excluded even though they have no non-Active production batches?",
+      "manager_reply": "Yes. A client must have at least one production batch, and every one of their production batches must be Active."
     },
     {
       "id": "SEM_EXP_013",
@@ -7705,7 +8289,9 @@
         "batch_cost",
         "status",
         "batch_id"
-      ]
+      ],
+      "learner_question": "Should each production batch be compared only against the average batch cost of production batches with the same status?",
+      "manager_reply": "Yes. Compare each production batch to the average batch cost of its own status group, excluding exact ties."
     },
     {
       "id": "SEM_EXP_014",
@@ -7730,7 +8316,9 @@
         "test_results",
         "batch_id",
         "test_date"
-      ]
+      ],
+      "learner_question": "If a production batch’s earliest and latest test date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit production batches that have no test results."
     },
     {
       "id": "SEM_EXP_015",
@@ -7754,7 +8342,9 @@
         "batch_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each test result’s percentage be measured against its parent production batch’s total rather than all production batches?",
+      "manager_reply": "Yes. Divide each test result amount by that production batch’s total recorded test value and round to two decimal places."
     },
     {
       "id": "SEM_EXP_016",
@@ -7781,7 +8371,9 @@
         "client_name",
         "segment",
         "batch_cost"
-      ]
+      ],
+      "learner_question": "If two clients in the same segment tie for the highest total batch cost, which one should I return?",
+      "manager_reply": "Select the tied client with the smaller client number, and exclude clients without production batches."
     },
     {
       "id": "SEM_EXP_017",
@@ -7804,7 +8396,9 @@
         "amount",
         "batch_id",
         "test_id"
-      ]
+      ],
+      "learner_question": "Should each test result be compared with the average amount for its own parent production batch?",
+      "manager_reply": "Yes. Include only test results whose amount is strictly above the average for their parent production batch."
     },
     {
       "id": "SEM_EXP_018",
@@ -7830,7 +8424,9 @@
         "client_id",
         "client_name",
         "batch_id"
-      ]
+      ],
+      "learner_question": "Should clients with zero production batches be included when calculating the overall average production batch count?",
+      "manager_reply": "Yes. Include zero-count clients in the average calculation, then list clients strictly above that average."
     },
     {
       "id": "SEM_EXP_019",
@@ -7858,7 +8454,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every production batch display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every production batch, using zero whenever no matching test results exist."
     },
     {
       "id": "SEM_EXP_020",
@@ -7885,7 +8483,9 @@
         "test_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If a production batch has multiple test results on its latest test date, which one should be selected?",
+      "manager_reply": "Pick the test result with the largest test result number on that latest date, and omit production batches without test results."
     },
     {
       "id": "EDU_BEG_001",
@@ -7909,7 +8509,9 @@
         "enrollments",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active enrollment’s full details, or just the number of Active enrollments?",
+      "manager_reply": "The full recorded details of each Active enrollment, please."
     },
     {
       "id": "EDU_BEG_002",
@@ -7932,7 +8534,9 @@
         "enrollments",
         "course_fee",
         "50000"
-      ]
+      ],
+      "learner_question": "If an enrollment has a course fee of exactly 50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only enrollments with a course fee above 50,000."
     },
     {
       "id": "EDU_BEG_003",
@@ -7955,7 +8559,9 @@
         "students",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only students whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for students located in Chennai."
     },
     {
       "id": "EDU_BEG_004",
@@ -7975,7 +8581,9 @@
       ],
       "relevantColumns": [
         "enrollments"
-      ]
+      ],
+      "learner_question": "Should the total count include enrollments in every status, or only active ones?",
+      "manager_reply": "Count every recorded enrollment once regardless of status, and show one single total."
     },
     {
       "id": "EDU_BEG_005",
@@ -7997,7 +8605,9 @@
       "relevantColumns": [
         "enrollments",
         "course_fee"
-      ]
+      ],
+      "learner_question": "Should all enrollments be listed from the highest course fee down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all enrollments with the highest course fee first."
     },
     {
       "id": "EDU_BEG_006",
@@ -8019,7 +8629,9 @@
       "relevantColumns": [
         "courses",
         "category"
-      ]
+      ],
+      "learner_question": "If several courses belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several courses belong to it."
     },
     {
       "id": "EDU_BEG_007",
@@ -8043,7 +8655,9 @@
         "enrollment_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should enrollments with an enrollment date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later enrollment date."
     },
     {
       "id": "EDU_BEG_008",
@@ -8066,7 +8680,9 @@
         "assessments",
         "assessment_type",
         "Quiz"
-      ]
+      ],
+      "learner_question": "Do you want only assessments recorded as Quiz, leaving out all other assessment type values?",
+      "manager_reply": "Yes. Show the recorded details only for Quiz assessments."
     },
     {
       "id": "EDU_BEG_009",
@@ -8088,7 +8704,9 @@
       "relevantColumns": [
         "students",
         "student_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 students starting from the smallest student number?",
+      "manager_reply": "Yes. Arrange students from the smallest student number first and show up to 5 records."
     },
     {
       "id": "EDU_BEG_010",
@@ -8112,7 +8730,9 @@
         "course_fee",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are enrollments with a course fee of exactly 25,000 or 75,000 included in this range?",
+      "manager_reply": "Yes. Include both 25,000 and 75,000 as well as any course fee in between."
     },
     {
       "id": "EDU_BEG_011",
@@ -8135,7 +8755,9 @@
         "students",
         "student_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only student names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only students whose recorded name starts with uppercase A."
     },
     {
       "id": "EDU_BEG_012",
@@ -8159,7 +8781,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending enrollments be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any enrollment marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "EDU_BEG_013",
@@ -8182,7 +8806,9 @@
         "students",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only students in the Premium student group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for students marked as Premium."
     },
     {
       "id": "EDU_BEG_014",
@@ -8207,7 +8833,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should assessments dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all assessments recorded between them."
     },
     {
       "id": "EDU_BEG_015",
@@ -8228,7 +8856,9 @@
       "relevantColumns": [
         "enrollments",
         "course_fee"
-      ]
+      ],
+      "learner_question": "Should the average course fee include enrollments across all statuses?",
+      "manager_reply": "Yes. Include all recorded enrollments regardless of status in the average course fee."
     },
     {
       "id": "EDU_BEG_016",
@@ -8249,7 +8879,9 @@
       "relevantColumns": [
         "assessments",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all assessment statuses to find the single largest recorded assessment points?",
+      "manager_reply": "Yes. Check all recorded assessments and return the single highest recorded assessment points."
     },
     {
       "id": "EDU_BEG_017",
@@ -8270,7 +8902,9 @@
       "relevantColumns": [
         "students",
         "city"
-      ]
+      ],
+      "learner_question": "If several students live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "EDU_BEG_018",
@@ -8293,7 +8927,9 @@
         "assessments",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed assessments be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for assessments whose status is Completed."
     },
     {
       "id": "EDU_BEG_019",
@@ -8321,7 +8957,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What course fee thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for 100,000 or more, Medium from 50,000 up to below 100,000, and Low for below 50,000, ordered by enrollment number."
     },
     {
       "id": "EDU_BEG_020",
@@ -8346,7 +8984,9 @@
         "course_fee",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does an enrollment marked Active with a course fee of exactly 50,000 qualify?",
+      "manager_reply": "Yes. Include Active enrollments whose course fee is 50,000 or higher."
     },
     {
       "id": "EDU_INT_001",
@@ -8373,7 +9013,9 @@
         "status",
         "course_fee",
         "student_id"
-      ]
+      ],
+      "learner_question": "Which enrollment fields should appear alongside each student name?",
+      "manager_reply": "Show the student name with each enrollment number, status, and course fee, ordered by student and enrollment number."
     },
     {
       "id": "EDU_INT_002",
@@ -8399,7 +9041,9 @@
         "course_name",
         "enrollment_id",
         "course_id"
-      ]
+      ],
+      "learner_question": "If an item in courses has no linked enrollments, should it still appear in the count?",
+      "manager_reply": "Yes. Include every courses entry and show zero when it has no linked enrollments."
     },
     {
       "id": "EDU_INT_003",
@@ -8424,7 +9068,9 @@
         "assessments",
         "enrollment_id",
         "assessment_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed assessment still count as activity that disqualifies the enrollment?",
+      "manager_reply": "Yes. Keep only enrollments that have no recorded assessments in any status."
     },
     {
       "id": "EDU_INT_004",
@@ -8449,7 +9095,9 @@
         "assessments",
         "enrollment_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for an enrollment that has no recorded assessments?",
+      "manager_reply": "Include every enrollment and show zero as its total when no assessments exist."
     },
     {
       "id": "EDU_INT_005",
@@ -8475,7 +9123,9 @@
         "enrollment_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If an enrollment’s combined recorded assessment points is exactly 20,000, should it be included?",
+      "manager_reply": "No. Show only enrollments whose total recorded assessment points is strictly above 20,000, largest total first."
     },
     {
       "id": "EDU_INT_006",
@@ -8501,7 +9151,9 @@
         "segment",
         "enrollment_id",
         "student_id"
-      ]
+      ],
+      "learner_question": "Should student segments with no linked enrollments still show a count of zero?",
+      "manager_reply": "Yes. Include every represented student segment and show zero if it has no linked enrollments."
     },
     {
       "id": "EDU_INT_007",
@@ -8527,7 +9179,9 @@
         "category",
         "course_fee",
         "course_id"
-      ]
+      ],
+      "learner_question": "Should courses categories that have no linked enrollments be left out?",
+      "manager_reply": "Yes. Include only categories that have linked enrollments when calculating the average course fee."
     },
     {
       "id": "EDU_INT_008",
@@ -8557,7 +9211,9 @@
         "status",
         "student_id",
         "course_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the enrollment status or the courses status?",
+      "manager_reply": "Show the enrollment status alongside the student name, enrollment number, and courses name."
     },
     {
       "id": "EDU_INT_009",
@@ -8583,7 +9239,9 @@
         "student_id",
         "student_name",
         "course_fee"
-      ]
+      ],
+      "learner_question": "If two students have the same name, should their course fee totals be kept separate?",
+      "manager_reply": "Yes. Keep each student separate by their student number, and omit students without enrollments."
     },
     {
       "id": "EDU_INT_010",
@@ -8605,7 +9263,9 @@
         "enrollments",
         "enrollment_id",
         "course_fee"
-      ]
+      ],
+      "learner_question": "Should enrollments of all statuses be included when computing the overall average course fee?",
+      "manager_reply": "Yes, use all enrollments for the overall average and return only those strictly above it."
     },
     {
       "id": "EDU_INT_011",
@@ -8633,7 +9293,9 @@
         "amount",
         "status",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each assessment be the parent enrollment’s status?",
+      "manager_reply": "Yes. Display each assessment’s details together with the status of its parent enrollment."
     },
     {
       "id": "EDU_INT_012",
@@ -8660,7 +9322,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending assessments or enrollments with no assessments be reflected in the two totals?",
+      "manager_reply": "Pending assessments add to neither total, and enrollments without matching assessments should show zero."
     },
     {
       "id": "EDU_INT_013",
@@ -8682,7 +9346,9 @@
         "assessments",
         "assessment_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include assessments of every type and status?",
+      "manager_reply": "Yes. Count all assessments in each calendar month and list the months in date order."
     },
     {
       "id": "EDU_INT_014",
@@ -8707,7 +9373,9 @@
         "student_id",
         "student_name",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "If a student only has a Closed or Pending enrollment, should they still be excluded?",
+      "manager_reply": "Yes. Show only students who have no linked enrollments at all."
     },
     {
       "id": "EDU_INT_015",
@@ -8732,7 +9400,9 @@
         "course_id",
         "course_name",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending enrollment count as using a course entry?",
+      "manager_reply": "Yes. Show only courses entries that have zero linked enrollments across all statuses."
     },
     {
       "id": "EDU_INT_016",
@@ -8757,7 +9427,9 @@
         "student_id",
         "student_name",
         "enrollment_date"
-      ]
+      ],
+      "learner_question": "Should enrollments of all statuses be considered when finding each student’s earliest enrollment date?",
+      "manager_reply": "Yes. Check all enrollment statuses for each student, and omit students who have no enrollments."
     },
     {
       "id": "EDU_INT_017",
@@ -8781,7 +9453,9 @@
         "assessments",
         "enrollment_id",
         "assessment_date"
-      ]
+      ],
+      "learner_question": "Should enrollments with no recorded assessments still be listed?",
+      "manager_reply": "Yes. Include every enrollment and leave its latest assessment date empty when no assessments exist."
     },
     {
       "id": "EDU_INT_018",
@@ -8810,7 +9484,9 @@
         "enrollment_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a student has multiple Completed assessments, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying student’s number and name only once."
     },
     {
       "id": "EDU_INT_019",
@@ -8838,7 +9514,9 @@
         "amount",
         "course_id",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded assessments be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have assessments, averaging across all assessment statuses."
     },
     {
       "id": "EDU_INT_020",
@@ -8863,7 +9541,9 @@
         "segment",
         "status",
         "student_id"
-      ]
+      ],
+      "learner_question": "Should combinations of student segment and enrollment status with zero enrollments be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "EDU_EXP_001",
@@ -8892,7 +9572,9 @@
         "student_name",
         "amount",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "If two students tie on total recorded assessment points, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied students by smaller student number."
     },
     {
       "id": "EDU_EXP_002",
@@ -8919,7 +9601,9 @@
         "assessment_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If an enrollment’s latest assessment date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only enrollments whose latest assessment date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "EDU_EXP_003",
@@ -8943,7 +9627,9 @@
         "enrollments",
         "student_id",
         "course_fee"
-      ]
+      ],
+      "learner_question": "Should students without any enrollments be left out when calculating the average student total?",
+      "manager_reply": "Yes. Average across students who have enrollments, and return those strictly above that average."
     },
     {
       "id": "EDU_EXP_004",
@@ -8970,7 +9656,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of 50,000 and 100,000 be classified into bands?",
+      "manager_reply": "Use High for 100,000 or above, Medium from 50,000 up to below 100,000, and Low for below 50,000."
     },
     {
       "id": "EDU_EXP_005",
@@ -8995,7 +9683,9 @@
         "assessment_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If an enrollment has no assessments in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that enrollment, leaving the first month’s prior total empty."
     },
     {
       "id": "EDU_EXP_006",
@@ -9020,7 +9710,9 @@
         "assessment_id",
         "assessment_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two assessments for the same enrollment share the same assessment date, which one comes first in the running total?",
+      "manager_reply": "Order same-day assessments by the smaller assessment number first, and include the current assessment in the running total."
     },
     {
       "id": "EDU_EXP_007",
@@ -9044,7 +9736,9 @@
         "enrollment_id",
         "amount",
         "assessment_id"
-      ]
+      ],
+      "learner_question": "What if an enrollment has only one assessment, or a tie for the second-largest recorded assessment points?",
+      "manager_reply": "Return the single assessment if only one exists, and break any amount ties by choosing the smaller assessment number first."
     },
     {
       "id": "EDU_EXP_008",
@@ -9069,7 +9763,9 @@
         "enrollment_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should enrollments with zero assessments be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each enrollment’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "EDU_EXP_009",
@@ -9092,7 +9788,9 @@
         "student_id",
         "enrollment_id",
         "course_fee"
-      ]
+      ],
+      "learner_question": "When two enrollments for the same student have equal course fee, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each student, and order ties by enrollment number."
     },
     {
       "id": "EDU_EXP_010",
@@ -9116,7 +9814,9 @@
         "assessment_id",
         "assessment_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first assessment of an enrollment?",
+      "manager_reply": "Leave the previous amount empty for each enrollment’s first assessment, ordering same-day activity by assessment number."
     },
     {
       "id": "EDU_EXP_011",
@@ -9140,7 +9840,9 @@
         "assessment_id",
         "assessment_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two assessments of an enrollment, should the moving average use only the assessments recorded so far?",
+      "manager_reply": "Yes. Average the current assessment with up to two immediately preceding assessments available for that enrollment."
     },
     {
       "id": "EDU_EXP_012",
@@ -9167,7 +9869,9 @@
         "student_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should students with no enrollments at all be excluded even though they have no non-Active enrollments?",
+      "manager_reply": "Yes. A student must have at least one enrollment, and every one of their enrollments must be Active."
     },
     {
       "id": "EDU_EXP_013",
@@ -9190,7 +9894,9 @@
         "course_fee",
         "status",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "Should each enrollment be compared only against the average course fee of enrollments with the same status?",
+      "manager_reply": "Yes. Compare each enrollment to the average course fee of its own status group, excluding exact ties."
     },
     {
       "id": "EDU_EXP_014",
@@ -9215,7 +9921,9 @@
         "assessments",
         "enrollment_id",
         "assessment_date"
-      ]
+      ],
+      "learner_question": "If an enrollment’s earliest and latest assessment date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit enrollments that have no assessments."
     },
     {
       "id": "EDU_EXP_015",
@@ -9239,7 +9947,9 @@
         "enrollment_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each assessment’s percentage be measured against its parent enrollment’s total rather than all enrollments?",
+      "manager_reply": "Yes. Divide each assessment amount by that enrollment’s total recorded assessment points and round to two decimal places."
     },
     {
       "id": "EDU_EXP_016",
@@ -9266,7 +9976,9 @@
         "student_name",
         "segment",
         "course_fee"
-      ]
+      ],
+      "learner_question": "If two students in the same segment tie for the highest total course fee, which one should I return?",
+      "manager_reply": "Select the tied student with the smaller student number, and exclude students without enrollments."
     },
     {
       "id": "EDU_EXP_017",
@@ -9289,7 +10001,9 @@
         "amount",
         "enrollment_id",
         "assessment_id"
-      ]
+      ],
+      "learner_question": "Should each assessment be compared with the average amount for its own parent enrollment?",
+      "manager_reply": "Yes. Include only assessments whose amount is strictly above the average for their parent enrollment."
     },
     {
       "id": "EDU_EXP_018",
@@ -9315,7 +10029,9 @@
         "student_id",
         "student_name",
         "enrollment_id"
-      ]
+      ],
+      "learner_question": "Should students with zero enrollments be included when calculating the overall average enrollment count?",
+      "manager_reply": "Yes. Include zero-count students in the average calculation, then list students strictly above that average."
     },
     {
       "id": "EDU_EXP_019",
@@ -9343,7 +10059,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every enrollment display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every enrollment, using zero whenever no matching assessments exist."
     },
     {
       "id": "EDU_EXP_020",
@@ -9370,7 +10088,9 @@
         "assessment_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If an enrollment has multiple assessments on its latest assessment date, which one should be selected?",
+      "manager_reply": "Pick the assessment with the largest assessment number on that latest date, and omit enrollments without assessments."
     },
     {
       "id": "RET_BEG_001",
@@ -9394,7 +10114,9 @@
         "orders",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Do you need each Active order’s full details, or just the number of Active orders?",
+      "manager_reply": "The full recorded details of each Active order, please."
     },
     {
       "id": "RET_BEG_002",
@@ -9417,7 +10139,9 @@
         "orders",
         "order_total",
         "50000"
-      ]
+      ],
+      "learner_question": "If an order has a order total of exactly ₹50,000, should I leave it out?",
+      "manager_reply": "Yes. Include only orders with a order total above ₹50,000."
     },
     {
       "id": "RET_BEG_003",
@@ -9440,7 +10164,9 @@
         "customers",
         "city",
         "Chennai"
-      ]
+      ],
+      "learner_question": "Should I include only customers whose recorded city is Chennai, and leave out all other cities?",
+      "manager_reply": "Yes. Show the recorded details only for customers located in Chennai."
     },
     {
       "id": "RET_BEG_004",
@@ -9460,7 +10186,9 @@
       ],
       "relevantColumns": [
         "orders"
-      ]
+      ],
+      "learner_question": "Should the total count include orders in every status, or only active ones?",
+      "manager_reply": "Count every recorded order once regardless of status, and show one single total."
     },
     {
       "id": "RET_BEG_005",
@@ -9482,7 +10210,9 @@
       "relevantColumns": [
         "orders",
         "order_total"
-      ]
+      ],
+      "learner_question": "Should all orders be listed from the highest order total down to the lowest?",
+      "manager_reply": "Yes. Show the full details of all orders with the highest order total first."
     },
     {
       "id": "RET_BEG_006",
@@ -9504,7 +10234,9 @@
       "relevantColumns": [
         "products",
         "category"
-      ]
+      ],
+      "learner_question": "If several products belong to the same category, should that category appear more than once?",
+      "manager_reply": "No. Show each category only once, even if several products belong to it."
     },
     {
       "id": "RET_BEG_007",
@@ -9528,7 +10260,9 @@
         "order_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "Should orders with an order date on 1 January 2026 itself be included?",
+      "manager_reply": "Yes. Include 1 January 2026 as well as any later order date."
     },
     {
       "id": "RET_BEG_008",
@@ -9551,7 +10285,9 @@
         "order_items",
         "item_type",
         "Sale"
-      ]
+      ],
+      "learner_question": "Do you want only order items recorded as Sale, leaving out all other item type values?",
+      "manager_reply": "Yes. Show the recorded details only for Sale order items."
     },
     {
       "id": "RET_BEG_009",
@@ -9573,7 +10309,9 @@
       "relevantColumns": [
         "customers",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should I take the first 5 customers starting from the smallest customer number?",
+      "manager_reply": "Yes. Arrange customers from the smallest customer number first and show up to 5 records."
     },
     {
       "id": "RET_BEG_010",
@@ -9597,7 +10335,9 @@
         "order_total",
         "25000",
         "75000"
-      ]
+      ],
+      "learner_question": "Are orders with a order total of exactly ₹25,000 or ₹75,000 included in this range?",
+      "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any order total in between."
     },
     {
       "id": "RET_BEG_011",
@@ -9620,7 +10360,9 @@
         "customers",
         "customer_name",
         "A%"
-      ]
+      ],
+      "learner_question": "Should I match only customer names that begin with the capital letter A?",
+      "manager_reply": "Yes. Include only customers whose recorded name starts with uppercase A."
     },
     {
       "id": "RET_BEG_012",
@@ -9644,7 +10386,9 @@
         "status",
         "Active",
         "Pending"
-      ]
+      ],
+      "learner_question": "Should both Active and Pending orders be included while Closed ones are left out?",
+      "manager_reply": "Yes. Include any order marked Active or Pending, and exclude other statuses."
     },
     {
       "id": "RET_BEG_013",
@@ -9667,7 +10411,9 @@
         "customers",
         "segment",
         "Premium"
-      ]
+      ],
+      "learner_question": "Should I include only customers in the Premium customer group and exclude other tiers?",
+      "manager_reply": "Yes. Show the recorded details only for customers marked as Premium."
     },
     {
       "id": "RET_BEG_014",
@@ -9692,7 +10438,9 @@
         "2026-01-01",
         "2026-06-30",
         "2026"
-      ]
+      ],
+      "learner_question": "Should order items dated on 1 January 2026 and 30 June 2026 both be included?",
+      "manager_reply": "Yes. Include both boundary dates and all order items recorded between them."
     },
     {
       "id": "RET_BEG_015",
@@ -9713,7 +10461,9 @@
       "relevantColumns": [
         "orders",
         "order_total"
-      ]
+      ],
+      "learner_question": "Should the average order total include orders across all statuses?",
+      "manager_reply": "Yes. Include all recorded orders regardless of status in the average order total."
     },
     {
       "id": "RET_BEG_016",
@@ -9734,7 +10484,9 @@
       "relevantColumns": [
         "order_items",
         "amount"
-      ]
+      ],
+      "learner_question": "Should I look across all order item statuses to find the single largest order-item amount?",
+      "manager_reply": "Yes. Check all recorded order items and return the single highest order-item amount."
     },
     {
       "id": "RET_BEG_017",
@@ -9755,7 +10507,9 @@
       "relevantColumns": [
         "customers",
         "city"
-      ]
+      ],
+      "learner_question": "If several customers live in the same city, should that city be counted only once?",
+      "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
     },
     {
       "id": "RET_BEG_018",
@@ -9778,7 +10532,9 @@
         "order_items",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "Should Pending and Failed order items be excluded from this list?",
+      "manager_reply": "Yes. Show the recorded details only for order items whose status is Completed."
     },
     {
       "id": "RET_BEG_019",
@@ -9806,7 +10562,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "What order total thresholds should I use for the High, Medium, and Low tiers?",
+      "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000, ordered by order number."
     },
     {
       "id": "RET_BEG_020",
@@ -9831,7 +10589,9 @@
         "order_total",
         "Active",
         "50000"
-      ]
+      ],
+      "learner_question": "Does an order marked Active with a order total of exactly ₹50,000 qualify?",
+      "manager_reply": "Yes. Include Active orders whose order total is ₹50,000 or higher."
     },
     {
       "id": "RET_INT_001",
@@ -9858,7 +10618,9 @@
         "status",
         "order_total",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Which order fields should appear alongside each customer name?",
+      "manager_reply": "Show the customer name with each order number, status, and order total, ordered by customer and order number."
     },
     {
       "id": "RET_INT_002",
@@ -9884,7 +10646,9 @@
         "product_name",
         "order_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "If an item in products has no linked orders, should it still appear in the count?",
+      "manager_reply": "Yes. Include every products entry and show zero when it has no linked orders."
     },
     {
       "id": "RET_INT_003",
@@ -9909,7 +10673,9 @@
         "order_items",
         "order_id",
         "order_item_id"
-      ]
+      ],
+      "learner_question": "Does a Pending or Failed order item still count as activity that disqualifies the order?",
+      "manager_reply": "Yes. Keep only orders that have no recorded order items in any status."
     },
     {
       "id": "RET_INT_004",
@@ -9934,7 +10700,9 @@
         "order_items",
         "order_id",
         "amount"
-      ]
+      ],
+      "learner_question": "What total should appear for an order that has no recorded order items?",
+      "manager_reply": "Include every order and show zero as its total when no order items exist."
     },
     {
       "id": "RET_INT_005",
@@ -9960,7 +10728,9 @@
         "order_id",
         "amount",
         "20000"
-      ]
+      ],
+      "learner_question": "If an order’s combined order-item amount is exactly ₹20,000, should it be included?",
+      "manager_reply": "No. Show only orders whose total order-item amount is strictly above ₹20,000, largest total first."
     },
     {
       "id": "RET_INT_006",
@@ -9986,7 +10756,9 @@
         "segment",
         "order_id",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should customer segments with no linked orders still show a count of zero?",
+      "manager_reply": "Yes. Include every represented customer segment and show zero if it has no linked orders."
     },
     {
       "id": "RET_INT_007",
@@ -10012,7 +10784,9 @@
         "category",
         "order_total",
         "product_id"
-      ]
+      ],
+      "learner_question": "Should products categories that have no linked orders be left out?",
+      "manager_reply": "Yes. Include only categories that have linked orders when calculating the average order total."
     },
     {
       "id": "RET_INT_008",
@@ -10042,7 +10816,9 @@
         "status",
         "customer_id",
         "product_id"
-      ]
+      ],
+      "learner_question": "Which status should be shown—the order status or the products status?",
+      "manager_reply": "Show the order status alongside the customer name, order number, and products name."
     },
     {
       "id": "RET_INT_009",
@@ -10068,7 +10844,9 @@
         "customer_id",
         "customer_name",
         "order_total"
-      ]
+      ],
+      "learner_question": "If two customers have the same name, should their order total totals be kept separate?",
+      "manager_reply": "Yes. Keep each customer separate by their customer number, and omit customers without orders."
     },
     {
       "id": "RET_INT_010",
@@ -10090,7 +10868,9 @@
         "orders",
         "order_id",
         "order_total"
-      ]
+      ],
+      "learner_question": "Should orders of all statuses be included when computing the overall average order total?",
+      "manager_reply": "Yes, use all orders for the overall average and return only those strictly above it."
     },
     {
       "id": "RET_INT_011",
@@ -10118,7 +10898,9 @@
         "amount",
         "status",
         "order_id"
-      ]
+      ],
+      "learner_question": "Should the status shown beside each order item be the parent order’s status?",
+      "manager_reply": "Yes. Display each order item’s details together with the status of its parent order."
     },
     {
       "id": "RET_INT_012",
@@ -10145,7 +10927,9 @@
         "amount",
         "Completed",
         "Failed"
-      ]
+      ],
+      "learner_question": "How should Pending order items or orders with no order items be reflected in the two totals?",
+      "manager_reply": "Pending order items add to neither total, and orders without matching order items should show zero."
     },
     {
       "id": "RET_INT_013",
@@ -10167,7 +10951,9 @@
         "order_items",
         "item_date",
         "month"
-      ]
+      ],
+      "learner_question": "Should the monthly count include order items of every type and status?",
+      "manager_reply": "Yes. Count all order items in each calendar month and list the months in date order."
     },
     {
       "id": "RET_INT_014",
@@ -10192,7 +10978,9 @@
         "customer_id",
         "customer_name",
         "order_id"
-      ]
+      ],
+      "learner_question": "If a customer only has a Closed or Pending order, should they still be excluded?",
+      "manager_reply": "Yes. Show only customers who have no linked orders at all."
     },
     {
       "id": "RET_INT_015",
@@ -10217,7 +11005,9 @@
         "product_id",
         "product_name",
         "order_id"
-      ]
+      ],
+      "learner_question": "Does a Closed or Pending order count as using a product entry?",
+      "manager_reply": "Yes. Show only products entries that have zero linked orders across all statuses."
     },
     {
       "id": "RET_INT_016",
@@ -10242,7 +11032,9 @@
         "customer_id",
         "customer_name",
         "order_date"
-      ]
+      ],
+      "learner_question": "Should orders of all statuses be considered when finding each customer’s earliest order date?",
+      "manager_reply": "Yes. Check all order statuses for each customer, and omit customers who have no orders."
     },
     {
       "id": "RET_INT_017",
@@ -10266,7 +11058,9 @@
         "order_items",
         "order_id",
         "item_date"
-      ]
+      ],
+      "learner_question": "Should orders with no recorded order items still be listed?",
+      "manager_reply": "Yes. Include every order and leave its latest item date empty when no order items exist."
     },
     {
       "id": "RET_INT_018",
@@ -10295,7 +11089,9 @@
         "order_id",
         "status",
         "Completed"
-      ]
+      ],
+      "learner_question": "If a customer has multiple Completed order items, should their name appear only once?",
+      "manager_reply": "Yes. Show each qualifying customer’s number and name only once."
     },
     {
       "id": "RET_INT_019",
@@ -10323,7 +11119,9 @@
         "amount",
         "product_id",
         "order_id"
-      ]
+      ],
+      "learner_question": "Should categories without any recorded order items be omitted from the category averages?",
+      "manager_reply": "Yes. Include only categories that have order items, averaging across all order item statuses."
     },
     {
       "id": "RET_INT_020",
@@ -10348,7 +11146,9 @@
         "segment",
         "status",
         "customer_id"
-      ]
+      ],
+      "learner_question": "Should combinations of customer segment and order status with zero orders be left out?",
+      "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
     },
     {
       "id": "RET_EXP_001",
@@ -10377,7 +11177,9 @@
         "customer_name",
         "amount",
         "order_id"
-      ]
+      ],
+      "learner_question": "If two customers tie on total order-item amount, should the next rank skip a number?",
+      "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied customers by smaller customer number."
     },
     {
       "id": "RET_EXP_002",
@@ -10404,7 +11206,9 @@
         "item_date",
         "2026-01-01",
         "2026"
-      ]
+      ],
+      "learner_question": "If an order’s latest item date is exactly 1 January 2026, does it qualify?",
+      "manager_reply": "No. Include only orders whose latest item date is strictly before 1 January 2026 or missing altogether."
     },
     {
       "id": "RET_EXP_003",
@@ -10428,7 +11232,9 @@
         "orders",
         "customer_id",
         "order_total"
-      ]
+      ],
+      "learner_question": "Should customers without any orders be left out when calculating the average customer total?",
+      "manager_reply": "Yes. Average across customers who have orders, and return those strictly above that average."
     },
     {
       "id": "RET_EXP_004",
@@ -10455,7 +11261,9 @@
         "Low",
         "100000",
         "50000"
-      ]
+      ],
+      "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+      "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
     },
     {
       "id": "RET_EXP_005",
@@ -10480,7 +11288,9 @@
         "item_date",
         "amount",
         "month"
-      ]
+      ],
+      "learner_question": "If an order has no order items in a month, should the next active month compare with the last active month?",
+      "manager_reply": "Yes. Compare each active month with the most recent prior active month for that order, leaving the first month’s prior total empty."
     },
     {
       "id": "RET_EXP_006",
@@ -10505,7 +11315,9 @@
         "order_item_id",
         "item_date",
         "amount"
-      ]
+      ],
+      "learner_question": "When two order items for the same order share the same item date, which one comes first in the running total?",
+      "manager_reply": "Order same-day order items by the smaller order item number first, and include the current order item in the running total."
     },
     {
       "id": "RET_EXP_007",
@@ -10529,7 +11341,9 @@
         "order_id",
         "amount",
         "order_item_id"
-      ]
+      ],
+      "learner_question": "What if an order has only one order item, or a tie for the second-largest order-item amount?",
+      "manager_reply": "Return the single order item if only one exists, and break any amount ties by choosing the smaller order item number first."
     },
     {
       "id": "RET_EXP_008",
@@ -10554,7 +11368,9 @@
         "order_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should orders with zero order items be included, and how many decimal places should the share use?",
+      "manager_reply": "Yes, show zero for their total and round each order’s percentage share of the grand total to two decimal places."
     },
     {
       "id": "RET_EXP_009",
@@ -10577,7 +11393,9 @@
         "customer_id",
         "order_id",
         "order_total"
-      ]
+      ],
+      "learner_question": "When two orders for the same customer have equal order total, should the next rank continue without a gap?",
+      "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each customer, and order ties by order number."
     },
     {
       "id": "RET_EXP_010",
@@ -10601,7 +11419,9 @@
         "order_item_id",
         "item_date",
         "amount"
-      ]
+      ],
+      "learner_question": "What should appear as the previous amount for the very first order item of an order?",
+      "manager_reply": "Leave the previous amount empty for each order’s first order item, ordering same-day activity by order item number."
     },
     {
       "id": "RET_EXP_011",
@@ -10625,7 +11445,9 @@
         "order_item_id",
         "item_date",
         "amount"
-      ]
+      ],
+      "learner_question": "For the first two order items of an order, should the moving average use only the order items recorded so far?",
+      "manager_reply": "Yes. Average the current order item with up to two immediately preceding order items available for that order."
     },
     {
       "id": "RET_EXP_012",
@@ -10652,7 +11474,9 @@
         "customer_name",
         "status",
         "Active"
-      ]
+      ],
+      "learner_question": "Should customers with no orders at all be excluded even though they have no non-Active orders?",
+      "manager_reply": "Yes. A customer must have at least one order, and every one of their orders must be Active."
     },
     {
       "id": "RET_EXP_013",
@@ -10675,7 +11499,9 @@
         "order_total",
         "status",
         "order_id"
-      ]
+      ],
+      "learner_question": "Should each order be compared only against the average order total of orders with the same status?",
+      "manager_reply": "Yes. Compare each order to the average order total of its own status group, excluding exact ties."
     },
     {
       "id": "RET_EXP_014",
@@ -10700,7 +11526,9 @@
         "order_items",
         "order_id",
         "item_date"
-      ]
+      ],
+      "learner_question": "If an order’s earliest and latest item date are the same day, what should the elapsed days be?",
+      "manager_reply": "Show zero days when the first and last dates are identical, and omit orders that have no order items."
     },
     {
       "id": "RET_EXP_015",
@@ -10724,7 +11552,9 @@
         "order_id",
         "amount",
         "100"
-      ]
+      ],
+      "learner_question": "Should each order item’s percentage be measured against its parent order’s total rather than all orders?",
+      "manager_reply": "Yes. Divide each order item amount by that order’s total order-item amount and round to two decimal places."
     },
     {
       "id": "RET_EXP_016",
@@ -10751,7 +11581,9 @@
         "customer_name",
         "segment",
         "order_total"
-      ]
+      ],
+      "learner_question": "If two customers in the same segment tie for the highest total order total, which one should I return?",
+      "manager_reply": "Select the tied customer with the smaller customer number, and exclude customers without orders."
     },
     {
       "id": "RET_EXP_017",
@@ -10774,7 +11606,9 @@
         "amount",
         "order_id",
         "order_item_id"
-      ]
+      ],
+      "learner_question": "Should each order item be compared with the average amount for its own parent order?",
+      "manager_reply": "Yes. Include only order items whose amount is strictly above the average for their parent order."
     },
     {
       "id": "RET_EXP_018",
@@ -10800,7 +11634,9 @@
         "customer_id",
         "customer_name",
         "order_id"
-      ]
+      ],
+      "learner_question": "Should customers with zero orders be included when calculating the overall average order count?",
+      "manager_reply": "Yes. Include zero-count customers in the average calculation, then list customers strictly above that average."
     },
     {
       "id": "RET_EXP_019",
@@ -10828,7 +11664,9 @@
         "Completed",
         "Pending",
         "Failed"
-      ]
+      ],
+      "learner_question": "Should every order display Completed, Pending, and Failed totals even when some are zero?",
+      "manager_reply": "Yes. Show all three status totals for every order, using zero whenever no matching order items exist."
     },
     {
       "id": "RET_EXP_020",
@@ -10855,7 +11693,9 @@
         "item_type",
         "amount",
         "status"
-      ]
+      ],
+      "learner_question": "If an order has multiple order items on its latest item date, which one should be selected?",
+      "manager_reply": "Pick the order item with the largest order item number on that latest date, and omit orders without order items."
     }
   ]
 }

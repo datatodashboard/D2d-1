@@ -158,6 +158,70 @@ describe('Thinking Evaluation', () => {
         }
       }
     });
+
+    it('Step 1 regression: all 420 scenarios built from Crack_SQL_420_Simple.json vs split domain + .sql.json files yield identical score, ready, and feedback', async () => {
+      const { getEffectiveScenario } = await import('../js/curriculum.js');
+      const originalSimple = JSON.parse(fs.readFileSync('./data/Crack_SQL_420_Simple.json', 'utf8'));
+      assert.strictEqual(originalSimple.length, 420, 'Crack_SQL_420_Simple.json must have 420 scenarios');
+
+      const domainSlugs = {
+        'Banking': 'banking',
+        'Healthcare': 'healthcare',
+        'Insurance': 'insurance',
+        'Capital Markets': 'capital-markets',
+        'Semiconductor': 'semiconductor',
+        'Education': 'education',
+        'Retail': 'retail'
+      };
+
+      const mergedByDomainId = new Map();
+      for (const [domainName, slug] of Object.entries(domainSlugs)) {
+        const domainRecords = JSON.parse(fs.readFileSync(`./data/domains/${slug}.json`, 'utf8'));
+        const sqlMap = JSON.parse(fs.readFileSync(`./data/domains/${slug}.sql.json`, 'utf8'));
+        assert.strictEqual(domainRecords.length, 60, `${domainName} domain file must have 60 scenarios`);
+
+        for (const rec of domainRecords) {
+          assert.strictEqual(rec.answer_sql, undefined, `${rec.id} in ${slug}.json should not embed answer_sql before merge`);
+          const sqlText = String(sqlMap[rec.id] || '').trim();
+          assert(sqlText.length > 0, `${rec.id} must have non-empty SQL in ${slug}.sql.json`);
+          mergedByDomainId.set(rec.id, {
+            ...rec,
+            answer_sql: sqlText,
+            sql: sqlText
+          });
+        }
+      }
+
+      assert.strictEqual(mergedByDomainId.size, 420, 'Merged domain files must total 420 scenarios');
+
+      for (const rawOrig of originalSimple) {
+        const rawMerged = mergedByDomainId.get(rawOrig.id);
+        assert(rawMerged, `Merged scenario ${rawOrig.id} must exist`);
+
+        const origScenario = getEffectiveScenario(rawOrig);
+        const mergedScenario = getEffectiveScenario(rawMerged);
+
+        assert.strictEqual(mergedScenario.sql, origScenario.sql, `SQL must match for ${rawOrig.id}`);
+        assert.strictEqual(mergedScenario.question, origScenario.question, `Question must match for ${rawOrig.id}`);
+        assert.strictEqual(mergedScenario.schemaText, origScenario.schemaText, `Schema must match for ${rawOrig.id}`);
+
+        const sampleReasonings = [
+          origScenario.pseudo || 'Use the required tables, filter the records by the condition, and return the result.',
+          `From ${(origScenario.requiredTables || origScenario.tables).join(' and ')}, filter where status is Active and group by to count and sort the output.`,
+          'Use the records where the amount is less than 100 and show the output.'
+        ];
+
+        for (const sampleText of sampleReasonings) {
+          const evalOrig = evaluateThinking(origScenario, sampleText);
+          const evalMerged = evaluateThinking(mergedScenario, sampleText);
+
+          assert.strictEqual(evalMerged.score, evalOrig.score, `Score mismatch for ${rawOrig.id}`);
+          assert.strictEqual(evalMerged.ready, evalOrig.ready, `Ready mismatch for ${rawOrig.id}`);
+          assert.strictEqual(evalMerged.message, evalOrig.message, `Feedback message mismatch for ${rawOrig.id}`);
+        }
+      }
+    });
   });
 });
+
 

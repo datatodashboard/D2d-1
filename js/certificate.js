@@ -348,7 +348,7 @@ export function generateCertificateSvg({ userName, level, domain, completionDate
   <g transform="translate(600, 542)">
     <text text-anchor="middle" font-size="16" font-weight="500" fill="#334155" line-height="1.5">
       <tspan x="0" dy="0">The learner has successfully completed 20 SQL scenarios</tspan>
-      <tspan x="0" dy="24">and demonstrated the required SQL thinking skills for this level.</tspan>
+      <tspan x="0" dy="24">and verified the required SQL thinking skills for this level.</tspan>
     </text>
   </g>
 
@@ -702,7 +702,7 @@ export function generateInstagramShareSvg({ userName, level, domain, completionD
   <!-- Achievement message -->
   <g transform="translate(540, 650)">
     <text text-anchor="middle" font-size="15" font-weight="500" fill="#475569">
-      Demonstrated advanced SQL thinking and data engineering skills.
+      Verified advanced SQL thinking and data engineering skills.
     </text>
   </g>
 

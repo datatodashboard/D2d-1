@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 describe('Thinking Score Result Popup (6 States & Visual Style Verification)', () => {
-  const indexHtml = fs.readFileSync(path.resolve('index.html'), 'utf-8');
+  const indexHtml = fs.readFileSync(path.resolve('index.html'), 'utf-8') + '\n' + fs.readFileSync(path.resolve('styles.css'), 'utf-8');
   const appJs = fs.readFileSync(path.resolve('js/app.js'), 'utf-8');
 
   test('1. Removes old Next Scenario button from bottom of Practice page', () => {
@@ -72,8 +72,13 @@ describe('Thinking Score Result Popup (6 States & Visual Style Verification)', (
     });
   });
 
-  test('6. Mascot SVGs and decorative stars/confetti functions exist', () => {
-    assert.ok(appJs.includes('function getMotivationMascotSvg('), 'getMotivationMascotSvg must exist');
-    assert.ok(appJs.includes('function getPopupStarsHtml('), 'getPopupStarsHtml must exist');
+  test('7. How to Think Like a Data Engineer 3-step section structure and inline code chip styling', () => {
+    assert.ok(indexHtml.includes('id="motivationHowToThinkBox"'), 'motivationHowToThinkBox must exist in index.html');
+    assert.ok(indexHtml.includes('.how-to-think-card-v2'), 'how-to-think-card-v2 CSS class must exist');
+    assert.ok(indexHtml.includes('.inline-code-chip'), 'inline-code-chip CSS class must exist');
+    assert.ok(appJs.includes('function renderHowToThinkCard('), 'renderHowToThinkCard helper must exist in app.js');
+    assert.ok(appJs.includes('1. Find the right data'), 'Step 1 label must exist');
+    assert.ok(appJs.includes('2. Apply the business rule'), 'Step 2 label must exist');
+    assert.ok(appJs.includes('3. Shape the final result'), 'Step 3 label must exist');
   });
 });

@@ -2,9 +2,9 @@ import {evaluateThinking, thinkingIsReady, thinkingText} from './thinking.js';
 import {EMPTY, readProgress, saveProgress, mergeProgress, sanitize, nextTimestamp, workFingerprint, stage, isCompleted, isAttempted, chooseNext, importLegacy, storageKey} from './progress.js';
 import {getEffectiveScenario, recordSkillAttempt} from './curriculum.js';
 import {createCloudSync} from './cloud.js';
-import {renderSchemaCards, buildFiddlePracticePackage} from './schema.js';
+import {renderSchemaCards, buildFiddlePracticePackage, DOMAIN_SCHEMA_ASSETS, parseSampleRecords} from './schema.js';
 import {escapeHtml, getOAuthRedirectUrl, validateAndFormatIndianMobile} from './util.js';
-import {SqlEngineManager, loadBrowserPGlite} from './sql-evaluator.js?v=4';
+import {SqlEngineManager, loadBrowserPGlite} from './sql-evaluator.js';
 import {initContest, renderContestCard, closeContestModal, getContestState} from './contest.js';
 import {
   initNotificationsState,
@@ -119,7 +119,7 @@ const cloud=createCloudSync({
   client: () => client,
   getContext:()=>({userId:user?.id,state:structuredClone(state)}),
   onMerged(remote,owner) {
-    if(!user || owner!==user.id) return;
+    if(isDemoMode || !user || owner!==user.id) return;
     const before=current?JSON.stringify(state.entries[current.id]):null;
     state=mergeProgress(state,remote,ids);
     saveProgress(storage, user.id, state);
@@ -136,6 +136,11 @@ const cloud=createCloudSync({
   }
 });
 function persist(sync=true, immediateSync=true) {
+  if (isDemoMode) {
+    saveDemoProgress();
+    updateProgress();
+    return;
+  }
   if (!user || !user.id) {
     updateProgress();
     return;
@@ -170,6 +175,11 @@ function persist(sync=true, immediateSync=true) {
 }
 function entry() { return current ? state.entries[current.id] || {} : {}; }
 function changeEntry(patch, immediateSync=true) {
+  if (isDemoMode && current) {
+    state.entries[current.id]={...entry(),...patch,updatedAt:nextTimestamp(state)};
+    persist(false, false);
+    return;
+  }
   if(!current || !user || !user.id) return;
   state.entries[current.id]={...entry(),...patch,updatedAt:nextTimestamp(state)};
   persist(true, immediateSync);
@@ -181,8 +191,291 @@ const CORE_DOMAINS = ['Banking', 'Healthcare', 'Insurance', 'Retail'];
 let currentDomainTrack = 'all'; // 'core' (240 scenarios) or 'all' (420 scenarios)
 
 const PENDING_AUTH_INTENT_KEY = 'crack_sql_pending_auth_intent_v1';
+const DEMO_STORAGE_KEY = 'crack_sql_demo_progress_v1';
+const DEMO_SESSION_ACTIVE_KEY = 'crack_sql_demo_active_v1';
+let isDemoMode = false;
+let demoPremiumPreviewActive = false;
+let sessionStore;
+try { sessionStore = window.sessionStorage; } catch { sessionStore = { getItem(){return null;}, setItem(){}, removeItem(){} }; }
 let pendingAuthIntent = null;
 let loginPopupOpen = false;
+
+function isDemoModeActive() {
+  return Boolean(isDemoMode);
+}
+
+function saveDemoProgress() {
+  if (!isDemoMode) return false;
+  try {
+    sessionStore.setItem(DEMO_SESSION_ACTIVE_KEY, '1');
+    sessionStore.setItem(DEMO_STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+function readDemoProgress() {
+  try {
+    const raw = sessionStore.getItem(DEMO_STORAGE_KEY);
+    if (!raw) return EMPTY();
+    return sanitize(JSON.parse(raw), ids);
+  } catch (_) {
+    return EMPTY();
+  }
+}
+
+function clearDemoStorage() {
+  try {
+    sessionStore.removeItem(DEMO_STORAGE_KEY);
+    sessionStore.removeItem(DEMO_SESSION_ACTIVE_KEY);
+  } catch (_) {}
+}
+
+function updateDemoModeUI() {
+  const show = Boolean(isDemoMode);
+  const homeEl = $('home');
+  const isHomeActive = homeEl ? homeEl.classList.contains('active') : (!currentActiveScreen || currentActiveScreen === 'home');
+  const isDemoHome = show && isHomeActive;
+
+  const appMain = $('appMain');
+  if (appMain) {
+    appMain.classList.toggle('demo-mode-active', show);
+    appMain.classList.toggle('demo-home-active', isDemoHome);
+  }
+  if (typeof document !== 'undefined' && document.body) {
+    document.body.classList.toggle('demo-mode-active', show);
+    document.body.classList.toggle('demo-home-active', isDemoHome);
+  }
+
+  const demoHomeUtility = $('demoHomeHeaderUtility');
+  if (demoHomeUtility) {
+    demoHomeUtility.hidden = !show;
+    demoHomeUtility.style.display = show ? 'inline-flex' : 'none';
+  }
+
+  const banner = $('demoModeBanner');
+  if (banner) {
+    const showBanner = show && !isHomeActive;
+    banner.hidden = !showBanner;
+    banner.style.display = showBanner ? 'flex' : 'none';
+  }
+  const homeTryBtn = $('homeTryDemoBtn');
+  if (homeTryBtn) {
+    homeTryBtn.hidden = show;
+    homeTryBtn.style.display = show ? 'none' : 'inline-flex';
+  }
+  const practiceBadge = $('practiceDemoBadge');
+  if (practiceBadge) {
+    practiceBadge.hidden = !show;
+    practiceBadge.style.display = show ? 'inline-flex' : 'none';
+  }
+  const certBanner = $('certDemoPreviewBanner');
+  if (certBanner && !isDemoMode) {
+    certBanner.hidden = true;
+    certBanner.style.display = 'none';
+  }
+}
+
+function renderDemoContestPreviewCard() {
+  const wrapper = $('contestCardWrapper');
+  if (!wrapper) return;
+  if (!isDemoMode) {
+    return;
+  }
+  const completedCount = getCompletedCount();
+  wrapper.style.display = 'block';
+  wrapper.innerHTML = `
+    <div class="card" id="demoContestPreviewCard" style="background:linear-gradient(135deg,#1e1b4b 0%,#0f172a 100%);border:1.5px solid #f59e0b;padding:14px 16px;border-radius:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:900;color:#fde68a;background:rgba(245,158,11,0.2);border:1px solid rgba(251,191,36,0.4);padding:2px 8px;border-radius:999px;margin-bottom:4px;">
+            <span>🧪 DEMO PREVIEW</span>
+            <span>•</span>
+            <span>WEEKLY SQL CONTEST</span>
+          </div>
+          <div style="font-size:15px;font-weight:800;color:#f8fafc;">Weekly SQL Thinking Contest (Preview Only)</div>
+          <div style="font-size:12.5px;color:#cbd5e1;margin-top:2px;">
+            Demo Session Completions: <strong>${completedCount} / 18</strong> for contest eligibility preview. Real contest registration &amp; leaderboard require Google Sign-In.
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="action secondary sm" onclick="openDemoContestPreviewModal()" style="background:rgba(245,158,11,0.16);border:1px solid #f59e0b;color:#fde68a;font-weight:800;padding:6px 12px;font-size:12px;">
+            🏆 Preview Contest Format
+          </button>
+          <button type="button" class="action primary sm" onclick="signInFromDemo()" style="font-weight:800;padding:6px 12px;font-size:12px;">
+            Sign In with Google
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openDemoContestPreviewModal() {
+  showProgressionNoticeModal({
+    title: '🧪 Demo Preview: SQL Thinking Contest',
+    message: 'In authenticated mode, learners who complete 18+ scenarios unlock live timed SQL Thinking Contests with verified leaderboards and prizes. No real contest registration or payment is created in Demo Mode.',
+    actionLabel: 'Sign In with Google →',
+    onAction: () => signInFromDemo()
+  });
+}
+
+function simulateDemoPaymentPreview() {
+  if (!isDemoMode) return;
+  demoPremiumPreviewActive = true;
+  openPaywallModal();
+  renderScenarioCatalog();
+}
+
+async function startDemoMode() {
+  const chosenDomain = selectedDomain;
+  const chosenLevel = selectedLevel;
+  closeChooseLevelModal();
+  selectedDomain = chosenDomain;
+  selectedLevel = chosenLevel;
+
+  isDemoMode = true;
+  demoPremiumPreviewActive = false;
+  isPaidUnlocked = false;
+  userPendingPayment = null;
+  authNotice = '';
+  if ($('loginErrorMessage')) $('loginErrorMessage').textContent = '';
+  clearDomainSelectionWarning(false);
+  hideAccessError();
+  updateAdminPortalVisibility();
+
+  state = readDemoProgress();
+  saveDemoProgress();
+
+  const intent = readPendingAuthIntent();
+  if (intent) {
+    if (intent.domain && !selectedDomain) selectedDomain = intent.domain;
+    if (intent.level && !selectedLevel) selectedLevel = intent.level;
+  }
+  clearPendingAuthIntent();
+  closeLoginModal();
+
+  const dest = intent?.destination || (selectedDomain && selectedLevel ? 'practice' : 'home');
+  if (dest === 'home' && !intent?.scenarioId) {
+    selectedDomain = null;
+    selectedLevel = null;
+  }
+
+  updateDemoModeUI();
+  renderAuth();
+  updateProgress();
+  renderDomainAndLevelPickers();
+  renderScenarioCatalog();
+  updateStartPracticeUI();
+  renderDemoContestPreviewCard();
+
+  if (dest === 'progress' || dest === 'progressScreen') {
+    await showScreen('progressScreen');
+  } else if (dest === 'certificates') {
+    await openAllCertificatesModal();
+  } else if (dest === 'certificate') {
+    openCertificateModal(intent?.certData || null);
+  } else if (dest === 'profile') {
+    openProfileModal();
+  } else if (dest === 'paywall') {
+    openPaywallModal();
+  } else if (intent?.scenarioId) {
+    await openScenario(intent.scenarioId);
+  } else if (selectedDomain && selectedLevel) {
+    await loadDomainScenarios(selectedDomain, { includeSql: true });
+    if ($('missionMap')) {
+      openMissionMap(selectedDomain, selectedLevel);
+      return;
+    }
+    await loadScenario();
+    await showScreen('practice');
+  } else {
+    await showScreen('home');
+  }
+}
+
+function exitDemoMode() {
+  isDemoMode = false;
+  demoPremiumPreviewActive = false;
+  clearDemoStorage();
+  clearPendingAuthIntent();
+  state = EMPTY();
+  if (user && user.id) state = readProgress(storage, user.id, ids);
+  current = null;
+  selectedDomain = null;
+  selectedLevel = null;
+  closeLoginModal();
+  closeChooseLevelModal();
+  closePaywallModal();
+  closeCertificateModal();
+  closeAllCertificatesModal();
+  closeProfileModal();
+  closeProfileDropdown();
+  closeMotivationModal();
+  closeLevelCompletionModal();
+  closeContestModal();
+  const contestWrapper = $('contestCardWrapper');
+  if (contestWrapper) {
+    contestWrapper.style.display = 'none';
+    contestWrapper.innerHTML = '';
+  }
+  if ($('home')) $('home').classList.add('active');
+  if ($('practice')) $('practice').classList.remove('active');
+  if ($('progressScreen')) $('progressScreen').classList.remove('active');
+  if ($('navHome')) $('navHome').classList.add('active');
+  if ($('navPractice')) $('navPractice').classList.remove('active');
+  if ($('navProgress')) $('navProgress').classList.remove('active');
+  currentActiveScreen = 'home';
+  authNotice = '';
+  if ($('loginErrorMessage')) $('loginErrorMessage').textContent = '';
+  clearDomainSelectionWarning(false);
+  hideAccessError();
+  updateDemoModeUI();
+  updateAdminPortalVisibility();
+  renderAuth();
+  updateProgress();
+  renderDomainAndLevelPickers();
+  renderScenarioCatalog();
+  updateStartPracticeUI();
+  if (user && client) {
+    void initContest(client, user, getCompletedCount(), isCurrentUserAdmin);
+  }
+}
+
+function signInFromDemo() {
+  closeProfileDropdown();
+  closeProfileModal();
+  const savedDomain = current?.domain || selectedDomain || null;
+  const savedLevel = current?.level || selectedLevel || null;
+  const savedScenarioId = current?.id || null;
+  const targetDest = currentActiveScreen === 'progress' ? 'progressScreen' : 'practice';
+  selectedDomain = savedDomain;
+  selectedLevel = savedLevel;
+  renderDomainAndLevelPickers();
+  renderScenarioCatalog();
+  updateStartPracticeUI();
+  requestGoogleLogin({
+    destination: targetDest,
+    domain: savedDomain,
+    level: savedLevel,
+    scenarioId: savedScenarioId
+  });
+}
+
+function handleProfileGoogleSignIn() {
+  closeProfileDropdown();
+  if (isDemoMode) {
+    signInFromDemo();
+  } else {
+    requestGoogleLogin({
+      destination: currentActiveScreen === 'progress' ? 'progressScreen' : 'practice',
+      domain: current?.domain || selectedDomain,
+      level: current?.level || selectedLevel,
+      scenarioId: current?.id || null
+    });
+  }
+}
 
 function savePendingAuthIntent(intent) {
   if (!intent || typeof intent !== 'object') return;
@@ -263,6 +556,16 @@ function openLoginModal(options = {}) {
       badgeEl.style.display = 'none';
     }
   }
+  const loginDemoBtn = $('startDemoModeBtn');
+  if (loginDemoBtn) {
+    loginDemoBtn.hidden = Boolean(isDemoMode);
+    loginDemoBtn.style.display = isDemoMode ? 'none' : 'inline-flex';
+  }
+  const loginExitBtn = $('loginExitDemoBtn');
+  if (loginExitBtn) {
+    loginExitBtn.hidden = !isDemoMode;
+    loginExitBtn.style.display = isDemoMode ? 'inline-flex' : 'none';
+  }
   if ($('appMain')) $('appMain').hidden = false;
   if ($('bottomNav')) $('bottomNav').hidden = false;
   const loginScreen = $('loginScreen');
@@ -292,13 +595,23 @@ function cancelGoogleLoginPopup() {
   if ($('loginErrorMessage')) $('loginErrorMessage').textContent = '';
   if ($('appMain')) $('appMain').hidden = false;
   if ($('bottomNav')) $('bottomNav').hidden = false;
-  if ($('home')) $('home').classList.add('active');
-  if ($('practice')) $('practice').classList.remove('active');
-  if ($('progressScreen')) $('progressScreen').classList.remove('active');
-  if ($('navHome')) $('navHome').classList.add('active');
-  if ($('navPractice')) $('navPractice').classList.remove('active');
-  if ($('navProgress')) $('navProgress').classList.remove('active');
-  currentActiveScreen = 'home';
+  if (isDemoMode && current && currentActiveScreen === 'practice') {
+    if ($('practice')) $('practice').classList.add('active');
+    if ($('home')) $('home').classList.remove('active');
+    if ($('progressScreen')) $('progressScreen').classList.remove('active');
+    if ($('navPractice')) $('navPractice').classList.add('active');
+    if ($('navHome')) $('navHome').classList.remove('active');
+    if ($('navProgress')) $('navProgress').classList.remove('active');
+  } else {
+    if ($('home')) $('home').classList.add('active');
+    if ($('practice')) $('practice').classList.remove('active');
+    if ($('progressScreen')) $('progressScreen').classList.remove('active');
+    if ($('navHome')) $('navHome').classList.add('active');
+    if ($('navPractice')) $('navPractice').classList.remove('active');
+    if ($('navProgress')) $('navProgress').classList.remove('active');
+    currentActiveScreen = 'home';
+  }
+  updateDemoModeUI();
   renderDomainAndLevelPickers();
   renderScenarioCatalog();
   updateStartPracticeUI();
@@ -319,9 +632,26 @@ function requestGoogleLogin(intent = {}) {
   });
 }
 
+function showChooseLevelNotice(msg, isError = true) {
+  const noticeEl = $('chooseLevelNotice');
+  if (!noticeEl) return;
+  if (!msg) {
+    noticeEl.hidden = true;
+    noticeEl.style.display = 'none';
+    noticeEl.textContent = '';
+    return;
+  }
+  noticeEl.hidden = false;
+  noticeEl.style.display = 'block';
+  noticeEl.style.background = isError ? 'rgba(239, 68, 68, 0.16)' : 'rgba(6, 182, 212, 0.14)';
+  noticeEl.style.borderColor = isError ? 'rgba(248, 113, 113, 0.45)' : 'rgba(34, 211, 238, 0.35)';
+  noticeEl.style.color = isError ? '#fecaca' : '#a5f3fc';
+  noticeEl.textContent = msg;
+}
+
 function updateStartPracticeUI() {
   const btn = $('startPracticeBtn');
-  const label = $('startPracticeBtnText');
+  const label = $('startPracticeBtnLabel') || $('startPracticeBtnText');
   const hint = $('startPracticeHint');
   if (selectedDomain && selectedLevel) {
     if (btn) {
@@ -329,23 +659,27 @@ function updateStartPracticeUI() {
       btn.style.opacity = '1';
     }
     if (label) {
-      label.textContent = `Start Practice (${selectedDomain} • ${selectedLevel}) →`;
+      label.textContent = `Go to Practice (${selectedLevel}) →`;
     }
     if (hint) {
       hint.textContent = user
-        ? `Ready to practice ${selectedDomain} (${selectedLevel}). Click Start Practice to open your next question.`
-        : `Selected ${selectedDomain} (${selectedLevel}). Click Start Practice to sign in with Google and begin.`;
-      hint.style.color = '#1e40af';
+        ? `Ready to practice ${selectedDomain} (${selectedLevel}). Click Go to Practice to open your next question.`
+        : (isDemoMode
+          ? `Demo Mode: Ready to practice ${selectedDomain} (${selectedLevel}). Click Go to Practice to begin.`
+          : `Selected ${selectedDomain} (${selectedLevel}). Click Go to Practice to sign in with Google.`);
+      hint.style.color = '#38bdf8';
     }
   } else {
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+    }
     if (label) {
-      label.textContent = 'Start Practice →';
+      label.textContent = 'Go to Practice';
     }
     if (hint) {
       if (selectedDomain && !selectedLevel) {
-        hint.textContent = `Selected ${selectedDomain}. Now choose a Difficulty Level (Beginner, Intermediate, or Expert) above.`;
-      } else if (!selectedDomain && selectedLevel) {
-        hint.textContent = `Selected ${selectedLevel}. Now choose a Business Domain above.`;
+        hint.textContent = `Selected ${selectedDomain}. Choose a level above to enable Go to Practice.`;
       } else {
         hint.textContent = 'Select a Domain and Difficulty Level above to start your practice session.';
       }
@@ -354,35 +688,186 @@ function updateStartPracticeUI() {
   }
 }
 
-async function startPracticeSession() {
-  if (activeSessionInitPromise) {
-    await activeSessionInitPromise;
+let isStartingPracticeSession = false;
+let domainWarningTimer = null;
+
+function showDomainSelectionWarning() {
+  const warningEl = $('domainSelectionWarning');
+  const domainSection = $('domainMissionsSection') || document.querySelector('.domain-missions-section');
+
+  if (warningEl) {
+    warningEl.style.display = 'flex';
+    const inner = warningEl.querySelector('.domain-selection-toast-inner');
+    if (inner) {
+      inner.style.animation = 'none';
+      void inner.offsetWidth; // trigger reflow
+      inner.style.animation = 'domainToastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+    }
+    const selectBtn = $('domainWarningSelectBtn') || $('domainWarningOkBtn');
+    if (selectBtn && typeof selectBtn.focus === 'function') {
+      try { selectBtn.focus(); } catch (_) {}
+    }
   }
-  if (!selectedDomain || !selectedLevel) {
+
+  if (domainSection) {
+    domainSection.classList.add('highlight-choose-domain');
+    try {
+      const rect = domainSection.getBoundingClientRect();
+      const inView = rect.top >= 40 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+      if (!inView) {
+        domainSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    } catch (_) {}
+  }
+
+  if (domainWarningTimer) {
+    clearTimeout(domainWarningTimer);
+    domainWarningTimer = null;
+  }
+
+  domainWarningTimer = setTimeout(() => {
+    clearDomainSelectionWarning(true);
+  }, 4000);
+}
+
+function clearDomainSelectionWarning(animate = false) {
+  if (domainWarningTimer) {
+    clearTimeout(domainWarningTimer);
+    domainWarningTimer = null;
+  }
+
+  const warningEl = $('domainSelectionWarning');
+  const domainSection = $('domainMissionsSection') || document.querySelector('.domain-missions-section');
+
+  if (domainSection) {
+    domainSection.classList.remove('highlight-choose-domain');
+  }
+
+  if (!warningEl) return;
+
+  if (animate) {
+    const inner = warningEl.querySelector('.domain-selection-toast-inner');
+    if (inner) {
+      inner.style.animation = 'domainToastSlideOut 0.2s ease-in forwards';
+      setTimeout(() => {
+        if (!domainWarningTimer) {
+          warningEl.style.display = 'none';
+        }
+      }, 200);
+      return;
+    }
+  }
+
+  warningEl.style.display = 'none';
+}
+
+function goToSelectDomain() {
+  clearDomainSelectionWarning(false);
+  if (currentActiveScreen !== 'home') {
     showScreen('home');
-    const hint = $('startPracticeHint');
-    if (hint) {
-      hint.textContent = !selectedDomain && !selectedLevel
-        ? 'Please select both a Domain and a Difficulty Level first to start practicing.'
-        : (!selectedDomain ? 'Please select a Domain above first.' : 'Please select a Difficulty Level above first.');
-      hint.style.color = '#b45309';
-    }
-    const picker = $('coreDomainsGrid') || $('levelsPicker');
-    if (picker && typeof picker.scrollIntoView === 'function') {
-      picker.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    return;
   }
-  if (!user) {
-    requestGoogleLogin({
-      destination: 'practice',
-      domain: selectedDomain,
-      level: selectedLevel
-    });
-    return;
+  const domainSection = $('domainMissionsSection') || $('allDomainsGrid') || document.querySelector('.domain-missions-section');
+  if (domainSection) {
+    domainSection.classList.add('highlight-choose-domain');
+    try {
+      domainSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (_) {
+      try { domainSection.scrollIntoView(); } catch (e) {}
+    }
   }
-  await loadScenario();
-  await showScreen('practice');
+  setTimeout(() => {
+    const firstCard = document.querySelector('#allDomainsGrid .domain-mission-card, .domain-missions-grid .domain-mission-card');
+    if (firstCard && typeof firstCard.focus === 'function') {
+      try { firstCard.focus(); } catch (_) {}
+    }
+  }, 250);
+}
+
+window.showDomainSelectionWarning = showDomainSelectionWarning;
+window.clearDomainSelectionWarning = clearDomainSelectionWarning;
+window.goToSelectDomain = goToSelectDomain;
+window.pauseDomainWarningTimer = () => {
+  if (domainWarningTimer) {
+    clearTimeout(domainWarningTimer);
+    domainWarningTimer = null;
+  }
+};
+window.resumeDomainWarningTimer = () => {
+  const warningEl = $('domainSelectionWarning');
+  if (warningEl && warningEl.style.display !== 'none' && !domainWarningTimer) {
+    domainWarningTimer = setTimeout(() => {
+      clearDomainSelectionWarning(true);
+    }, 4000);
+  }
+};
+
+async function startPracticeSession() {
+  const evt = typeof window !== 'undefined' ? window.event : null;
+  if (evt && typeof evt.stopPropagation === 'function') {
+    evt.stopPropagation();
+  }
+  if (isStartingPracticeSession) return;
+  isStartingPracticeSession = true;
+  try {
+    if (activeSessionInitPromise) {
+      await activeSessionInitPromise;
+    }
+    const chosenDomain = selectedDomain;
+    const chosenLevel = selectedLevel;
+    if (!chosenDomain) {
+      showDomainSelectionWarning();
+      if (currentActiveScreen !== 'home') {
+        showScreen('home');
+      }
+      return;
+    }
+    if (!chosenLevel) {
+      openChooseLevelModal(chosenDomain);
+      return;
+    }
+    if (!isDomainUnlocked(chosenDomain, scenarios, state) || !isLevelUnlocked(chosenDomain, chosenLevel, scenarios, state)) {
+      onLockedLevelClick(chosenDomain, chosenLevel);
+      return;
+    }
+    closeChooseLevelModal();
+    selectedDomain = chosenDomain;
+    selectedLevel = chosenLevel;
+    renderDomainAndLevelPickers();
+    updateStartPracticeUI();
+    await loadDomainScenarios(chosenDomain, { includeSql: true });
+    if (!Array.isArray(scenarios) || scenarios.length === 0) {
+      await loadFullScenariosInBackground();
+    }
+    if (!Array.isArray(scenarios) || scenarios.length === 0) {
+      showAccessCheckError('Exercises could not be loaded. Please check your connection and try again.');
+      return;
+    }
+    if (isDemoMode) {
+      if ($('missionMap')) {
+        openMissionMap(selectedDomain, selectedLevel);
+        return;
+      }
+      await loadScenario();
+      await showScreen('practice');
+      return;
+    }
+    if (!user) {
+      requestGoogleLogin({
+        destination: 'practice',
+        domain: selectedDomain,
+        level: selectedLevel
+      });
+      return;
+    }
+    if ($('missionMap')) {
+      openMissionMap(selectedDomain, selectedLevel);
+      return;
+    }
+    await loadScenario();
+    await showScreen('practice');
+  } finally {
+    isStartingPracticeSession = false;
+  }
 }
 
 function setDomainTrack(track) {
@@ -401,6 +886,9 @@ function setDomainTrack(track) {
 }
 
 function updateProgress() {
+  if (isDemoMode) {
+    saveDemoProgress();
+  }
   const activeScenarios = (currentDomainTrack === 'core' && !scenarioSearchQuery)
     ? scenarios.filter(s => CORE_DOMAINS.includes(s.domain))
     : scenarios;
@@ -476,31 +964,221 @@ function updateNotificationsUI() {
     adminNotifications: cachedAdminNotifications
   });
 }
+function formatTextWithCodeChips(text, scenario) {
+  if (!text) return '';
+  let str = String(text);
+
+  if (str.includes('<code')) {
+    return str.replace(/<code>/gi, '<code class="inline-code-chip">');
+  }
+
+  str = escapeHtml(str);
+
+  // 1. Quoted values (e.g., 'ACTIVE', 'COMPLETED', 'Active')
+  str = str.replace(/'([^']+)'/g, '<code class="inline-code-chip">&apos;$1&apos;</code>');
+
+  // 2. Backticked values (e.g. `accounts`, `status`, `customer_id`)
+  str = str.replace(/`([^`]+)`/g, '<code class="inline-code-chip">$1</code>');
+
+  // 3. Snake_case identifiers (like patient_id, appointment_date, total_amount, customer_id, account_id)
+  str = str.replace(/\b([a-z0-9]+_[a-z0-9_]+)\b/gi, '<code class="inline-code-chip">$1</code>');
+
+  // 4. Known required/relevant tables for current scenario
+  const scenarioTables = Array.isArray(scenario?.requiredTables) && scenario.requiredTables.length > 0
+    ? scenario.requiredTables
+    : (Array.isArray(scenario?.tables) ? scenario.tables : []);
+  
+  scenarioTables.forEach(t => {
+    if (t && t.length > 1) {
+      const re = new RegExp(`\\b${t}\\b`, 'gi');
+      str = str.replace(re, `<code class="inline-code-chip">${t}</code>`);
+    }
+  });
+
+  // 5. Relevant columns / concepts from current scenario
+  if (scenario && Array.isArray(scenario.relevantColumns)) {
+    scenario.relevantColumns.forEach(c => {
+      if (c && c.length > 1 && !c.includes('_') && isNaN(c)) {
+        const re = new RegExp(`\\b${c}\\b`, 'gi');
+        str = str.replace(re, `<code class="inline-code-chip">${c}</code>`);
+      }
+    });
+  }
+
+  return str;
+}
+
+function getScenarioDataEngineerThinking(scenario) {
+  if (!scenario) return { step1: '', step2: '', step3: '' };
+
+  // 1. Prefer reviewed, scenario-specific explanation if stored against scenario ID:
+  if (scenario.dataEngineerThinking) {
+    const dt = scenario.dataEngineerThinking;
+    return {
+      step1: dt.step1 || dt.data || '',
+      step2: dt.step2 || dt.rule || '',
+      step3: dt.step3 || dt.result || ''
+    };
+  }
+
+  // 2. Derive specific 3 steps using actual scenario properties:
+  const reqTables = Array.isArray(scenario.requiredTables) && scenario.requiredTables.length > 0
+    ? scenario.requiredTables
+    : (Array.isArray(scenario.tables) && scenario.tables.length > 0 ? scenario.tables : ['accounts']);
+
+  const sqlUpper = String(scenario.sql || '').toUpperCase();
+  const pseudoText = String(scenario.pseudo || scenario.solution_approach || scenario.logic || '').trim();
+
+  // --- Step 1: Find the right data ---
+  let step1 = '';
+  if (scenario.exampleThinking?.sources && !scenario.exampleThinking.sources.toLowerCase().includes('all tables')) {
+    step1 = scenario.exampleThinking.sources;
+  } else {
+    if (reqTables.length === 1) {
+      const t = reqTables[0];
+      if (t === 'accounts') step1 = `Use the accounts table, where account details, balances, and statuses are stored.`;
+      else if (t === 'customers' || t === 'patients' || t === 'clients' || t === 'investors' || t === 'students') step1 = `Use the ${t} table, where entity profiles, segments, and master records are stored.`;
+      else if (t === 'transactions' || t === 'visits' || t === 'claims' || t === 'trades' || t === 'test_results' || t === 'assessments' || t === 'order_items') step1 = `Use the ${t} table, where event log activity, types, and amounts are recorded.`;
+      else if (t === 'account_products' || t === 'doctors' || t === 'insurance_products' || t === 'securities' || t === 'chip_products' || t === 'courses' || t === 'products') step1 = `Use the ${t} catalog table, where product and item definitions are stored.`;
+      else step1 = `Use the ${t} table to locate the specific records required for this query.`;
+    } else if (reqTables.length === 2) {
+      step1 = `Use the ${reqTables[0]} and ${reqTables[1]} tables to combine master profiles with matching record details.`;
+    } else {
+      step1 = `Use the ${reqTables.join(', ')} tables, joining them on primary and foreign keys to assemble the dataset.`;
+    }
+  }
+
+  // --- Step 2: Apply the business rule ---
+  let step2 = '';
+  if (scenario.exampleThinking?.steps) {
+    step2 = scenario.exampleThinking.steps;
+  } else if (pseudoText) {
+    let cleanPseudo = pseudoText;
+    if (cleanPseudo.toLowerCase().startsWith('i will ')) {
+      cleanPseudo = cleanPseudo.slice(7).trim();
+      cleanPseudo = cleanPseudo.charAt(0).toUpperCase() + cleanPseudo.slice(1);
+    }
+    step2 = cleanPseudo;
+    if (sqlUpper.includes("WHERE STATUS = 'ACTIVE'") || sqlUpper.includes("WHERE STATUS='ACTIVE'")) {
+      if (!step2.toLowerCase().includes('leave out') && !step2.toLowerCase().includes('exclude')) {
+        step2 += " Leave out Closed, Dormant, Pending, and Suspended records.";
+      }
+    }
+  } else {
+    if (sqlUpper.includes("WHERE STATUS = 'ACTIVE'") || sqlUpper.includes("WHERE STATUS='ACTIVE'")) {
+      step2 = "Keep only records where status is Active. Leave out Closed, Dormant, Pending, and Suspended records.";
+    } else if (sqlUpper.includes('WHERE BALANCE >') || sqlUpper.includes('WHERE AMOUNT >') || sqlUpper.includes('WHERE PREMIUM_AMOUNT >')) {
+      step2 = "Filter for records exceeding the specified monetary threshold in the business question.";
+    } else if (sqlUpper.includes('COUNT(')) {
+      step2 = "Apply the required filter conditions and compute the aggregate total count of matching records.";
+    } else if (sqlUpper.includes('SUM(') || sqlUpper.includes('AVG(')) {
+      step2 = "Group and aggregate target records to calculate total or average values as requested.";
+    } else if (sqlUpper.includes('JOIN ')) {
+      step2 = "Join matching records across tables using key fields and apply required filter criteria.";
+    } else {
+      step2 = "Filter and transform records according to the specific criteria required by the question.";
+    }
+  }
+
+  // --- Step 3: Shape the final result ---
+  let step3 = '';
+  if (scenario.exampleThinking?.check) {
+    step3 = scenario.exampleThinking.check;
+  } else {
+    if (sqlUpper.includes('SELECT *')) {
+      step3 = "Show all recorded columns for the matching target records.";
+    } else if (sqlUpper.includes('COUNT(')) {
+      step3 = "Return the total count of matching records as a single calculated result.";
+    } else if (sqlUpper.includes('GROUP BY')) {
+      step3 = "Output the summary categories alongside their calculated aggregate totals.";
+    } else if (sqlUpper.includes('ORDER BY')) {
+      step3 = "Present the final output sorted in the requested sequence.";
+    } else {
+      step3 = "Return the requested output columns and matching target records.";
+    }
+  }
+
+  return { step1, step2, step3 };
+}
+
+function renderHowToThinkCard(scenario) {
+  if (!scenario) return '';
+
+  const { step1, step2, step3 } = getScenarioDataEngineerThinking(scenario);
+
+  const formatted1 = formatTextWithCodeChips(step1, scenario);
+  const formatted2 = formatTextWithCodeChips(step2, scenario);
+  const formatted3 = formatTextWithCodeChips(step3, scenario);
+
+  return `
+    <div class="how-to-think-card-v2">
+      <div class="how-to-think-header">
+        <span class="how-to-think-lightbulb">💡</span>
+        <span class="how-to-think-heading">How to Think Like a Data Engineer</span>
+      </div>
+      <div class="how-to-think-steps-list">
+        <div class="how-to-think-step-item">
+          <div class="how-to-think-step-title">1. Find the right data</div>
+          <div class="how-to-think-step-body">${formatted1}</div>
+        </div>
+        <div class="how-to-think-step-item">
+          <div class="how-to-think-step-title">2. Apply the business rule</div>
+          <div class="how-to-think-step-body">${formatted2}</div>
+        </div>
+        <div class="how-to-think-step-item">
+          <div class="how-to-think-step-title">3. Shape the final result</div>
+          <div class="how-to-think-step-body">${formatted3}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let assessmentRevealRafId = null;
+
 function renderAssessment(result) {
-  $('feedback').classList.toggle('active', !!result);
+  const feedbackEl = $('feedback');
+  const scoreEl = $('score');
+  const msgEl = $('assessmentMessage');
   const ring = $('scoreRing');
   const num = $('scoreNum');
   const headline = $('scoreHeadline');
   const howToThinkBox = $('howToThinkBox');
-  
-  if (!result) {
+  const hasResult = Boolean(result && typeof result === 'object' && typeof result.score === 'number');
+
+  if (assessmentRevealRafId !== null && typeof cancelAnimationFrame === 'function') {
+    cancelAnimationFrame(assessmentRevealRafId);
+    assessmentRevealRafId = null;
+  }
+
+  if (!hasResult) {
+    if (feedbackEl) {
+      feedbackEl.classList.remove('active', 'result-enter');
+      feedbackEl.setAttribute('data-has-result', 'false');
+    }
+    if (scoreEl) scoreEl.textContent = '';
+    if (msgEl) msgEl.textContent = '';
     if (ring) ring.style.background = 'conic-gradient(var(--line) 0deg, var(--line) 360deg)';
     if (num) num.textContent = '0';
     if (headline) headline.textContent = 'Explain your plan to calculate score (Goal, Sources, Logic)';
-    if (howToThinkBox) { howToThinkBox.hidden = true; howToThinkBox.innerHTML = ''; }
+    if (howToThinkBox) {
+      howToThinkBox.hidden = true;
+      howToThinkBox.innerHTML = '';
+      howToThinkBox.classList.remove('result-enter');
+    }
     ['Goal', 'Sources', 'Steps', 'Check'].forEach(k => {
       const chip = $('chip' + k);
       if (chip) { chip.className = 'score-chip'; chip.textContent = k; }
     });
     return;
   }
-  
+
   const score = result.score;
   const deg = (score / 10) * 360;
   const ringColor = result.ready ? 'var(--good)' : score >= 5 ? 'var(--warn)' : 'var(--primary)';
   if (ring) ring.style.background = `conic-gradient(${ringColor} ${deg}deg, var(--line) 0deg)`;
   if (num) num.textContent = String(score);
-  
+
   if (headline) {
     headline.textContent = result.ready
       ? `✓ Score ${score}/10 — Great intuition! (Ready to generate SQL)`
@@ -508,34 +1186,73 @@ function renderAssessment(result) {
       ? `Thinking Score: ${score}/10 — Good intuition! Review the decoded plan below.`
       : `Thinking Score: ${score}/10 — Review how a data engineer thinks below.`;
   }
-  
-  if ($('score')) $('score').textContent = `Thinking Score: ${score}/10`;
-  if ($('assessmentMessage')) $('assessmentMessage').textContent = result.message;
-  
+
+  if (scoreEl) scoreEl.textContent = `Thinking Score: ${score}/10`;
+  if (msgEl) msgEl.textContent = result.message || '';
+
   if ($('improve')) $('improve').innerHTML = '';
 
   // Decode and show: "How to Think Like a Data Engineer"
   if (howToThinkBox && current) {
+    howToThinkBox.innerHTML = renderHowToThinkCard(current);
     howToThinkBox.hidden = false;
-    howToThinkBox.innerHTML = `
-      <div class="how-to-think-card" style="margin-top:12px;padding:12px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;">
-        <div style="margin-bottom:8px;">
-          <strong style="color:#0369a1;font-size:14px;">💡 How to Think Like a Data Engineer:</strong>
-        </div>
-        <div style="font-size:13px;line-height:1.6;color:var(--ink);">
-          <div style="margin-bottom:6px;"><strong>1. Table:</strong> From the <code>${current.tables.join(', ')}</code> table${current.tables.length > 1 ? 's' : ''}, where this data lives.</div>
-          <div style="margin-bottom:6px;"><strong>2. What to do:</strong> ${escapeHtml(current.pseudo || 'Apply the required filter, join, or aggregation logic to isolate the target rows.')}</div>
-          <div><strong>3. Expected result:</strong> Show the requested details in the final output.</div>
-        </div>
-      </div>
-    `;
+  }
+
+  if (feedbackEl) {
+    feedbackEl.classList.add('active');
+    feedbackEl.setAttribute('data-has-result', 'true');
+  }
+
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion && typeof requestAnimationFrame === 'function') {
+    if (feedbackEl) feedbackEl.classList.add('result-enter');
+    if (howToThinkBox && !howToThinkBox.hidden) howToThinkBox.classList.add('result-enter');
+    if (feedbackEl) void feedbackEl.offsetHeight;
+    assessmentRevealRafId = requestAnimationFrame(() => {
+      assessmentRevealRafId = null;
+      if (feedbackEl) feedbackEl.classList.remove('result-enter');
+      if (howToThinkBox) howToThinkBox.classList.remove('result-enter');
+    });
+  } else {
+    if (feedbackEl) feedbackEl.classList.remove('result-enter');
+    if (howToThinkBox) howToThinkBox.classList.remove('result-enter');
   }
 }
 function updateGates() {
   const e = entry();
   if ($('practiceStatus')) $('practiceStatus').textContent = current ? labels[stage(current, e)] : '';
-  const thinkingScore = typeof e.assessment?.score === 'number' ? e.assessment.score : 0;
-  if ($('nextButton')) $('nextButton').disabled = thinkingScore < 7;
+  const thinkingScore = typeof e.assessment?.score === 'number'
+    ? e.assessment.score
+    : (typeof e.thinkingScore === 'number' ? e.thinkingScore : 0);
+  const unlocked = Boolean(thinkingScore >= 7 || e.completed);
+  if ($('nextButton')) $('nextButton').disabled = !unlocked;
+  const genBtn = $('generateSqlBtn');
+  if (genBtn) {
+    genBtn.disabled = !unlocked;
+    genBtn.setAttribute('aria-disabled', unlocked ? 'false' : 'true');
+  }
+  const unlockHint = $('sqlUnlockHint');
+  if (unlockHint) {
+    unlockHint.textContent = unlocked
+      ? '✓ Thinking verified (Score ≥ 7/10). Copy the PostgreSQL package below to practice in DB Fiddle.'
+      : 'Complete your thinking plan (Score ≥ 7/10) or copy the PostgreSQL package below to practice in DB Fiddle.';
+    unlockHint.classList.toggle('unlocked', unlocked);
+  }
+  const genPanel = $('generatedSqlPanel');
+  const genCode = $('generatedSqlCode');
+  if (genPanel) {
+    if (!unlocked || !e.sql) {
+      genPanel.hidden = true;
+      if (genCode) genCode.textContent = '';
+    } else {
+      genPanel.hidden = false;
+      if (genCode) genCode.textContent = e.sql;
+    }
+  }
 }
 
 async function copySchemaAndOpenFiddle() {
@@ -549,7 +1266,7 @@ async function copySchemaAndOpenFiddle() {
   }
 
   // Ensure full scenario data (including reference SQL and variants) is loaded
-  if (!current.sql) {
+  if (!(current.sql || current.answer_sql)) {
     try {
       const full = await ensureFullScenario(current);
       if (full) current = full;
@@ -558,33 +1275,59 @@ async function copySchemaAndOpenFiddle() {
     }
   }
 
-  const domain = current.domain || selectedDomain || 'Banking';
-  const asset = data?.assets?.[domain];
-  if (!asset) {
-    if (confirmEl) {
-      confirmEl.style.color = '#dc2626';
-      confirmEl.textContent = 'Scenario database setup is unavailable. Please reload the exercise.';
-    }
-    return;
-  }
-
   // Retrieve effective scenario variant and specific reference SQL answer
-  const effective = (typeof getEffectiveScenario === 'function'
+  const baseEffective = (typeof getEffectiveScenario === 'function'
     ? getEffectiveScenario(current, user?.id || 'guest_user', state)
     : null) || current;
 
-  // Fallback to scenario catalog if reference SQL is not yet loaded on current
-  if (!effective.sql && Array.isArray(scenarios)) {
+  const effective = {
+    ...current,
+    ...baseEffective,
+    domain: baseEffective.domain || current.domain || '',
+    level: baseEffective.level || current.level || '',
+    question: baseEffective.question || baseEffective.business_scenario || current.question || current.business_scenario || '',
+    sql: baseEffective.sql || baseEffective.answer_sql || current.sql || current.answer_sql || '',
+    selectedVariant: baseEffective.selectedVariant || current.selectedVariant || null
+  };
+
+  // Fallback to scenario catalog if reference SQL or question is not yet loaded on current
+  if ((!effective.sql || !effective.question) && Array.isArray(scenarios)) {
     const fromBank = scenarios.find(s => s.id === (effective.id || current.id));
     if (fromBank) {
-      effective.sql = fromBank.sql;
       if (!effective.sql) {
-        effective.sql = fromBank.sql;
+        effective.sql = fromBank.sql || fromBank.answer_sql || '';
+      }
+      if (!effective.question) {
+        effective.question = fromBank.question || fromBank.business_scenario || '';
+      }
+      if (!effective.domain) {
+        effective.domain = fromBank.domain || '';
+      }
+      if (!effective.level) {
+        effective.level = fromBank.level || '';
       }
     }
   }
 
+  // Never fall back to Banking assets for another domain
+  const domain = effective.domain;
+  const asset = domain ? (data?.assets?.[domain] || DOMAIN_SCHEMA_ASSETS[domain]) : null;
+  if (!domain || !asset || !asset.schema || !asset.sample || !effective.sql) {
+    if (confirmEl) {
+      confirmEl.style.color = '#dc2626';
+      confirmEl.textContent = 'Scenario database setup (schema, sample data, or reference SQL) is unavailable. Please reload the exercise.';
+    }
+    return;
+  }
+
   const completePackage = buildFiddlePracticePackage(effective, asset);
+  if (!completePackage) {
+    if (confirmEl) {
+      confirmEl.style.color = '#dc2626';
+      confirmEl.textContent = 'Could not prepare a valid PostgreSQL package for this scenario.';
+    }
+    return;
+  }
 
   let copied = false;
   try {
@@ -615,8 +1358,8 @@ async function copySchemaAndOpenFiddle() {
 
   if (confirmEl) {
     if (copied) {
-      confirmEl.style.color = '#166534';
-      confirmEl.textContent = '✓ Practice package copied to clipboard (Schema + Sample Data + Reference SQL). Paste into DB Fiddle to run.';
+      confirmEl.style.color = '#5eead4';
+      confirmEl.textContent = '✓ PostgreSQL package copied to clipboard! In DB Fiddle, select PostgreSQL, paste Schema + Sample Data in Schema SQL (left) and Reference Query in Query SQL (right), then click Run.';
     } else {
       confirmEl.style.color = '#dc2626';
       confirmEl.textContent = 'Could not copy to clipboard. Please check browser clipboard permissions.';
@@ -907,6 +1650,243 @@ function getPracticeQuestionPresentation(scenario, selectedVariant = null) {
   return { business: text, instruction: '' };
 }
 
+function buildManagerPortraitSvg(accent, shirt, hair, badgeChar) {
+  return `<svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <rect width="64" height="64" rx="16" fill="#0B132B"/>
+    <circle cx="32" cy="32" r="28" fill="${accent}" fill-opacity="0.14"/>
+    <path d="M14 58C15.5 46.5 22.5 41 32 41C41.5 41 48.5 46.5 50 58" fill="${shirt}"/>
+    <path d="M26 41L32 49L38 41" fill="#E2E8F0"/>
+    <path d="M30.5 43.5H33.5L34.5 55H29.5L30.5 43.5Z" fill="${accent}"/>
+    <circle cx="32" cy="26" r="11" fill="#F1C27D"/>
+    <path d="M21 25C21 17.5 25.8 13 32 13C38.2 13 43 17.5 43 25C41.2 21.5 37.5 19.5 32 19.5C26.5 19.5 22.8 21.5 21 25Z" fill="${hair}"/>
+    <circle cx="28" cy="26.5" r="1.4" fill="#0F172A"/>
+    <circle cx="36" cy="26.5" r="1.4" fill="#0F172A"/>
+    <path d="M28.5 31.2C30.2 32.6 33.8 32.6 35.5 31.2" stroke="#0F172A" stroke-width="1.6" stroke-linecap="round"/>
+    <circle cx="50" cy="14" r="8" fill="#0F172A" stroke="${accent}" stroke-width="1.5"/>
+    <text x="50" y="17.5" text-anchor="middle" font-size="9.5" font-family="sans-serif" font-weight="800" fill="${accent}">${badgeChar}</text>
+  </svg>`;
+}
+
+function buildDomainSceneSvg(domainKey, accent, gold) {
+  const motifByDomain = {
+    Banking: `
+      <rect x="18" y="18" width="84" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <path d="M26 30H58M26 40H48" stroke="#FAF6EE" stroke-opacity="0.85" stroke-width="2" stroke-linecap="round"/>
+      <path d="M28 58L42 48L54 53L72 36L88 41" stroke="${accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="72" cy="36" r="3" fill="${gold}"/>
+      <circle cx="88" cy="41" r="3" fill="${accent}"/>
+      <rect x="114" y="22" width="48" height="44" rx="8" fill="#162952" stroke="${gold}" stroke-opacity="0.5" stroke-width="1.4"/>
+      <circle cx="138" cy="44" r="12" stroke="${gold}" stroke-width="2"/>
+      <text x="138" y="48" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="800" fill="${gold}">₹</text>
+    `,
+    Healthcare: `
+      <rect x="18" y="18" width="88" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <path d="M26 46H42L48 32L56 56L64 38L70 46H94" stroke="${accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="118" y="22" width="44" height="44" rx="10" fill="#162952" stroke="${gold}" stroke-opacity="0.45" stroke-width="1.4"/>
+      <path d="M140 32V56M128 44H152" stroke="${gold}" stroke-width="3.2" stroke-linecap="round"/>
+    `,
+    Insurance: `
+      <rect x="18" y="18" width="84" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <path d="M28 32H74M28 42H62M28 52H82" stroke="#FAF6EE" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round"/>
+      <path d="M138 20L156 27V42C156 54 148 62 138 66C128 62 120 54 120 42V27L138 20Z" fill="#162952" stroke="${gold}" stroke-width="1.8"/>
+      <path d="M131 43L136 48L146 37" stroke="${accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    `,
+    Retail: `
+      <rect x="18" y="18" width="84" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="28" y="44" width="10" height="16" rx="2" fill="${accent}"/>
+      <rect x="44" y="36" width="10" height="24" rx="2" fill="${gold}"/>
+      <rect x="60" y="28" width="10" height="32" rx="2" fill="${accent}"/>
+      <rect x="76" y="33" width="10" height="27" rx="2" fill="#FAF6EE" fill-opacity="0.85"/>
+      <rect x="114" y="22" width="48" height="44" rx="8" fill="#162952" stroke="${gold}" stroke-opacity="0.5" stroke-width="1.4"/>
+      <path d="M126 34H150L147 50H129L126 34Z" stroke="${gold}" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="132" cy="56" r="2.5" fill="${accent}"/>
+      <circle cx="144" cy="56" r="2.5" fill="${accent}"/>
+    `,
+    'Capital Markets': `
+      <rect x="18" y="18" width="90" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <path d="M28 56L44 44L58 49L76 31L96 26" stroke="${accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="76" cy="31" r="3" fill="${gold}"/>
+      <circle cx="96" cy="26" r="3" fill="${gold}"/>
+      <rect x="118" y="22" width="44" height="44" rx="8" fill="#162952" stroke="${gold}" stroke-opacity="0.45" stroke-width="1.4"/>
+      <path d="M130 50V38M140 50V30M150 50V34" stroke="${gold}" stroke-width="3" stroke-linecap="round"/>
+    `,
+    Semiconductor: `
+      <rect x="18" y="18" width="84" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <circle cx="60" cy="44" r="16" stroke="${accent}" stroke-width="1.8"/>
+      <path d="M48 44H72M60 32V56" stroke="${gold}" stroke-width="1.4"/>
+      <rect x="118" y="24" width="40" height="40" rx="6" fill="#162952" stroke="${gold}" stroke-width="1.6"/>
+      <rect x="128" y="34" width="20" height="20" rx="3" fill="${accent}" fill-opacity="0.25" stroke="${accent}" stroke-width="1.4"/>
+    `,
+    Education: `
+      <rect x="18" y="18" width="84" height="52" rx="8" fill="#132247" stroke="${accent}" stroke-opacity="0.45" stroke-width="1.5"/>
+      <path d="M28 32H78M28 42H68M28 52H56" stroke="#FAF6EE" stroke-opacity="0.85" stroke-width="2" stroke-linecap="round"/>
+      <rect x="114" y="22" width="48" height="44" rx="8" fill="#162952" stroke="${gold}" stroke-opacity="0.45" stroke-width="1.4"/>
+      <path d="M138 30L154 37L138 44L122 37L138 30Z" fill="${gold}" fill-opacity="0.25" stroke="${gold}" stroke-width="1.6"/>
+      <path d="M128 41V50C128 53 133 55 138 55C143 55 148 53 148 50V41" stroke="${accent}" stroke-width="1.6" stroke-linecap="round"/>
+    `
+  };
+  const motif = motifByDomain[domainKey] || motifByDomain.Banking;
+  return `<svg viewBox="0 0 180 88" width="180" height="88" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <rect width="180" height="88" rx="14" fill="#0B132B"/>
+    <circle cx="152" cy="18" r="36" fill="${accent}" fill-opacity="0.1"/>
+    <circle cx="32" cy="72" r="28" fill="${gold}" fill-opacity="0.08"/>
+    ${motif}
+  </svg>`;
+}
+
+const DOMAIN_MANAGER_PERSONAS = {
+  'Banking': {
+    name: 'Arun',
+    role: 'Bank Manager',
+    badge: '🏦',
+    sceneTitle: 'Retail & Commercial Banking Operations',
+    svg: buildManagerPortraitSvg('#2DD4BF', '#1E3A8A', '#0F172A', '₹'),
+    sceneSvg: buildDomainSceneSvg('Banking', '#2DD4BF', '#D4AF37')
+  },
+  'Healthcare': {
+    name: 'Dr. Meera',
+    role: 'Hospital Coordinator',
+    badge: '🏥',
+    sceneTitle: 'Clinical Operations & Patient Records Desk',
+    svg: buildManagerPortraitSvg('#34D399', '#065F46', '#1E293B', '+'),
+    sceneSvg: buildDomainSceneSvg('Healthcare', '#34D399', '#D4AF37')
+  },
+  'Insurance': {
+    name: 'Vikram',
+    role: 'Insurance Service Manager',
+    badge: '🛡️',
+    sceneTitle: 'Policy Underwriting & Claims Intelligence',
+    svg: buildManagerPortraitSvg('#2DD4BF', '#1E3A8A', '#0F172A', '✓'),
+    sceneSvg: buildDomainSceneSvg('Insurance', '#2DD4BF', '#D4AF37')
+  },
+  'Retail': {
+    name: 'Divya',
+    role: 'Store Manager',
+    badge: '🛒',
+    sceneTitle: 'Store Merchandising & Order Fulfillment',
+    svg: buildManagerPortraitSvg('#FBBF24', '#78350F', '#1E293B', '★'),
+    sceneSvg: buildDomainSceneSvg('Retail', '#2DD4BF', '#F59E0B')
+  },
+  'Capital Markets': {
+    name: 'Rohan',
+    role: 'Investment Service Manager',
+    badge: '📈',
+    sceneTitle: 'Institutional Portfolio & Trade Desk',
+    svg: buildManagerPortraitSvg('#2DD4BF', '#134E4A', '#0F172A', '↗'),
+    sceneSvg: buildDomainSceneSvg('Capital Markets', '#2DD4BF', '#D4AF37')
+  },
+  'Semiconductor': {
+    name: 'Karthik',
+    role: 'Production Manager',
+    badge: '🔬',
+    sceneTitle: 'Wafer Fabrication & Yield Quality Lab',
+    svg: buildManagerPortraitSvg('#22D3EE', '#164E63', '#0F172A', '⚙'),
+    sceneSvg: buildDomainSceneSvg('Semiconductor', '#22D3EE', '#D4AF37')
+  },
+  'Education': {
+    name: 'Priya',
+    role: 'College Administrator',
+    badge: '🎓',
+    sceneTitle: 'Academic Registry & Enrollment Office',
+    svg: buildManagerPortraitSvg('#2DD4BF', '#1E3A8A', '#1E293B', 'A'),
+    sceneSvg: buildDomainSceneSvg('Education', '#2DD4BF', '#D4AF37')
+  }
+};
+
+function getDomainManagerPersona(domain) {
+  return DOMAIN_MANAGER_PERSONAS[domain] || DOMAIN_MANAGER_PERSONAS['Banking'];
+}
+
+function isUsableConversationName(value) {
+  if (typeof value !== 'string') return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  // Never display a full email address as the learner's conversation name
+  if (trimmed.includes('@')) return false;
+  const lower = trimmed.toLowerCase();
+  if (
+    lower === 'you' ||
+    lower === 'user' ||
+    lower === 'u' ||
+    lower === 'guest' ||
+    lower === 'guest learner' ||
+    lower === 'demo' ||
+    lower === 'demo_preview' ||
+    lower === 'learner'
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function getConversationLearnerName() {
+  if (typeof isDemoMode !== 'undefined' && isDemoMode) {
+    return 'Demo Learner';
+  }
+  const activeUser = typeof user !== 'undefined' ? user : null;
+  if (activeUser) {
+    if (typeof currentUsername === 'string' && isUsableConversationName(currentUsername)) {
+      return currentUsername.trim();
+    }
+    if (typeof getUserInfo === 'function') {
+      const info = getUserInfo();
+      if (info && isUsableConversationName(info.name)) {
+        return info.name.trim();
+      }
+    }
+    const meta = activeUser.user_metadata || {};
+    const metaName = meta.full_name || meta.name;
+    if (isUsableConversationName(metaName)) {
+      return String(metaName).trim();
+    }
+    if (typeof activeUser.email === 'string' && activeUser.email.includes('@')) {
+      const prefix = activeUser.email.split('@')[0].trim();
+      if (isUsableConversationName(prefix)) {
+        return prefix;
+      }
+    }
+  }
+  return 'Learner';
+}
+
+function refreshConversationLearnerIdentity() {
+  const el = $('conversationLearnerName');
+  if (el) {
+    el.textContent = getConversationLearnerName();
+  }
+}
+
+function getScenarioConversationDialogue(scenario, effectiveScenario = null, selectedVariant = null) {
+  if (!scenario && !effectiveScenario) {
+    return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
+  }
+  const baseQuestion = String(
+    scenario?.business_scenario ?? scenario?.question ?? effectiveScenario?.question ?? ''
+  ).trim();
+
+  if (selectedVariant && typeof selectedVariant === 'object') {
+    const variantQuestion = typeof selectedVariant.question === 'string' ? selectedVariant.question.trim() : '';
+    const vLq = typeof selectedVariant.learner_question === 'string' ? selectedVariant.learner_question.trim() : '';
+    const vMr = typeof selectedVariant.manager_reply === 'string' ? selectedVariant.manager_reply.trim() : '';
+    if (vLq && vMr) {
+      return { hasDialogue: true, learnerQuestion: vLq, managerReply: vMr };
+    }
+    if (variantQuestion && variantQuestion !== baseQuestion) {
+      return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
+    }
+  }
+
+  const rawLq = scenario?.learner_question ?? effectiveScenario?.learner_question;
+  const rawMr = scenario?.manager_reply ?? effectiveScenario?.manager_reply;
+  const learnerQuestion = typeof rawLq === 'string' ? rawLq.trim() : '';
+  const managerReply = typeof rawMr === 'string' ? rawMr.trim() : '';
+
+  if (!learnerQuestion || !managerReply) {
+    return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
+  }
+  return { hasDialogue: true, learnerQuestion, managerReply };
+}
+
 function renderScenario() {
   if (!current) return;
   const effective = getEffectiveScenario(current, user?.id || 'guest_user', state);
@@ -944,6 +1924,32 @@ function renderScenario() {
   $('meta').textContent=effective.domain+' • '+effective.level;
   $('title').textContent = `${effective.domain} ${effective.level} Question ${effective.questionNo}`;
   $('scenarioId').textContent = `(${current.id})`;
+
+  const persona = getDomainManagerPersona(effective.domain || current.domain);
+  const domainBadgeEl = $('missionDomainBadge');
+  if (domainBadgeEl) domainBadgeEl.textContent = effective.domain || current.domain || 'Banking';
+  const levelBadgeEl = $('missionLevelBadge');
+  if (levelBadgeEl) levelBadgeEl.textContent = effective.level || current.level || 'Beginner';
+  const sceneLabelEl = $('missionSceneLabel');
+  if (sceneLabelEl) sceneLabelEl.textContent = persona.sceneTitle || `${effective.domain} Mission`;
+  const sceneArtworkEl = $('missionSceneArtwork');
+  if (sceneArtworkEl) sceneArtworkEl.innerHTML = persona.sceneSvg || '';
+
+  const managerNameEl = $('conversationManagerName');
+  if (managerNameEl) managerNameEl.textContent = persona.name;
+  const managerRoleEl = $('conversationManagerRole');
+  if (managerRoleEl) managerRoleEl.textContent = persona.role;
+  const reqSpeakerEl = $('conversationRequestSpeaker');
+  if (reqSpeakerEl) reqSpeakerEl.textContent = persona.name;
+  const replySpeakerEl = $('conversationReplySpeaker');
+  if (replySpeakerEl) replySpeakerEl.textContent = persona.name;
+  const avatarEl = $('conversationManagerAvatar');
+  if (avatarEl) {
+    avatarEl.innerHTML = persona.svg || persona.badge;
+  }
+
+  refreshConversationLearnerIdentity();
+
   const presentation = getPracticeQuestionPresentation(
     { question: current.question ?? effective.question }, current.selectedVariant ?? null
   );
@@ -958,15 +1964,63 @@ function renderScenario() {
       qEl.textContent = qText;
     }
   }
+
+  const dialogue = getScenarioConversationDialogue(current, effective, current.selectedVariant ?? null);
+  const learnerTurnEl = $('learnerClarificationTurn');
+  const managerReplyTurnEl = $('managerReplyTurn');
+  const learnerQuestionEl = $('learnerQuestion');
+  const managerReplyEl = $('managerReply');
+
+  if (dialogue.hasDialogue) {
+    if (learnerQuestionEl) learnerQuestionEl.textContent = dialogue.learnerQuestion;
+    if (managerReplyEl) managerReplyEl.textContent = dialogue.managerReply;
+    if (learnerTurnEl) learnerTurnEl.hidden = false;
+    if (managerReplyTurnEl) managerReplyTurnEl.hidden = false;
+  } else {
+    if (learnerQuestionEl) learnerQuestionEl.textContent = '';
+    if (managerReplyEl) managerReplyEl.textContent = '';
+    if (learnerTurnEl) learnerTurnEl.hidden = true;
+    if (managerReplyTurnEl) managerReplyTurnEl.hidden = true;
+  }
+
   const pool=scenarios.filter(s=>s.domain===effective.domain&&s.level===effective.level);
   $('qno').textContent='Exercise '+effective.questionNo+' / '+pool.length;
   $('tags').textContent = (effective.skill ? `${effective.skill} • ` : '') + 'Think → Write → Validate';
-  renderSchemaCards(effective.schemaText);
+  const domainAsset = (typeof data !== 'undefined' && data && data.assets && data.assets[effective.domain])
+    ? data.assets[effective.domain]
+    : undefined;
+  renderSchemaCards(effective.schemaText, { domain: effective.domain, asset: domainAsset });
   currentSampleTable = null;
   setSchemaTab('schema');
   $('thinking').value=thinkingText(e.thinking);
+  if (typeof closeEmptyThinkingModal === 'function') closeEmptyThinkingModal({ restoreFocus: false });
   if ($('fiddleCopyConfirmation')) $('fiddleCopyConfirmation').textContent = '';
-  renderAssessment(e.assessment?evaluateThinking(effective,e.thinking||{}):null);
+  const hasSavedAssessment = Boolean(
+    e &&
+    ((e.assessment && typeof e.assessment.score === 'number') ||
+      typeof e.score === 'number' ||
+      typeof e.thinkingScore === 'number')
+  );
+  let restoredAssessment = null;
+  if (hasSavedAssessment) {
+    const savedText = thinkingText(e.thinking);
+    if (savedText && savedText.trim().length > 0) {
+      restoredAssessment = evaluateThinking(effective, e.thinking || {});
+    } else if (e.assessment && typeof e.assessment.score === 'number') {
+      restoredAssessment = {
+        ...e.assessment,
+        message: e.feedback || e.assessment.message || ''
+      };
+    } else {
+      const savedScore = typeof e.score === 'number' ? e.score : e.thinkingScore;
+      restoredAssessment = {
+        score: savedScore,
+        ready: Boolean(e.completed || savedScore >= 7),
+        message: e.feedback || ''
+      };
+    }
+  }
+  renderAssessment(restoredAssessment);
   updateProgress();updateGates();
 }
 
@@ -995,6 +2049,9 @@ function getCompletedCount() {
   const localCount = (scenarios && scenarios.length && state && state.entries)
     ? scenarios.filter(s => isCompleted(s, state.entries[s.id])).length
     : 0;
+  if (isDemoMode) {
+    return localCount;
+  }
   if (!user) {
     return Math.max(localCount, getGuestLifetimeCompletedCount());
   }
@@ -1095,6 +2152,10 @@ async function checkUserAccessStatus(userId) {
       }
     }
 
+    if (user && user.id !== uid) {
+      return { profile: null, error: null };
+    }
+
     if (profile) {
       hideAccessError();
       const dbUsername = (profile.username || '').trim();
@@ -1103,12 +2164,14 @@ async function checkUserAccessStatus(userId) {
         try { localStorage.setItem(`cracksql_username_${uid}`, dbUsername); } catch (e) {}
         renderProfileAvatar();
         renderAuth();
+        refreshConversationLearnerIdentity();
       } else if (!currentUsername) {
         const cached = localStorage.getItem(`cracksql_username_${uid}`);
         if (cached) {
           currentUsername = cached.trim();
           renderProfileAvatar();
           renderAuth();
+          refreshConversationLearnerIdentity();
         }
       }
 
@@ -1273,6 +2336,21 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
   };
   persist(true, true);
 
+  if (isDemoMode) {
+    if (state.entries[scenarioId]) {
+      Object.assign(state.entries[scenarioId], {
+        syncPending: false,
+        syncStatus: 'demo_session'
+      });
+    }
+    saveDemoProgress();
+    if ($('syncStatus')) $('syncStatus').textContent = 'Demo Mode: Saved in sessionStorage only';
+    updateProgress();
+    renderScenarioCatalog();
+    renderDemoContestPreviewCard();
+    return;
+  }
+
   if (user && client) {
     try {
       // 1. Authoritative recording via record_scenario_completion RPC
@@ -1407,6 +2485,38 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
 }
 
 function openPaywallModal() {
+  if (isDemoMode) {
+    const modal = $('paywallModal');
+    if (!modal) return;
+    modal.hidden = false;
+    const notice = $('paywallNotice');
+    const payBtn = $('paywallPayBtn');
+    if (notice) {
+      notice.style.display = 'block';
+      notice.style.background = '#fffbeb';
+      notice.style.border = '1.5px solid #f59e0b';
+      notice.style.color = '#92400e';
+      notice.innerHTML = demoPremiumPreviewActive
+        ? '<strong>🧪 DEMO PREVIEW — Simulated Payment Verified (Session Only)</strong><br><span style="font-size:0.85rem;">This is a simulated preview of the ₹49 Course Unlock &amp; Razorpay verification flow. No real payment transaction or authenticated entitlement was created. Sign in with Google to purchase real lifetime access.</span>'
+        : '<strong>🧪 DEMO PREVIEW — Premium Features &amp; Payment Verification</strong><br><span style="font-size:0.85rem;">You are in Demo Mode. Click below to preview how simulated payment verification works in this session without any real Razorpay order or charge.</span>';
+    }
+    if (payBtn) {
+      payBtn.style.display = 'inline-flex';
+      payBtn.disabled = false;
+      if (demoPremiumPreviewActive) {
+        payBtn.innerHTML = '<span>Continue Demo Practice (Preview) →</span>';
+        payBtn.onclick = () => {
+          closePaywallModal();
+          if (current) renderScenario();
+          renderScenarioCatalog();
+        };
+      } else {
+        payBtn.innerHTML = '<span>🧪 Simulate Payment Verification Preview (Demo Only)</span>';
+        payBtn.onclick = simulateDemoPaymentPreview;
+      }
+    }
+    return;
+  }
   if (!user) {
     requestGoogleLogin({
       destination: 'paywall',
@@ -1497,6 +2607,11 @@ function loadRazorpaySdk() {
 async function payCourseUnlockWithRazorpay() {
   const notice = $('paywallNotice');
   const payBtn = $('paywallPayBtn');
+
+  if (isDemoMode) {
+    simulateDemoPaymentPreview();
+    return;
+  }
 
   if (!user) {
     closePaywallModal();
@@ -1697,13 +2812,13 @@ window.payCourseUnlockWithRazorpay = payCourseUnlockWithRazorpay;
 const EXTRA_DOMAINS = ['Capital Markets', 'Semiconductor', 'Education'];
 
 const DOMAIN_METAS = {
-  'Banking': { icon: '🏦', note: 'Accounts & transactions (60)' },
-  'Healthcare': { icon: '🏥', note: 'Patients & visits (60)' },
-  'Insurance': { icon: '🛡️', note: 'Policies & claims (60)' },
-  'Retail': { icon: '🛒', note: 'Orders & products (60)' },
-  'Capital Markets': { icon: '📈', note: 'Investors & trades (60)' },
-  'Semiconductor': { icon: '🔬', note: 'Batches & chip tests (60)' },
-  'Education': { icon: '🎓', note: 'Students & assessments (60)' }
+  'Banking': { icon: '🏦', note: 'Accounts & transactions (60)', glow: 'rgba(56, 189, 248, 0.32)', accent: '#38bdf8' },
+  'Healthcare': { icon: '🏥', note: 'Patients & visits (60)', glow: 'rgba(244, 63, 94, 0.28)', accent: '#fb7185' },
+  'Insurance': { icon: '🛡️', note: 'Policies & claims (60)', glow: 'rgba(168, 85, 247, 0.32)', accent: '#c084fc' },
+  'Retail': { icon: '🛒', note: 'Orders & products (60)', glow: 'rgba(245, 158, 11, 0.3)', accent: '#fbbf24' },
+  'Capital Markets': { icon: '📈', note: 'Investors & trades (60)', glow: 'rgba(16, 185, 129, 0.3)', accent: '#34d399' },
+  'Semiconductor': { icon: '🔬', note: 'Batches & chip tests (60)', glow: 'rgba(6, 182, 212, 0.32)', accent: '#22d3ee' },
+  'Education': { icon: '🎓', note: 'Students & assessments (60)', glow: 'rgba(99, 102, 241, 0.32)', accent: '#818cf8' }
 };
 
 let currentProgressionNoticeAction = null;
@@ -1741,121 +2856,543 @@ function onLockedDomainClick(domain) {
 
 function onLockedLevelClick(domain, level) {
   selectedDomain = domain;
-  selectedLevel = level;
+  selectedLevel = null;
   renderDomainAndLevelPickers();
   renderScenarioCatalog();
-  void loadScenario();
+  const prevLevel = level === 'Expert' ? 'Intermediate' : 'Beginner';
+  const msg = `Complete all 20 scenarios and submit feedback in ${domain} (${prevLevel}) to unlock ${level} Level.`;
+  showChooseLevelNotice(msg, true);
+  showProgressionNoticeModal({
+    title: `🔒 ${domain} • ${level} Locked`,
+    message: msg,
+    actionLabel: `Practice ${prevLevel} →`,
+    onAction: () => {
+      selectedDomain = domain;
+      selectedLevel = getFirstUnlockedLevel(domain, scenarios, state);
+      renderDomainAndLevelPickers();
+      void startPracticeSession();
+    }
+  });
 }
 
+function getAvailableDomains() {
+  if (Array.isArray(scenarios) && scenarios.length > 0) {
+    const list = [];
+    const seen = new Set();
+    for (const s of scenarios) {
+      if (s && s.domain && !seen.has(s.domain)) {
+        seen.add(s.domain);
+        list.push(s.domain);
+      }
+    }
+    if (list.length > 0) return list;
+  }
+  return Object.keys(DOMAIN_METAS);
+}
+
+function openChooseLevelModal(domain) {
+  const modal = $('chooseLevelModal');
+  if (!modal) return;
+  const meta = DOMAIN_METAS[domain] || { icon: '📁', note: `${domain} (60)` };
+  if ($('chooseLevelDomainIcon')) $('chooseLevelDomainIcon').textContent = meta.icon;
+  if ($('chooseLevelDomainName')) $('chooseLevelDomainName').textContent = domain;
+  if ($('chooseLevelDomainDescName')) $('chooseLevelDomainDescName').textContent = domain;
+
+  showChooseLevelNotice('');
+  if (current && current.domain === domain && current.level) {
+    selectedLevel = current.level;
+  } else if (!selectedLevel) {
+    selectedLevel = null;
+  }
+  renderDomainAndLevelPickers();
+  renderChooseLevelScenarios();
+  modal.hidden = false;
+  modal.style.display = 'flex';
+}
+
+function closeChooseLevelModal() {
+  const modal = $('chooseLevelModal');
+  if (modal) {
+    modal.hidden = true;
+    modal.style.display = 'none';
+  }
+  showChooseLevelNotice('');
+  selectedLevel = null;
+  if (current && current.domain && current.level) {
+    selectedDomain = current.domain;
+    selectedLevel = current.level;
+  } else if (isDemoMode && (!currentActiveScreen || currentActiveScreen === 'home')) {
+    selectedDomain = null;
+  }
+  renderDomainAndLevelPickers();
+  renderScenarioCatalog();
+}
+
+function renderChooseLevelScenarios() {
+  const section = $('chooseLevelScenarioSection');
+  const listEl = $('chooseLevelScenarioList');
+  const countEl = $('chooseLevelScenarioCount');
+  if (!section || !listEl) return;
+  if (!selectedDomain || !selectedLevel) {
+    section.hidden = true;
+    section.style.display = 'none';
+    listEl.innerHTML = '';
+    return;
+  }
+  const pool = scenarios.filter(s => s.domain === selectedDomain && s.level === selectedLevel);
+  if (pool.length === 0) {
+    if (!fullScenariosLoaded && fullScenariosPromise) {
+      section.hidden = false;
+      section.style.display = 'block';
+      if (countEl) countEl.textContent = 'Loading scenarios…';
+      listEl.innerHTML = '<div class="hint">Loading scenarios…</div>';
+      return;
+    }
+    if (scenarioCatalogError) {
+      section.hidden = false;
+      section.style.display = 'block';
+      if (countEl) countEl.textContent = 'Could not load scenarios';
+      listEl.innerHTML = '<div class="hint">Could not load scenarios. <button type="button" class="action secondary sm" onclick="retryLoadScenarioCatalog()">Retry</button></div>';
+      return;
+    }
+    section.hidden = true;
+    section.style.display = 'none';
+    return;
+  }
+  section.hidden = false;
+  section.style.display = 'block';
+  if (countEl) {
+    const solvedCount = pool.filter(s => isCompleted(s, state.entries[s.id])).length;
+    countEl.textContent = `${solvedCount}/${pool.length} solved • Click any scenario to open`;
+  }
+  const totalCompleted = getCompletedCount();
+  listEl.innerHTML = pool.map((s, idx) => {
+    const e = state.entries[s.id] || {};
+    const effective = getEffectiveScenario(s, user?.id || 'guest_user', state);
+    const completed = isCompleted(s, e);
+    const attempted = isAttempted(s, e);
+    const isCurrent = Boolean(current && current.id === s.id);
+    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode;
+    let statusBadge = `<span style="font-size:10.5px;font-weight:700;color:#94a3b8;background:rgba(148,163,184,0.12);padding:2px 7px;border-radius:999px;">Q${idx + 1}</span>`;
+    if (isLocked) {
+      statusBadge = `<span style="font-size:10.5px;font-weight:800;color:#fbbf24;background:rgba(245,158,11,0.15);padding:2px 7px;border-radius:999px;">🔒 Premium</span>`;
+    } else if (completed) {
+      statusBadge = `<span style="font-size:10.5px;font-weight:800;color:#34d399;background:rgba(16,185,129,0.16);padding:2px 7px;border-radius:999px;">✓ Solved</span>`;
+    } else if (attempted) {
+      statusBadge = `<span style="font-size:10.5px;font-weight:800;color:#38bdf8;background:rgba(56,189,248,0.15);padding:2px 7px;border-radius:999px;">In Progress</span>`;
+    }
+    return `
+      <button type="button"
+              onclick="openScenarioFromModal('${s.id}')"
+              style="width:100%;text-align:left;background:${isCurrent ? 'rgba(34,211,238,0.14)' : 'rgba(15,23,42,0.75)'};border:1px solid ${isCurrent ? '#22d3ee' : 'rgba(56,189,248,0.2)'};border-radius:10px;padding:9px 11px;cursor:pointer;display:flex;flex-direction:column;gap:4px;color:#f8fafc;transition:border-color 0.15s ease;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;">
+          <span style="font-size:11.5px;font-weight:800;color:#38bdf8;font-family:monospace;">${escapeHtml(s.id)}</span>
+          ${statusBadge}
+        </div>
+        <div style="font-size:12.5px;font-weight:600;color:#e2e8f0;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(effective.question)}</div>
+      </button>
+    `;
+  }).join('');
+}
+
+async function openScenarioFromModal(id) {
+  const modal = $('chooseLevelModal');
+  if (modal) {
+    modal.hidden = true;
+    modal.style.display = 'none';
+  }
+  showChooseLevelNotice('');
+  await openScenario(id);
+}
+
+let showAllDomainsHome = true;
+
+function toggleAdditionalDomains() {
+  showAllDomainsHome = !showAllDomainsHome;
+  const wrapper = $('extraDomainsWrapper');
+  const btn = $('toggleMoreDomainsBtn');
+  if (wrapper) {
+    wrapper.style.display = 'none';
+  }
+  if (btn) {
+    btn.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+window.toggleAdditionalDomains = toggleAdditionalDomains;
+
+const DEMO_HOME_DOMAIN_ORDER = [
+  'Banking',
+  'Healthcare',
+  'Insurance',
+  'Retail',
+  'Capital Markets',
+  'Semiconductor',
+  'Education'
+];
+
 function renderDomainAndLevelPickers() {
-  function renderDomainCard(domain) {
-    const meta = DOMAIN_METAS[domain] || { icon: '📁', note: `${domain} (60)` };
+  const domains = getAvailableDomains();
+  const coreDomainsList = domains.filter(d => CORE_DOMAINS.includes(d));
+
+  function renderMissionDomainCard(domain) {
+    const meta = DOMAIN_METAS[domain] || { icon: '📁', note: `${domain} (60)`, glow: 'rgba(56, 189, 248, 0.25)', accent: '#38bdf8' };
     const completed = isDomainCompleted(domain, scenarios, state);
     const isActive = Boolean(selectedDomain && selectedDomain === domain);
 
-    if (completed) {
-      return `
-        <div class="pick domain completed-domain ${isActive ? 'active' : ''}" onclick="selectDomain('${domain}', this)" role="button" tabindex="0">
-          <div class="icon">${meta.icon}</div>
-          <div class="pick-title">${escapeHtml(domain)}</div>
-          <div class="pick-note">${escapeHtml(meta.note)}</div>
-          <div style="margin-top: 6px; font-size: 11px; font-weight: 800; color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #bbf7d0;">
-            <span>✅ Completed</span>
-          </div>
-        </div>
-      `;
-    }
-
     return `
-      <div class="pick domain ${isActive ? 'active' : ''}" onclick="selectDomain('${domain}', this)" role="button" tabindex="0">
-        <div class="icon">${meta.icon}</div>
-        <div class="pick-title">${escapeHtml(domain)}</div>
-        <div class="pick-note">${escapeHtml(meta.note)}</div>
+      <div class="selection-card domain-mission-card pick domain ${completed ? 'completed-domain' : ''} ${isActive ? 'active selected' : ''}" 
+           onclick="selectDomain('${domain}', this)" 
+           role="radio" 
+           aria-checked="${isActive ? 'true' : 'false'}"
+           tabindex="0" 
+           aria-label="${escapeHtml(domain)} domain mission">
+        <div class="mission-icon-box" style="--icon-glow:${meta.glow || 'rgba(56,189,248,0.28)'};--icon-accent:${meta.accent || '#38bdf8'};">
+          <span>${meta.icon}</span>
+        </div>
+        <div class="mission-info">
+          <div class="mission-title-row">
+            <span class="mission-name">${escapeHtml(domain)}</span>
+            ${completed ? '<span class="mission-badge-completed">✓ Completed</span>' : ''}
+            ${isActive ? '<span class="selection-indicator-badge">✓ Selected</span>' : ''}
+          </div>
+          <div class="mission-note">${escapeHtml(meta.note)}</div>
+        </div>
       </div>
     `;
   }
 
+  const allGrid = $('allDomainsGrid');
+  const extraGrid = $('extraDomainsGrid');
+  const extraWrapper = $('extraDomainsWrapper');
+  const toggleBtn = $('toggleMoreDomainsBtn');
+
+  const orderedHomeDomains = DEMO_HOME_DOMAIN_ORDER.filter(d => domains.includes(d));
+  for (const d of domains) {
+    if (!orderedHomeDomains.includes(d)) orderedHomeDomains.push(d);
+  }
+  if (allGrid) {
+    allGrid.setAttribute('role', 'radiogroup');
+    allGrid.setAttribute('aria-label', 'Select Domain');
+    allGrid.innerHTML = orderedHomeDomains.map(renderMissionDomainCard).join('');
+  }
+  if (extraGrid) {
+    extraGrid.innerHTML = '';
+  }
+  if (extraWrapper) {
+    extraWrapper.style.display = 'none';
+  }
+  if (toggleBtn) {
+    toggleBtn.style.display = 'none';
+  }
   const coreGrid = $('coreDomainsGrid');
   if (coreGrid) {
-    coreGrid.innerHTML = CORE_DOMAINS.map(renderDomainCard).join('');
+    coreGrid.setAttribute('role', 'radiogroup');
+    coreGrid.setAttribute('aria-label', 'Select Core Domain');
+    coreGrid.innerHTML = coreDomainsList.map(renderMissionDomainCard).join('');
   }
 
-  const extraGrid = $('extraDomainsGrid');
-  if (extraGrid) {
-    extraGrid.innerHTML = EXTRA_DOMAINS.map(renderDomainCard).join('');
-  }
-
-  // Render Levels (all unlocked)
+  // Render Levels inside Choose Level dialog stacked vertically
   const levelsContainer = $('levelsPicker') || document.querySelector('.levels');
   if (levelsContainer) {
+    levelsContainer.setAttribute('role', 'radiogroup');
+    levelsContainer.setAttribute('aria-label', 'Select Level');
     levelsContainer.innerHTML = ORDERED_LEVELS.map(lvl => {
       const isCurrent = Boolean(selectedLevel && selectedLevel === lvl);
-      return `<div role="button" tabindex="0" class="level ${isCurrent ? 'active' : ''}" onclick="selectLevel('${lvl}', this)">${lvl}</div>`;
+      const isLocked = Boolean(selectedDomain && !isLevelUnlocked(selectedDomain, lvl, scenarios, state));
+      const status = selectedDomain ? checkLevelCompletion(selectedDomain, lvl, scenarios, state) : { isCompleted: false, completedCount: 0 };
+
+      let subtitle = '20 Scenarios';
+      if (lvl === 'Beginner') subtitle = '20 Scenarios • Fundamentals & Filtering';
+      else if (lvl === 'Intermediate') subtitle = '20 Scenarios • Multi-Table Joins & Aggregates';
+      else if (lvl === 'Expert') subtitle = '20 Scenarios • Advanced CTEs & Windows';
+
+      if (status.isCompleted) {
+        subtitle += ' • ✓ Completed';
+      } else if (status.completedCount > 0) {
+        subtitle += ` • ${status.completedCount}/20 Solved`;
+      }
+
+      return `
+        <div role="radio" 
+             tabindex="0" 
+             class="selection-card level level-option-btn ${isCurrent ? 'active selected' : ''} ${isLocked ? 'locked' : ''}" 
+             onclick="selectLevel('${lvl}', this)"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();selectLevel('${lvl}', this, event);}"
+             aria-checked="${isCurrent ? 'true' : 'false'}"
+             aria-disabled="${isLocked ? 'true' : 'false'}">
+          <div class="level-option-left">
+            <div class="level-option-name">${lvl} ${isLocked ? '🔒' : ''} ${isCurrent ? '<span class="selection-indicator-badge">✓ Selected</span>' : ''}</div>
+            <div class="level-option-subtitle">${subtitle}</div>
+          </div>
+          <div class="level-option-right">
+            <div class="level-radio-indicator ${isCurrent ? 'checked' : ''}"><div class="level-radio-inner"></div></div>
+          </div>
+        </div>
+      `;
     }).join('');
   }
   updateStartPracticeUI();
 }
 
+const DOMAIN_SLUG_MAP = {
+  'Banking': 'banking',
+  'Healthcare': 'healthcare',
+  'Insurance': 'insurance',
+  'Capital Markets': 'capital-markets',
+  'Semiconductor': 'semiconductor',
+  'Education': 'education',
+  'Retail': 'retail'
+};
+
+const DOMAIN_ID_PREFIXES = {
+  'Banking': 'BAN',
+  'Healthcare': 'HEA',
+  'Insurance': 'INS',
+  'Capital Markets': 'CAP',
+  'Semiconductor': 'SEM',
+  'Education': 'EDU',
+  'Retail': 'RET'
+};
+
+const LEVEL_ID_CODES = {
+  'Beginner': 'BEG',
+  'Intermediate': 'INT',
+  'Expert': 'EXP'
+};
+
+function getDomainSlug(domain) {
+  return DOMAIN_SLUG_MAP[domain] || String(domain || '').toLowerCase().trim().replace(/\s+/g, '-');
+}
+
+function buildInitialScenarioStubs() {
+  const stubs = [];
+  for (const [domain, dPrefix] of Object.entries(DOMAIN_ID_PREFIXES)) {
+    for (const [level, lCode] of Object.entries(LEVEL_ID_CODES)) {
+      for (let i = 1; i <= 20; i++) {
+        const numStr = String(i).padStart(3, '0');
+        stubs.push({
+          id: `${dPrefix}_${lCode}_${numStr}`,
+          domain,
+          level,
+          questionNo: i
+        });
+      }
+    }
+  }
+  return stubs;
+}
+
 let fullScenariosLoaded = false;
 let fullScenariosPromise = null;
+let scenarioCatalogError = null;
+const loadedDomains = new Set();
+const loadedDomainSql = new Set();
+const domainLoadPromises = new Map();
+const domainSqlPromises = new Map();
 
-async function loadFullScenariosInBackground() {
-  if (fullScenariosLoaded) return scenarios;
-  if (fullScenariosPromise) return fullScenariosPromise;
+function normalizeScenarioRecord(s) {
+  if (!s) return null;
+  const question = String(s.business_scenario || s.question || '').trim();
+  const schemaText = String(s.schema || s.schemaText || '').trim();
+  const pseudo = String(s.solution_approach || s.pseudo || '').trim();
+  const sql = String(s.answer_sql || s.sql || '').trim();
+  let tables = Array.isArray(s.tables) && s.tables.length > 0 ? s.tables : [];
+  if (tables.length === 0 && schemaText) {
+    tables = schemaText.split(';').map(t => t.trim().split('(')[0].trim()).filter(Boolean);
+  }
+  return {
+    ...s,
+    id: s.id,
+    domain: s.domain,
+    level: s.level,
+    questionNo: typeof s.questionNo === 'number' ? s.questionNo : (parseInt(String(s.id).slice(-3) || '1', 10)),
+    question,
+    schemaText,
+    pseudo,
+    sql,
+    tables,
+    requiredTables: s.requiredTables || tables,
+    relevantColumns: s.relevantColumns || []
+  };
+}
+
+function mergeScenariosIntoCatalog(mappedList) {
+  if (!Array.isArray(mappedList) || mappedList.length === 0) return;
+  const byId = new Map(mappedList.map(s => [s.id, s]));
+  if (!Array.isArray(scenarios) || scenarios.length === 0) {
+    scenarios = buildInitialScenarioStubs();
+  }
+  scenarios = scenarios.map(existing => {
+    const incoming = byId.get(existing.id);
+    if (!incoming) return existing;
+    byId.delete(existing.id);
+    const preservedSql = incoming.sql || existing.sql || '';
+    const preservedAnswerSql = incoming.answer_sql || existing.answer_sql || preservedSql;
+    return {
+      ...existing,
+      ...incoming,
+      sql: preservedSql,
+      answer_sql: preservedAnswerSql
+    };
+  });
+  for (const extra of byId.values()) {
+    scenarios.push(extra);
+  }
+  ids = new Set(scenarios.map(s => s.id));
+  if (data) {
+    data.scenarios = scenarios;
+  }
+}
+
+async function loadDomainAnswerSql(domain, forceRetry = false) {
+  if (!domain) return;
+  if (loadedDomainSql.has(domain) && !forceRetry) return;
+  if (domainSqlPromises.has(domain) && !forceRetry) return domainSqlPromises.get(domain);
+
+  const slug = getDomainSlug(domain);
+  const promise = (async () => {
+    try {
+      const resp = await fetch(`./data/domains/${slug}.sql.json`);
+      if (!resp.ok) throw new Error(`Domain SQL request failed for ${domain} (${resp.status})`);
+      const sqlMap = await resp.json();
+      if (sqlMap && typeof sqlMap === 'object') {
+        scenarios = scenarios.map(s => {
+          if (s.domain === domain && Object.prototype.hasOwnProperty.call(sqlMap, s.id)) {
+            const sqlText = String(sqlMap[s.id] || '').trim();
+            return { ...s, answer_sql: sqlText, sql: sqlText };
+          }
+          return s;
+        });
+        if (data) data.scenarios = scenarios;
+        if (current && current.domain === domain && Object.prototype.hasOwnProperty.call(sqlMap, current.id)) {
+          const sqlText = String(sqlMap[current.id] || '').trim();
+          current.answer_sql = sqlText;
+          current.sql = sqlText;
+        }
+        loadedDomainSql.add(domain);
+      }
+    } catch (err) {
+      domainSqlPromises.delete(domain);
+      console.warn(`Domain SQL load notice (${domain}):`, err);
+    }
+  })();
+
+  domainSqlPromises.set(domain, promise);
+  return promise;
+}
+
+async function loadDomainScenarios(domain, { includeSql = false, forceRetry = false } = {}) {
+  if (!domain) return scenarios;
+  const slug = getDomainSlug(domain);
+
+  if (!loadedDomains.has(domain) || forceRetry) {
+    if (!domainLoadPromises.has(domain) || forceRetry) {
+      const p = (async () => {
+        try {
+          const resp = await fetch(`./data/domains/${slug}.json`);
+          if (!resp.ok) {
+            throw new Error(`Domain scenario request failed for ${domain} (${resp.status})`);
+          }
+          const domainList = await resp.json();
+          const rawList = Array.isArray(domainList) ? domainList : (domainList.scenarios || []);
+          const mapped = rawList.map(normalizeScenarioRecord).filter(Boolean);
+          mergeScenariosIntoCatalog(mapped);
+          loadedDomains.add(domain);
+          scenarioCatalogError = null;
+
+          if (current && current.domain === domain) {
+            const enriched = scenarios.find(s => s.id === current.id);
+            if (enriched) current = Object.assign(current, enriched);
+          }
+
+          renderChooseLevelScenarios();
+          if (currentActiveScreen === 'missionMap' && selectedDomain === domain && selectedLevel) {
+            renderMissionMap(selectedDomain, selectedLevel);
+          }
+        } catch (err) {
+          domainLoadPromises.delete(domain);
+          await loadFullScenariosInBackground(forceRetry);
+        }
+      })();
+      domainLoadPromises.set(domain, p);
+    }
+    await domainLoadPromises.get(domain);
+  }
+
+  if (includeSql) {
+    await loadDomainAnswerSql(domain, forceRetry);
+  }
+
+  return scenarios;
+}
+
+async function loadFullScenariosInBackground(forceRetry = false) {
+  if (fullScenariosLoaded && scenarios.length > 0 && !forceRetry) return scenarios;
+  if (fullScenariosPromise && !forceRetry) return fullScenariosPromise;
+  scenarioCatalogError = null;
   fullScenariosPromise = (async () => {
     try {
       let resp = await fetch('./data/Crack_SQL_420_Simple.json');
       if (!resp.ok) {
-        resp = await fetch('./data/Crack_SQL_420_Student_Business_Scenarios.json');
-      }
-      if (!resp.ok) {
         resp = await fetch('./data/scenarios.json');
       }
-      if (resp.ok) {
-        const fullData = await resp.json();
-        const rawList = Array.isArray(fullData) ? fullData : (fullData.scenarios || []);
-        const mappedScenarios = rawList.map(s => {
-          if (!s) return null;
-          const question = String(s.business_scenario || s.question || '').trim();
-          const schemaText = String(s.schema || s.schemaText || '').trim();
-          const pseudo = String(s.solution_approach || s.pseudo || '').trim();
-          const sql = String(s.answer_sql || s.sql || '').trim();
-          let tables = Array.isArray(s.tables) && s.tables.length > 0 ? s.tables : [];
-          if (tables.length === 0 && schemaText) {
-            tables = schemaText.split(';').map(t => t.trim().split('(')[0].trim()).filter(Boolean);
-          }
-          return {
-            ...s,
-            id: s.id,
-            domain: s.domain,
-            level: s.level,
-            questionNo: typeof s.questionNo === 'number' ? s.questionNo : (parseInt(String(s.id).slice(-3) || '1', 10)),
-            question,
-            schemaText,
-            pseudo,
-            sql,
-            tables,
-            requiredTables: s.requiredTables || tables,
-            relevantColumns: s.relevantColumns || []
-          };
-        }).filter(Boolean);
-        
-        const fullMap = new Map(mappedScenarios.map(s => [s.id, s]));
-        for (let i = 0; i < scenarios.length; i++) {
-          const fullItem = fullMap.get(scenarios[i].id);
-          if (fullItem) {
-            scenarios[i] = Object.assign(scenarios[i], fullItem);
-          }
+      if (!resp.ok) {
+        throw new Error(`Scenario catalog request failed (${resp.status})`);
+      }
+      const fullData = await resp.json();
+      const rawList = Array.isArray(fullData) ? fullData : (fullData.scenarios || []);
+      const mappedScenarios = rawList.map(normalizeScenarioRecord).filter(Boolean);
+
+      scenarios = mappedScenarios;
+      ids = new Set(scenarios.map(s => s.id));
+      for (const d of Object.keys(DOMAIN_SLUG_MAP)) {
+        loadedDomains.add(d);
+        loadedDomainSql.add(d);
+      }
+      data = {
+        ...(Array.isArray(fullData) ? {} : fullData),
+        scenarios: mappedScenarios,
+        assets: {
+          ...DOMAIN_SCHEMA_ASSETS,
+          ...((!Array.isArray(fullData) && fullData?.assets) ? fullData.assets : {}),
+          ...((!Array.isArray(data) && data?.assets) ? data.assets : {})
         }
-        data = { ...data, scenarios: mappedScenarios }; 
-        fullScenariosLoaded = true;
-        if (current) {
-          const enriched = fullMap.get(current.id);
-          if (enriched) current = Object.assign(current, enriched);
-        }
+      };
+      fullScenariosLoaded = true;
+      scenarioCatalogError = null;
+
+      if (isDemoMode) {
+        state = readDemoProgress();
+      } else if (user && user.id) {
+        state = mergeProgress(state, readProgress(storage, user.id, ids), ids);
+      }
+
+      if (current) {
+        const enriched = scenarios.find(s => s.id === current.id);
+        if (enriched) current = Object.assign(current, enriched);
+      }
+
+      updateProgress();
+      renderDomainAndLevelPickers();
+      renderScenarioCatalog();
+      renderChooseLevelScenarios();
+      updateStartPracticeUI();
+      if (currentActiveScreen === 'missionMap' && selectedDomain && selectedLevel) {
+        renderMissionMap(selectedDomain, selectedLevel);
+      } else if (currentActiveScreen === 'progress' || currentActiveScreen === 'progressScreen') {
+        renderProgressScreen();
       }
     } catch (e) {
-      console.warn('Background full scenarios load notice:', e);
+      scenarioCatalogError = e;
+      fullScenariosLoaded = false;
+      fullScenariosPromise = null;
+      console.warn('Scenario catalog load notice:', e);
+      renderScenarioCatalog();
+      renderChooseLevelScenarios();
+      if (currentActiveScreen === 'missionMap' && selectedDomain && selectedLevel) {
+        renderMissionMap(selectedDomain, selectedLevel);
+      }
     }
     return scenarios;
   })();
@@ -1864,8 +3401,14 @@ async function loadFullScenariosInBackground() {
 
 async function ensureFullScenario(targetScenario) {
   if (!targetScenario) return null;
-  if (targetScenario.tables) return targetScenario;
-  await loadFullScenariosInBackground();
+  if (targetScenario.tables && targetScenario.tables.length > 0 && (targetScenario.sql || targetScenario.answer_sql)) {
+    return targetScenario;
+  }
+  if (targetScenario.domain) {
+    await loadDomainScenarios(targetScenario.domain, { includeSql: true });
+  } else {
+    await loadFullScenariosInBackground();
+  }
   return scenarios.find(s => s.id === targetScenario.id) || targetScenario;
 }
 
@@ -1876,6 +3419,10 @@ async function loadScenario() {
   if (!selectedDomain || !selectedLevel) {
     return;
   }
+  await loadDomainScenarios(selectedDomain, { includeSql: true });
+  if (!Array.isArray(scenarios) || scenarios.length === 0) {
+    await loadFullScenariosInBackground();
+  }
   if (!isDomainUnlocked(selectedDomain, scenarios, state)) {
     return;
   }
@@ -1884,11 +3431,15 @@ async function loadScenario() {
   }
 
   const pool = scenarios.filter(s => s.domain === selectedDomain && s.level === selectedLevel);
+  if (pool.length === 0) {
+    showAccessCheckError(`Could not load scenarios for ${selectedDomain} (${selectedLevel}). Please check your connection and retry.`);
+    return;
+  }
   const next = chooseNext(pool, state, null);
   if (next) {
     const isTargetCompleted = isCompleted(next, state.entries[next.id]);
     const completedCount = getCompletedCount();
-    if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
+    if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode) {
       const completedCandidate = pool.find(s => isCompleted(s, state.entries[s.id])) || scenarios.find(s => isCompleted(s, state.entries[s.id]));
       if (completedCandidate) {
         current = await ensureFullScenario(completedCandidate);
@@ -1909,21 +3460,43 @@ async function loadScenario() {
 }
 
 function selectDomain(domain, el) {
+  clearDomainSelectionWarning(false);
   if (!isDomainUnlocked(domain, scenarios, state)) {
     onLockedDomainClick(domain);
     return;
   }
   selectedDomain = domain;
-  if (selectedLevel && !isLevelUnlocked(domain, selectedLevel, scenarios, state)) {
-    selectedLevel = getFirstUnlockedLevel(domain, scenarios, state);
+  selectedLevel = null; // Clear previous temporary level selection when a domain is selected
+  void loadDomainScenarios(domain, { includeSql: false });
+  openChooseLevelModal(domain);
+}
+
+function selectLevel(level, el, event) {
+  const evt = event || (typeof window !== 'undefined' ? window.event : null);
+  if (evt && typeof evt.stopPropagation === 'function') {
+    evt.stopPropagation();
+  }
+  if (selectedDomain && !isLevelUnlocked(selectedDomain, level, scenarios, state)) {
+    onLockedLevelClick(selectedDomain, level);
+    return;
+  }
+  showChooseLevelNotice('');
+  selectedLevel = level;
+  const modal = $('chooseLevelModal');
+  if (modal) {
+    modal.hidden = false;
+    modal.style.display = 'flex';
   }
   renderDomainAndLevelPickers();
-  renderScenarioCatalog();
   updateStartPracticeUI();
 }
 
-function selectLevel(level, el) {
-  if (selectedDomain && !isLevelUnlocked(selectedDomain, level, scenarios, state)) {
+function selectCatalogLevel(level) {
+  if (!selectedDomain && current?.domain) {
+    selectedDomain = current.domain;
+  }
+  if (!selectedDomain) return;
+  if (!isLevelUnlocked(selectedDomain, level, scenarios, state)) {
     onLockedLevelClick(selectedDomain, level);
     return;
   }
@@ -1932,15 +3505,105 @@ function selectLevel(level, el) {
   renderScenarioCatalog();
   updateStartPracticeUI();
 }
-function evaluatePlan() {
-  if (!user || !user.id) {
-    requestGoogleLogin({
-      destination: 'practice',
-      domain: current?.domain || selectedDomain,
-      level: current?.level || selectedLevel,
-      scenarioId: current?.id || null
-    });
+const EMPTY_THINKING_WARNING_MESSAGE = 'Please enter your thinking before checking your score.';
+let emptyThinkingModalRafId = null;
+
+function isEmptyThinkingModalOpen() {
+  const modal = $('emptyThinkingModal');
+  return Boolean(modal && !modal.hidden);
+}
+
+function openEmptyThinkingModal() {
+  const modal = $('emptyThinkingModal');
+  const msgEl = $('emptyThinkingModalMessage');
+  const okBtn = $('emptyThinkingOkBtn');
+  const dialogEl = $('emptyThinkingDialog');
+  if (msgEl) msgEl.textContent = EMPTY_THINKING_WARNING_MESSAGE;
+  if (!modal) return;
+
+  if (!modal.hidden) {
+    if (okBtn && typeof okBtn.focus === 'function') okBtn.focus();
+    else if (dialogEl && typeof dialogEl.focus === 'function') dialogEl.focus();
     return;
+  }
+
+  if (emptyThinkingModalRafId !== null && typeof cancelAnimationFrame === 'function') {
+    cancelAnimationFrame(emptyThinkingModalRafId);
+    emptyThinkingModalRafId = null;
+  }
+
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion && modal.classList) {
+    modal.classList.add('is-entering');
+  } else if (modal.classList) {
+    modal.classList.remove('is-entering');
+  }
+
+  modal.hidden = false;
+  if (typeof document !== 'undefined' && document.body && document.body.classList) {
+    document.body.classList.add('empty-thinking-modal-open');
+  }
+
+  if (!prefersReducedMotion && typeof requestAnimationFrame === 'function' && modal.classList) {
+    void modal.offsetHeight;
+    emptyThinkingModalRafId = requestAnimationFrame(() => {
+      emptyThinkingModalRafId = null;
+      modal.classList.remove('is-entering');
+    });
+  }
+
+  if (okBtn && typeof okBtn.focus === 'function') {
+    okBtn.focus();
+  } else if (dialogEl && typeof dialogEl.focus === 'function') {
+    dialogEl.focus();
+  }
+}
+
+function closeEmptyThinkingModal(options = {}) {
+  const restoreFocus = options && typeof options === 'object' && 'restoreFocus' in options
+    ? Boolean(options.restoreFocus)
+    : true;
+  const modal = $('emptyThinkingModal');
+  if (emptyThinkingModalRafId !== null && typeof cancelAnimationFrame === 'function') {
+    cancelAnimationFrame(emptyThinkingModalRafId);
+    emptyThinkingModalRafId = null;
+  }
+  const wasOpen = Boolean(modal && !modal.hidden);
+  if (modal) {
+    modal.hidden = true;
+    if (modal.classList) modal.classList.remove('is-entering');
+  }
+  if (typeof document !== 'undefined' && document.body && document.body.classList) {
+    document.body.classList.remove('empty-thinking-modal-open');
+  }
+  if (wasOpen && restoreFocus) {
+    const thinkingInput = $('thinking');
+    if (thinkingInput && typeof thinkingInput.focus === 'function') {
+      thinkingInput.focus();
+    }
+  }
+}
+
+function evaluatePlan() {
+  const rawThinking = String($('thinking')?.value ?? '');
+  if (!rawThinking.trim()) {
+    openEmptyThinkingModal();
+    return;
+  }
+  if (!isDemoMode) {
+    if (!user || !user.id) {
+      requestGoogleLogin({
+        destination: 'practice',
+        domain: current?.domain || selectedDomain,
+        level: current?.level || selectedLevel,
+        scenarioId: current?.id || null
+      });
+      return;
+    }
   }
   if(!current) return;
   const effective = getEffectiveScenario(current, user?.id || 'guest_user', state);
@@ -1984,14 +3647,14 @@ const MOTIVATION_STATES = {
     subtitle: "You're on the right track!",
     tip: 'A little more thinking will make it even better!',
     theme: {
-      scoreColor: '#ea580c',
-      titleColor: '#ea580c',
-      tipBg: '#fff7ed',
-      tipBorder: '#ffedd5',
-      tipText: '#9a3412',
-      cardBorder: '#fdba74',
-      cardGlow: '0 0 35px rgba(249, 115, 22, 0.28), 0 20px 45px rgba(15, 23, 42, 0.18)',
-      starColor: '#f97316'
+      scoreColor: '#fb923c',
+      titleColor: '#fdba74',
+      tipBg: 'rgba(249, 115, 22, 0.14)',
+      tipBorder: 'rgba(251, 146, 60, 0.38)',
+      tipText: '#fed7aa',
+      cardBorder: '#fb923c',
+      cardGlow: '0 0 38px rgba(249, 115, 22, 0.32), 0 25px 55px rgba(2, 6, 23, 0.85)',
+      starColor: '#fb923c'
     },
     showNext: false
   },
@@ -2001,14 +3664,14 @@ const MOTIVATION_STATES = {
     subtitle: "You're making progress!",
     tip: 'Try to explain a bit more for an even stronger answer!',
     theme: {
-      scoreColor: '#d97706',
-      titleColor: '#d97706',
-      tipBg: '#fefce8',
-      tipBorder: '#fef08a',
-      tipText: '#854d0e',
-      cardBorder: '#fde047',
-      cardGlow: '0 0 35px rgba(245, 158, 11, 0.28), 0 20px 45px rgba(15, 23, 42, 0.18)',
-      starColor: '#f59e0b'
+      scoreColor: '#fbbf24',
+      titleColor: '#fde047',
+      tipBg: 'rgba(245, 158, 11, 0.14)',
+      tipBorder: 'rgba(251, 191, 36, 0.38)',
+      tipText: '#fef08a',
+      cardBorder: '#fbbf24',
+      cardGlow: '0 0 38px rgba(245, 158, 11, 0.32), 0 25px 55px rgba(2, 6, 23, 0.85)',
+      starColor: '#fbbf24'
     },
     showNext: false
   },
@@ -2018,14 +3681,14 @@ const MOTIVATION_STATES = {
     subtitle: 'Well thought out!',
     tip: 'Nice thinking! Keep this level and aim higher!',
     theme: {
-      scoreColor: '#15803d',
-      titleColor: '#15803d',
-      tipBg: '#f0fdf4',
-      tipBorder: '#bbf7d0',
-      tipText: '#166534',
-      cardBorder: '#86efac',
-      cardGlow: '0 0 35px rgba(34, 197, 94, 0.28), 0 20px 45px rgba(15, 23, 42, 0.18)',
-      starColor: '#22c55e'
+      scoreColor: '#34d399',
+      titleColor: '#6ee7b7',
+      tipBg: 'rgba(16, 185, 129, 0.14)',
+      tipBorder: 'rgba(52, 211, 153, 0.38)',
+      tipText: '#a7f3d0',
+      cardBorder: '#34d399',
+      cardGlow: '0 0 38px rgba(16, 185, 129, 0.35), 0 25px 55px rgba(2, 6, 23, 0.85)',
+      starColor: '#34d399'
     },
     showNext: true
   },
@@ -2035,13 +3698,13 @@ const MOTIVATION_STATES = {
     subtitle: "You're doing really well!",
     tip: 'Clear and logical thinking! Keep it up!',
     theme: {
-      scoreColor: '#0284c7',
-      titleColor: '#1d4ed8',
-      tipBg: '#f0f9ff',
-      tipBorder: '#bae6fd',
-      tipText: '#0369a1',
-      cardBorder: '#7dd3fc',
-      cardGlow: '0 0 35px rgba(14, 165, 233, 0.32), 0 20px 45px rgba(15, 23, 42, 0.18)',
+      scoreColor: '#38bdf8',
+      titleColor: '#7dd3fc',
+      tipBg: 'rgba(6, 182, 212, 0.15)',
+      tipBorder: 'rgba(56, 189, 248, 0.42)',
+      tipText: '#bae6fd',
+      cardBorder: '#22d3ee',
+      cardGlow: '0 0 40px rgba(34, 211, 238, 0.38), 0 25px 55px rgba(2, 6, 23, 0.85)',
       starColor: '#38bdf8'
     },
     showNext: true
@@ -2052,14 +3715,14 @@ const MOTIVATION_STATES = {
     subtitle: "You're almost there!",
     tip: 'Very strong thinking! Just a bit more to reach perfection!',
     theme: {
-      scoreColor: '#7c3aed',
-      titleColor: '#6d28d9',
-      tipBg: '#faf5ff',
-      tipBorder: '#e9d5ff',
-      tipText: '#6b21a8',
-      cardBorder: '#d8b4fe',
-      cardGlow: '0 0 35px rgba(147, 51, 234, 0.32), 0 20px 45px rgba(15, 23, 42, 0.18)',
-      starColor: '#a855f7'
+      scoreColor: '#fbbf24',
+      titleColor: '#ffffff',
+      tipBg: 'rgba(139, 92, 246, 0.16)',
+      tipBorder: 'rgba(168, 85, 247, 0.45)',
+      tipText: '#e9d5ff',
+      cardBorder: '#a855f7',
+      cardGlow: '0 0 42px rgba(168, 85, 247, 0.42), 0 0 22px rgba(34, 211, 238, 0.25), 0 25px 55px rgba(2, 6, 23, 0.88)',
+      starColor: '#fbbf24'
     },
     showNext: true
   },
@@ -2069,13 +3732,13 @@ const MOTIVATION_STATES = {
     subtitle: 'Outstanding Thinking!',
     tip: "Amazing! You've got a clear and complete understanding!",
     theme: {
-      scoreColor: '#d97706',
-      titleColor: '#b45309',
-      tipBg: '#fefce8',
-      tipBorder: '#fef08a',
-      tipText: '#92400e',
-      cardBorder: '#fde047',
-      cardGlow: '0 0 45px rgba(245, 158, 11, 0.42), 0 20px 45px rgba(15, 23, 42, 0.18)',
+      scoreColor: '#fbbf24',
+      titleColor: '#fde047',
+      tipBg: 'rgba(245, 158, 11, 0.16)',
+      tipBorder: 'rgba(251, 191, 36, 0.5)',
+      tipText: '#fef08a',
+      cardBorder: '#fbbf24',
+      cardGlow: '0 0 48px rgba(251, 191, 36, 0.48), 0 0 24px rgba(34, 211, 238, 0.28), 0 25px 55px rgba(2, 6, 23, 0.88)',
       starColor: '#fbbf24'
     },
     showNext: true
@@ -2314,6 +3977,13 @@ function openMotivationPopup(score) {
     tipBox.style.color = config.theme.tipText;
   }
 
+  // Render Prominent Learning Takeaway: "How to Think Like a Data Engineer"
+  const motivationHowToThinkBox = $('motivationHowToThinkBox');
+  if (motivationHowToThinkBox && current) {
+    motivationHowToThinkBox.hidden = false;
+    motivationHowToThinkBox.innerHTML = renderHowToThinkCard(current);
+  }
+
   // Card border & colored outer glow matching reference image
   if (card) {
     card.style.border = `2px solid ${config.theme.cardBorder}`;
@@ -2386,8 +4056,8 @@ function openMotivationPopup(score) {
       feedbackSection.hidden = false;
       feedbackSection.style.display = 'block';
       document.querySelectorAll('.feedback-emoji-btn').forEach(btn => {
-        btn.style.borderColor = 'var(--line)';
-        btn.style.background = '#ffffff';
+        btn.style.borderColor = 'rgba(148, 163, 184, 0.26)';
+        btn.style.background = 'rgba(22, 33, 64, 0.9)';
         btn.style.boxShadow = 'none';
       });
       if ($('feedbackTextInput')) $('feedbackTextInput').value = '';
@@ -2417,14 +4087,14 @@ function openMotivationPopup(score) {
 function selectFeedbackEmoji(emoji, btnEl) {
   window.currentSelectedFeedbackEmoji = emoji;
   document.querySelectorAll('.feedback-emoji-btn').forEach(btn => {
-    btn.style.borderColor = 'var(--line)';
-    btn.style.background = '#ffffff';
+    btn.style.borderColor = 'rgba(148, 163, 184, 0.26)';
+    btn.style.background = 'rgba(22, 33, 64, 0.9)';
     btn.style.boxShadow = 'none';
   });
   if (btnEl) {
-    btnEl.style.borderColor = 'var(--primary)';
-    btnEl.style.background = '#eff6ff';
-    btnEl.style.boxShadow = '0 0 0 2px rgba(37,99,235,0.2)';
+    btnEl.style.borderColor = '#2dd4bf';
+    btnEl.style.background = 'rgba(20, 184, 166, 0.22)';
+    btnEl.style.boxShadow = '0 0 0 2px rgba(45, 212, 191, 0.28)';
   }
   const nextBtn = $('nextButton');
   if (nextBtn) {
@@ -2479,9 +4149,9 @@ function openMandatoryLevelFeedbackModal(domain, level) {
 
   document.querySelectorAll('.mandatory-emoji-btn').forEach(btn => {
     const isDefault = btn.getAttribute('data-emoji') === 'Good Challenge';
-    btn.style.borderColor = isDefault ? 'var(--primary)' : 'var(--line)';
-    btn.style.background = isDefault ? '#eff6ff' : '#ffffff';
-    btn.style.boxShadow = isDefault ? '0 0 0 2px rgba(37,99,235,0.2)' : 'none';
+    btn.style.borderColor = isDefault ? '#2dd4bf' : 'rgba(148, 163, 184, 0.26)';
+    btn.style.background = isDefault ? 'rgba(20, 184, 166, 0.22)' : 'rgba(22, 33, 64, 0.9)';
+    btn.style.boxShadow = isDefault ? '0 0 0 2px rgba(45, 212, 191, 0.28)' : 'none';
   });
 
   modal.hidden = false;
@@ -2491,14 +4161,14 @@ function openMandatoryLevelFeedbackModal(domain, level) {
 function selectMandatoryFeedbackEmoji(emoji, btnEl) {
   currentMandatoryFeedbackEmoji = emoji;
   document.querySelectorAll('.mandatory-emoji-btn').forEach(btn => {
-    btn.style.borderColor = 'var(--line)';
-    btn.style.background = '#ffffff';
+    btn.style.borderColor = 'rgba(148, 163, 184, 0.26)';
+    btn.style.background = 'rgba(22, 33, 64, 0.9)';
     btn.style.boxShadow = 'none';
   });
   if (btnEl) {
-    btnEl.style.borderColor = 'var(--primary)';
-    btnEl.style.background = '#eff6ff';
-    btnEl.style.boxShadow = '0 0 0 2px rgba(37,99,235,0.2)';
+    btnEl.style.borderColor = '#2dd4bf';
+    btnEl.style.background = 'rgba(20, 184, 166, 0.22)';
+    btnEl.style.boxShadow = '0 0 0 2px rgba(45, 212, 191, 0.28)';
   }
 }
 
@@ -2539,6 +4209,19 @@ async function submitMandatoryLevelFeedback() {
     text: feedbackText,
     emoji: emoji
   };
+
+  // 2. In Demo Mode, store feedback ONLY in sessionStorage (never Supabase or localStorage)
+  if (isDemoMode) {
+    saveDemoProgress(state);
+    if (btn) btn.disabled = false;
+    const modal = $('mandatoryFeedbackModal');
+    if (modal) modal.hidden = true;
+    renderDomainAndLevelPickers();
+    renderScenarioCatalog();
+    updateProgress();
+    openLevelCompletionModal(domain, level);
+    return;
+  }
 
   // 2. Save locally
   saveProgress(storage, user?.id, state);
@@ -2602,7 +4285,7 @@ async function submitMandatoryLevelFeedback() {
 
 // Supabase = Single Source of Truth for feedback
 async function fetchUserFeedbackFromSupabase(userId, force = false) {
-  if (!client) return window.userFeedbackList || [];
+  if (isDemoMode || !client) return window.userFeedbackList || [];
   const targetUid = userId || user?.id;
   if (!force && Array.isArray(window.userFeedbackList) && window.userFeedbackList.length > 0) {
     if (!targetUid || window.userFeedbackList.every(f => !targetUid || f.user_id === targetUid)) {
@@ -2638,6 +4321,11 @@ function updateFeedbackUI() {
 async function saveSubmittedFeedback() {
   const emoji = window.currentSelectedFeedbackEmoji;
   if (!emoji || !current) return;
+
+  if (isDemoMode) {
+    window.currentSelectedFeedbackEmoji = null;
+    return;
+  }
 
   const learnerName = getLearnerDisplayName(user, currentUsername);
   const feedbackText = ($('feedbackTextInput')?.value || '').trim();
@@ -2731,9 +4419,9 @@ function nextScenario() {
     return;
   }
 
-  // Paywall check: After Question 5 completed, do not unlock Question 6 for unpaid learner (Admins exempt)
+  // Paywall check: After Question 5 completed, do not unlock Question 6 for unpaid learner (Admins and Demo Mode exempt)
   const completedCount = getCompletedCount();
-  if (completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
+  if (completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode) {
     openPaywallModal();
     return;
   }
@@ -2958,7 +4646,7 @@ function handleDownloadCertificateFromAchievement() {
   }
 }
 
-function startNextLevel(domain, level) {
+async function startNextLevel(domain, level) {
   closeLevelCompletionModal();
   if (!isLevelUnlocked(domain, level, scenarios, state)) {
     onLockedLevelClick(domain, level);
@@ -2967,11 +4655,11 @@ function startNextLevel(domain, level) {
   selectedDomain = domain;
   selectedLevel = level;
   renderDomainAndLevelPickers();
-  loadScenario();
-  showScreen('practice');
+  await loadScenario();
+  await showScreen('practice');
 }
 
-function startNextDomain(domain) {
+async function startNextDomain(domain) {
   closeLevelCompletionModal();
   if (!isDomainUnlocked(domain, scenarios, state)) {
     onLockedDomainClick(domain);
@@ -2980,8 +4668,8 @@ function startNextDomain(domain) {
   selectedDomain = domain;
   selectedLevel = 'Beginner';
   renderDomainAndLevelPickers();
-  loadScenario();
-  showScreen('practice');
+  await loadScenario();
+  await showScreen('practice');
 }
 
 function handlePracticeAgain() {
@@ -2991,7 +4679,7 @@ function handlePracticeAgain() {
 }
 
 function openCertificateModal(certData) {
-  if (!user) {
+  if (!user && !isDemoMode) {
     requestGoogleLogin({
       destination: 'certificate',
       domain: certData?.domain || selectedDomain,
@@ -3002,6 +4690,31 @@ function openCertificateModal(certData) {
   }
   const targetDomain = certData?.domain || selectedDomain || 'Banking';
   const targetLevel = certData?.level || selectedLevel || 'Beginner';
+
+  if (isDemoMode) {
+    // In Demo Mode, provide a clearly labeled certificate preview and NEVER write to Supabase certificates
+    certData = {
+      domain: targetDomain,
+      level: targetLevel,
+      userName: 'Demo Learner (Preview Only)',
+      completionDate: `${formatCompletionDate(Date.now())} • DEMO PREVIEW`
+    };
+    currentCertificateTarget = certData;
+    const modal = $('certificateModal');
+    if (!modal) return;
+    if ($('certModalHeading')) {
+      $('certModalHeading').textContent = `🧪 DEMO PREVIEW — Certificate of Completion (${certData.domain} • ${certData.level})`;
+    }
+    const demoCertBanner = $('certDemoPreviewBanner');
+    if (demoCertBanner) demoCertBanner.hidden = false;
+    const previewCard = $('certPreviewCard');
+    if (previewCard) {
+      previewCard.innerHTML = generateCertificateSvg(certData);
+    }
+    modal.hidden = false;
+    return;
+  }
+
   const status = checkLevelCompletion(targetDomain, targetLevel, scenarios, state);
 
   if (!status.isCompleted) {
@@ -3023,6 +4736,9 @@ function openCertificateModal(certData) {
 
   const modal = $('certificateModal');
   if (!modal) return;
+
+  const demoCertBanner = $('certDemoPreviewBanner');
+  if (demoCertBanner) demoCertBanner.hidden = true;
 
   if ($('certModalHeading')) {
     $('certModalHeading').textContent = `Certificate of Completion — ${certData.domain} (${certData.level})`;
@@ -3496,10 +5212,14 @@ async function showScreen(name) {
     openProfileModal();
     return;
   }
+  if (name === 'practice' && !selectedDomain) {
+    showDomainSelectionWarning();
+    name = 'home';
+  }
   const isProgress = name === 'progress' || name === 'progressScreen';
   const targetScreen = isProgress ? 'progress' : name;
 
-  if (!user && (name === 'practice' || isProgress)) {
+  if (!user && !isDemoMode && (name === 'practice' || isProgress)) {
     if ($('appMain')) $('appMain').hidden = false;
     if ($('bottomNav')) $('bottomNav').hidden = false;
     requestGoogleLogin({
@@ -3512,6 +5232,8 @@ async function showScreen(name) {
   }
 
   closeLoginModal();
+  closeProfileDropdown();
+  closeNotificationsDropdown();
   if ($('appMain')) $('appMain').hidden = false;
   if ($('bottomNav')) $('bottomNav').hidden = false;
 
@@ -3523,9 +5245,13 @@ async function showScreen(name) {
   $('home').classList.toggle('active', name === 'home');
   $('practice').classList.toggle('active', name === 'practice');
   $('progressScreen').classList.toggle('active', isProgress);
+  if ($('missionMap')) $('missionMap').classList.toggle('active', name === 'missionMap');
   if ($('navHome')) $('navHome').classList.toggle('active', name === 'home');
   if ($('navPractice')) $('navPractice').classList.toggle('active', name === 'practice');
   if ($('navProgress')) $('navProgress').classList.toggle('active', isProgress);
+  currentActiveScreen = targetScreen;
+  updateDemoModeUI();
+
   if (isProgress) {
     renderProgressScreen();
   } else if (name === 'practice') {
@@ -3543,14 +5269,21 @@ async function showScreen(name) {
       renderScenario();
     }
   } else if (name === 'home') {
+    clearDomainSelectionWarning(false);
+    hideAccessError();
+    if ((!selectedDomain || !selectedLevel) && current && current.domain && current.level) {
+      if (!selectedDomain) selectedDomain = current.domain;
+      if (!selectedLevel) selectedLevel = current.level;
+    }
     renderDomainAndLevelPickers();
     renderScenarioCatalog();
-    if (user && client) {
+    updateStartPracticeUI();
+    if (isDemoMode) {
+      renderDemoContestPreviewCard();
+    } else if (user && client) {
       void initContest(client, user, getCompletedCount(), isCurrentUserAdmin);
     }
   }
-
-  currentActiveScreen = targetScreen;
 
   // When the Progress page opens, always scroll to the top.
   // Do NOT force scroll-to-top on Dashboard, Explore, Practice, or any other page.
@@ -3567,6 +5300,9 @@ async function showScreen(name) {
 }
 function goHome() { showScreen('home'); }
 async function openScenario(id) {
+  if (!Array.isArray(scenarios) || scenarios.length === 0) {
+    await loadFullScenariosInBackground();
+  }
   let target = scenarios.find(s => s.id === id);
   if (!target) return;
 
@@ -3582,7 +5318,7 @@ async function openScenario(id) {
   renderDomainAndLevelPickers();
   renderScenario();
 
-  if (!user) {
+  if (!user && !isDemoMode) {
     state = EMPTY();
     requestGoogleLogin({
       destination: 'practice',
@@ -3595,7 +5331,7 @@ async function openScenario(id) {
 
   const isTargetCompleted = isCompleted(target, state.entries[target.id]);
   const completedCount = getCompletedCount();
-  if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
+  if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode) {
     openPaywallModal();
     return;
   }
@@ -3603,7 +5339,7 @@ async function openScenario(id) {
   showScreen('practice');
 }
 function showSampleThinking() {
-  if (!user || !user.id) {
+  if (!isDemoMode && (!user || !user.id)) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -3618,7 +5354,7 @@ function showSampleThinking() {
   evaluatePlan();
 }
 function improveLogic() {
-  if (!user || !user.id) {
+  if (!isDemoMode && (!user || !user.id)) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -3679,7 +5415,7 @@ function compareExpert() {
 function closeCompare() { $('compareModal').hidden = true; }
 
 function generateSql() {
-  if (!user || !user.id) {
+  if (!isDemoMode && (!user || !user.id)) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -3689,26 +5425,59 @@ function generateSql() {
     return;
   }
   if (!current) return;
+  const e = entry();
+  const thinkingScore = typeof e.assessment?.score === 'number'
+    ? e.assessment.score
+    : (typeof e.thinkingScore === 'number' ? e.thinkingScore : 0);
+  const unlocked = Boolean(thinkingScore >= 7 || e.completed);
+  if (!unlocked) {
+    const unlockHint = $('sqlUnlockHint');
+    if (unlockHint) {
+      unlockHint.textContent = 'Please check your thinking and score at least 7/10 before generating SQL.';
+    }
+    return;
+  }
   const effective = getEffectiveScenario(current, user?.id || 'guest_user', state);
-  const sql = effective.sql;
-  $('learnerSql').value = sql;
+  const sql = effective.sql || current.sql || '';
+  if ($('learnerSql')) $('learnerSql').value = sql;
   changeEntry({ sql, fiddleFingerprint: null, evaluationFingerprint: null, evaluationResult: null, skill: effective.skill });
   renderSqlEvaluation(null);
   updateSqlEditorView();
   updateGates();
   updateSqlEditorStatus('PostgreSQL • Ready', 'ready');
+  const genPanel = $('generatedSqlPanel');
+  const genCode = $('generatedSqlCode');
+  if (genCode) genCode.textContent = sql;
+  if (genPanel) genPanel.hidden = !sql;
   if ($('sqlGate')) {
-    $('sqlGate').textContent = '✨ PostgreSQL query generated from plan! Click "Check / Run SQL" to test.';
+    $('sqlGate').textContent = '✨ PostgreSQL query generated from plan!';
     $('sqlGate').style.color = '#166534';
   }
-  // Scroll smoothly to SQL section
-  const sec = $('sqlSection');
-  if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  $('learnerSql').focus();
+  const sec = $('generatedSqlPanel') || $('sqlSection');
+  if (sec && typeof sec.scrollIntoView === 'function') {
+    sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  if ($('learnerSql')) $('learnerSql').focus();
+}
+
+function toggleSchemaSampleCard(btn) {
+  if (!btn) return;
+  const panelId = btn.getAttribute('aria-controls');
+  const card = typeof btn.closest === 'function' ? btn.closest('.schema-card') : null;
+  const panel = (panelId && document.getElementById(panelId)) || (card && card.querySelector('.schema-sample-panel'));
+  if (!panel) return;
+  const willExpand = Boolean(panel.hidden);
+  panel.hidden = !willExpand;
+  btn.setAttribute('aria-expanded', willExpand ? 'true' : 'false');
+  if (card && card.classList) card.classList.toggle('sample-expanded', willExpand);
+  const labelEl = typeof btn.querySelector === 'function' ? btn.querySelector('.schema-sample-toggle-label') : null;
+  if (labelEl) {
+    labelEl.textContent = willExpand ? 'Hide sample records' : 'View sample records';
+  }
 }
 
 function useStarterSql() {
-  if (!user || !user.id) {
+  if (!isDemoMode && (!user || !user.id)) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -3801,27 +5570,6 @@ function showStepSql() {
 }
 function closeStepSql() { $('stepSqlModal').hidden = true; }
 
-function parseSampleData(sampleSql) {
-  const tables = {};
-  if (!sampleSql) return tables;
-  const insertRegex = /INSERT INTO\s+([a-zA-Z0-9_]+)\s*\(([^)]+)\)\s*VALUES\s*([\s\S]*?);/gi;
-  let match;
-  while ((match = insertRegex.exec(sampleSql)) !== null) {
-    const tableName = match[1];
-    const cols = match[2].split(',').map(c => c.trim());
-    const rawValues = match[3].trim();
-    const rowRegex = /\(([^)]+)\)/g;
-    const rows = [];
-    let rowMatch;
-    while ((rowMatch = rowRegex.exec(rawValues)) !== null) {
-      const vals = rowMatch[1].split(/,(?=(?:[^']*'[^']*')*[^']*$)/).map(v => v.trim().replace(/^'|'$/g, ''));
-      rows.push(vals);
-    }
-    tables[tableName] = { cols, rows };
-  }
-  return tables;
-}
-
 let currentSampleTable = null;
 function setSchemaTab(tab) {
   $('tabSchema').classList.toggle('active', tab === 'schema');
@@ -3834,8 +5582,8 @@ function setSchemaTab(tab) {
 function renderSampleDataView() {
   const container = $('sampleDataView');
   if (!container || !current) return;
-  const sampleSql = data.assets[current.domain]?.sample || '';
-  const parsed = parseSampleData(sampleSql);
+  const sampleSql = data?.assets?.[current.domain]?.sample || DOMAIN_SCHEMA_ASSETS[current.domain]?.sample || '';
+  const parsed = parseSampleRecords(sampleSql);
   const tableNames = Object.keys(parsed).sort();
   if (tableNames.length === 0) {
     container.innerHTML = '<p class="small muted">No sample data available for this scenario.</p>';
@@ -3889,8 +5637,31 @@ function filterScenarioSearch(q) {
 }
 
 function renderScenarioCatalog() {
+  const section = $('scenarioCatalogSection');
   const container = $('scenarioCatalog');
   if (!container) return;
+
+  const hasSelection = Boolean((selectedDomain && selectedLevel) || scenarioSearchQuery);
+  if (section) {
+    section.hidden = !hasSelection;
+    section.style.display = hasSelection ? 'block' : 'none';
+  }
+
+  const begBtn = $('catalogLevelBeginnerBtn');
+  const intBtn = $('catalogLevelIntermediateBtn');
+  const expBtn = $('catalogLevelExpertBtn');
+  [
+    [begBtn, 'Beginner'],
+    [intBtn, 'Intermediate'],
+    [expBtn, 'Expert']
+  ].forEach(([btn, lvl]) => {
+    if (!btn) return;
+    const isActive = (selectedLevel === lvl);
+    btn.style.background = isActive ? 'rgba(34, 211, 238, 0.2)' : 'rgba(15, 23, 42, 0.75)';
+    btn.style.borderColor = isActive ? '#22d3ee' : 'rgba(56, 189, 248, 0.35)';
+    btn.style.color = isActive ? '#67e8f9' : '#cbd5e1';
+  });
+
   let list = [];
   if (scenarioSearchQuery) {
     list = scenarios.filter(s => 
@@ -3899,14 +5670,16 @@ function renderScenarioCatalog() {
       s.domain.toLowerCase().includes(scenarioSearchQuery) ||
       s.level.toLowerCase().includes(scenarioSearchQuery)
     );
-    $('catalogTitle').textContent = `Search: "${scenarioSearchQuery}" (${list.length} matches)`;
+    if ($('catalogTitle')) $('catalogTitle').textContent = `Search: "${scenarioSearchQuery}" (${list.length} matches)`;
   } else if (selectedDomain && selectedLevel) {
     list = scenarios.filter(s => s.domain === selectedDomain && s.level === selectedLevel);
-    $('catalogTitle').textContent = `${selectedDomain} • ${selectedLevel} (${list.length} exercises)`;
+    if ($('catalogTitle')) $('catalogTitle').textContent = `${selectedDomain} • ${selectedLevel} (${list.length} exercises)`;
   } else {
-    $('catalogTitle').textContent = currentDomainTrack === 'core'
-      ? 'Explore 4 Core Domains (Pick Domain & Level above)'
-      : 'Explore All Scenarios (Pick Domain & Level above)';
+    if ($('catalogTitle')) {
+      $('catalogTitle').textContent = currentDomainTrack === 'core'
+        ? 'Explore 4 Core Domains (Pick Domain & Level above)'
+        : 'Explore All Scenarios (Pick Domain & Level above)';
+    }
     const baseList = currentDomainTrack === 'core'
       ? scenarios.filter(s => CORE_DOMAINS.includes(s.domain))
       : scenarios;
@@ -3914,6 +5687,14 @@ function renderScenarioCatalog() {
   }
   
   if (list.length === 0) {
+    if (!fullScenariosLoaded && fullScenariosPromise) {
+      container.innerHTML = '<div class="hint">Loading scenarios…</div>';
+      return;
+    }
+    if (scenarioCatalogError) {
+      container.innerHTML = '<div class="hint">Could not load scenarios. <button type="button" class="action secondary sm" onclick="retryLoadScenarioCatalog()">Retry</button></div>';
+      return;
+    }
     container.innerHTML = '<div class="hint">No matching scenarios found.</div>';
     return;
   }
@@ -3925,7 +5706,7 @@ function renderScenarioCatalog() {
     const attempted = isAttempted(s, e);
     const isCurrent = current && current.id === s.id;
     const totalCompleted = getCompletedCount();
-    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin;
+    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode;
     let badgeClass = 'status-pill not-started';
     let badgeText = 'Not started';
     if (isLocked) {
@@ -3986,12 +5767,15 @@ function renderProgressScreen() {
   if ($('progressCompletionPct')) $('progressCompletionPct').textContent = `${completionPct}%`;
   if ($('progressAvgThinkingScore')) $('progressAvgThinkingScore').textContent = `${avgScore} / 10`;
 
-  // Domain-wise completed questions: Banking, Healthcare, Insurance, Retail
+  // Domain-wise completed questions across all 7 domains
   const targetDomains = [
-    { name: 'Banking', icon: '🏦', color: '#2563eb' },
-    { name: 'Healthcare', icon: '🏥', color: '#059669' },
-    { name: 'Insurance', icon: '🛡️', color: '#7c3aed' },
-    { name: 'Retail', icon: '🛒', color: '#ea580c' }
+    { name: 'Banking', icon: '🏦', color: '#38bdf8' },
+    { name: 'Healthcare', icon: '🏥', color: '#fb7185' },
+    { name: 'Insurance', icon: '🛡️', color: '#c084fc' },
+    { name: 'Retail', icon: '🛒', color: '#fbbf24' },
+    { name: 'Capital Markets', icon: '📈', color: '#34d399' },
+    { name: 'Semiconductor', icon: '🔬', color: '#22d3ee' },
+    { name: 'Education', icon: '🎓', color: '#818cf8' }
   ];
 
   const domainCounts = targetDomains.map(d => {
@@ -4013,7 +5797,7 @@ function renderProgressScreen() {
     let slicesSvg = '';
     if (sumDomainCompleted === 0) {
       slicesSvg = `
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e2e8f0" stroke-width="16" />
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="16" />
         <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-size="20" font-weight="900" fill="#94a3b8">0</text>
         <text x="${cx}" y="${cy + 15}" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">Completed</text>
       `;
@@ -4028,12 +5812,12 @@ function renderProgressScreen() {
       }).filter(Boolean);
 
       slicesSvg = `
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#f1f5f9" stroke-width="16" />
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(148, 163, 184, 0.18)" stroke-width="16" />
         <g transform="rotate(-90 ${cx} ${cy})">
           ${paths.join('')}
         </g>
-        <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-size="22" font-weight="900" fill="var(--ink)">${sumDomainCompleted}</text>
-        <text x="${cx}" y="${cy + 15}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--muted)">Completed</text>
+        <text x="${cx}" y="${cy - 2}" text-anchor="middle" font-size="22" font-weight="900" fill="#f8fafc">${sumDomainCompleted}</text>
+        <text x="${cx}" y="${cy + 15}" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">Completed</text>
       `;
     }
 
@@ -4182,7 +5966,7 @@ async function refreshAuthoritativeProgress() {
 }
 
 async function openAllCertificatesModal() {
-  if (!user) {
+  if (!user && !isDemoMode) {
     requestGoogleLogin({
       destination: 'certificates',
       domain: selectedDomain,
@@ -4211,7 +5995,7 @@ function renderCertificatesSection() {
   const allCerts = getAllCertificatesStatus(scenarios, state, user, currentUsername);
   const earnedCerts = allCerts.filter(c => c.isCompleted);
 
-  const badgeText = `${earnedCerts.length} / 21 Earned`;
+  const badgeText = isDemoMode ? `${earnedCerts.length} / 21 (Demo Preview)` : `${earnedCerts.length} / 21 Earned`;
   if ($('earnedCertificatesBadge')) {
     $('earnedCertificatesBadge').textContent = badgeText;
   }
@@ -4225,6 +6009,21 @@ function renderCertificatesSection() {
   const grid = $('certificatesGrid');
   if (!grid) return;
 
+  let demoBannerHtml = '';
+  if (isDemoMode) {
+    demoBannerHtml = `
+      <div id="demoCertsPreviewNotice" style="grid-column: 1 / -1; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 14px; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px;">
+        <div>
+          <div style="font-size: 13px; font-weight: 800; color: #92400e;">🧪 DEMO PREVIEW — Certificates Are Simulated</div>
+          <div style="font-size: 12px; color: #b45309;">Preview sample certificates in Demo Mode. Sign in with Google to earn verified, permanent certificates.</div>
+        </div>
+        <button type="button" class="action primary" onclick="openCertificateModal({ domain: 'Banking', level: 'Beginner', isDemoPreview: true })" style="padding: 8px 14px; font-size: 12px; font-weight: 800; background: #d97706; border: none;">
+          🎓 Preview Sample Certificate
+        </button>
+      </div>
+    `;
+  }
+
   let filtered = allCerts;
   if (currentCertFilter === 'earned') {
     filtered = allCerts.filter(c => c.isCompleted);
@@ -4233,8 +6032,8 @@ function renderCertificatesSection() {
   }
 
   if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; color: var(--muted); background: #f8fafc; border: 1px dashed var(--line); border-radius: 16px;">
+    grid.innerHTML = demoBannerHtml + `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; color: var(--muted); background: rgba(9, 17, 34, 0.78); border: 1px dashed rgba(148, 163, 184, 0.28); border-radius: 16px;">
         <div style="font-size: 28px; margin-bottom: 8px;">${currentCertFilter === 'earned' ? '🏆' : '🔒'}</div>
         <div style="font-weight: 700; font-size: 14px; color: var(--ink);">
           ${currentCertFilter === 'earned' ? 'No certificates earned yet.' : 'All 21 certificates earned!'}
@@ -4247,7 +6046,7 @@ function renderCertificatesSection() {
     return;
   }
 
-  grid.innerHTML = filtered.map(c => {
+  grid.innerHTML = demoBannerHtml + filtered.map(c => {
     const isEarned = c.isCompleted;
     const isUnlocked = c.isUnlocked;
     const isLocked = !isEarned && !isUnlocked;
@@ -4276,7 +6075,7 @@ function renderCertificatesSection() {
     } else if (isLocked) {
       cardClass = 'cert-card-item locked';
       icon = '🔒';
-      statusBadgeHtml = `<span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0;">🔒 Locked</span>`;
+      statusBadgeHtml = `<span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: rgba(15, 23, 42, 0.85); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.24);">🔒 Locked</span>`;
       if (c.level === 'Intermediate') {
         statusText = 'Complete Beginner (20/20) + Feedback to Unlock';
       } else if (c.level === 'Expert') {
@@ -4285,27 +6084,27 @@ function renderCertificatesSection() {
         statusText = 'Complete previous domain to unlock';
       }
       actions = `
-        <button class="ghost-btn-sm" style="padding:6px 12px;font-size:12px;color:#64748b;font-weight:700;border:1px solid #e2e8f0;background:#f8fafc;" onclick="closeAllCertificatesModal(); practiceDomainAndLevel('${c.domain}','${c.level}')">
+        <button class="ghost-btn-sm" style="padding:6px 12px;font-size:12px;color:#94a3b8;font-weight:700;border:1px solid rgba(148,163,184,0.24);background:rgba(9,17,34,0.75);" onclick="closeAllCertificatesModal(); practiceDomainAndLevel('${c.domain}','${c.level}')">
           🔒 Locked • View Requirement
         </button>
       `;
     } else if (isInProgress) {
       cardClass = 'cert-card-item in-progress';
       icon = '⚡';
-      statusBadgeHtml = `<span style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">In Progress (${c.completedCount}/20)</span>`;
+      statusBadgeHtml = `<span style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: rgba(212, 175, 55, 0.18); color: #fbbf24; border: 1px solid rgba(212, 175, 55, 0.42);">In Progress (${c.completedCount}/20)</span>`;
       statusText = `${c.completedCount} / 20 Scenarios Solved`;
       actions = `
-        <button class="ghost-btn-sm" style="padding:6px 12px;font-size:12px;color:var(--primary);font-weight:700;" onclick="closeAllCertificatesModal(); practiceDomainAndLevel('${c.domain}','${c.level}')">
+        <button class="ghost-btn-sm" style="padding:6px 12px;font-size:12px;color:#5eead4;font-weight:700;" onclick="closeAllCertificatesModal(); practiceDomainAndLevel('${c.domain}','${c.level}')">
           Continue Practice →
         </button>
       `;
     } else {
       cardClass = 'cert-card-item';
       icon = '🎯';
-      statusBadgeHtml = `<span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">Not Started (0/20)</span>`;
+      statusBadgeHtml = `<span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: rgba(15, 23, 42, 0.85); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.24);">Not Started (0/20)</span>`;
       statusText = `0 / 20 Scenarios Solved • Unlocked`;
       actions = `
-        <button class="ghost-btn-sm" style="padding:6px 12px;font-size:12px;color:var(--primary);font-weight:700;" onclick="closeAllCertificatesModal(); practiceDomainAndLevel('${c.domain}','${c.level}')">
+        <button class="ghost-btn-sm" style="padding:6px 12px;font-size:12px;color:#5eead4;font-weight:700;" onclick="closeAllCertificatesModal(); practiceDomainAndLevel('${c.domain}','${c.level}')">
           Start Practice →
         </button>
       `;
@@ -4348,9 +6147,8 @@ function renderCertificatesSection() {
 function filterProgressDomain() {}
 function filterProgressStatus() {}
 function filterProgressSearch() {}
-function renderProgressTable() {}
 
-function practiceDomain(domain) {
+async function practiceDomain(domain) {
   if (!isDomainUnlocked(domain, scenarios, state)) {
     onLockedDomainClick(domain);
     return;
@@ -4360,8 +6158,8 @@ function practiceDomain(domain) {
     selectedLevel = getFirstUnlockedLevel(domain, scenarios, state);
   }
   renderDomainAndLevelPickers();
-  loadScenario();
-  showScreen('practice');
+  await loadScenario();
+  await showScreen('practice');
 }
 
 function openOnboarding() {
@@ -4438,7 +6236,7 @@ function copySqlAndOpenFiddle() {
 }
 
 async function evaluateSql() {
-  if (!user || !user.id) {
+  if (!isDemoMode && (!user || !user.id)) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -4493,16 +6291,25 @@ async function evaluateSql() {
   }
 }
 function resetProgress() {
+  if (isDemoMode) {
+    state = EMPTY();
+    saveDemoProgress(state);
+    updateProgress();
+    if (current) renderScenario();
+    return;
+  }
   if(!confirm('Reset progress for '+(user?'this signed-in account':'this guest profile')+'? Other accounts will not be changed.'))return;
   const resetAt=nextTimestamp(state);state={...EMPTY(),resetAt};persist();updateProgress();
   if(current)renderScenario();
 }
 function importOldHistory() {
+  if (isDemoMode) return;
   if(!confirm('Earlier device history may belong to someone else. Import it into this profile only as “answer viewed”, without awarding thinking or SQL completion?'))return;
   let old;try{old=JSON.parse(storage.getItem('crackSqlProgress'));}catch{old=[];}
   state=importLegacy(old,state,data.aliases,ids);persist();updateProgress();if(current)renderScenario();
 }
 function importGuestProgress() {
+  if (isDemoMode) return;
   if(!user||!confirm('Import this device’s guest practice into your signed-in account?'))return;
   const guest=readProgress(storage,null,ids);
   // Explicit imports re-date entries so an intentional import works after a reset.
@@ -4511,6 +6318,7 @@ function importGuestProgress() {
   state=mergeProgress(state,imported,ids);persist();updateProgress();if(current)renderScenario();
 }
 async function importCloudHistory() {
+  if (isDemoMode) return;
   if(!user||!client||!confirm('Import your earlier account completions as answer-viewed history? This will not award thinking or SQL completion.'))return;
   const owner=user.id;
   try {
@@ -4537,7 +6345,40 @@ function renderAuth() {
   const displayHandle = currentUsername ? `@${currentUsername}` : (user?.email || 'learner');
   const emailSub = currentUsername && user?.email ? ` <span style="font-size:0.85em;color:var(--muted);">(${escapeHtml(user.email)})</span>` : '';
   const premiumBadge = (user && isPaidUnlocked) ? ' <span class="premium-badge">⭐ PREMIUM</span>' : '';
-  $('authBox').innerHTML=user?'<div class="auth-row"><span>Signed in as <strong>'+escapeHtml(displayHandle)+'</strong>'+emailSub+premiumBadge+'</span><button class="linkbtn" onclick="signOut()">Sign out</button></div>':'';
+  if (isDemoMode) {
+    $('authBox').innerHTML = `
+      <div class="auth-row" style="background: linear-gradient(135deg, rgba(30, 27, 75, 0.94) 0%, rgba(15, 23, 42, 0.96) 100%); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 16px; padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 10px 28px rgba(2, 6, 23, 0.5), 0 0 20px rgba(245, 158, 11, 0.14);">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; font-size: 11.5px; font-weight: 900; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.5px;">🧪 DEMO MODE</span>
+          <span style="font-size: 13.5px; color: #fde68a; font-weight: 700;">Temporary Demo Session: Progress is stored locally in this tab only and is not saved to an account.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="action primary" onclick="signInFromDemo()" style="padding: 8px 14px; font-size: 12.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); border: none; color: #ffffff;">Sign in to Save Progress</button>
+          <button type="button" class="action secondary" onclick="exitDemoMode()" style="padding: 8px 14px; font-size: 12.5px; font-weight: 800; background: rgba(239, 68, 68, 0.14); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.45);">Exit Demo</button>
+        </div>
+      </div>
+    `;
+  } else if (user) {
+    $('authBox').innerHTML = '<div class="auth-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;"><span>Signed in as <strong>'+escapeHtml(displayHandle)+'</strong>'+emailSub+premiumBadge+'</span><div style="display:flex;align-items:center;gap:8px;"><button type="button" id="exploreStartDemoBtn" class="ghost-btn-sm" onclick="startDemoMode()" style="font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:10px;border:1px solid rgba(34,211,238,0.4);background:rgba(34,211,238,0.12);color:#67e8f9;cursor:pointer;">🧪 Try Demo</button><button class="linkbtn" onclick="signOut()">Sign out</button></div></div>';
+  } else {
+    $('authBox').innerHTML = `
+      <div class="explore-login-card" style="background: linear-gradient(135deg, rgba(16, 29, 66, 0.92) 0%, rgba(10, 19, 44, 0.95) 100%); border: 1.5px solid rgba(56, 189, 248, 0.32); border-radius: 16px; padding: 16px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(2, 6, 23, 0.45);">
+        <div>
+          <div style="font-size: 15px; font-weight: 800; color: #f8fafc;">Try Crack SQL Instantly or Sign In to Save Progress</div>
+          <div style="font-size: 13px; color: #94a3b8; margin-top: 2px;">Launch an interactive Demo Session right away, or sign in with Google to save your Thinking Scores and earn SQL Certificates.</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <button type="button" id="exploreStartDemoBtn" class="action secondary" onclick="startDemoMode()" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; border: 1.5px solid #22d3ee; background: rgba(34, 211, 238, 0.14); color: #67e8f9; border-radius: 12px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; box-shadow: 0 0 18px rgba(34, 211, 238, 0.2);">
+            <span>🧪</span>
+            <span>Try Demo</span>
+          </button>
+          <button type="button" class="action primary" onclick="requestGoogleLogin({ destination: 'practice', domain: selectedDomain, level: selectedLevel })" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 55%, #8b5cf6 100%); border: none; color: #ffffff; border-radius: 12px;">
+            Continue with Google
+          </button>
+        </div>
+      </div>
+    `;
+  }
   if($('authMessage'))$('authMessage').textContent=authNotice;
   if($('importGuest'))$('importGuest').hidden=!user;
   if($('importCloud'))$('importCloud').hidden=!user;
@@ -4547,6 +6388,7 @@ function renderAuth() {
     headerBadge.style.display = (user && isPaidUnlocked) ? 'inline-flex' : 'none';
   }
 
+  updateDemoModeUI();
   renderProfileAvatar();
 }
 
@@ -4837,6 +6679,12 @@ async function setSession(session) {
   user = next;
 
   if (user) {
+    if (isDemoMode) {
+      isDemoMode = false;
+      demoPremiumPreviewActive = false;
+      clearDemoStorage();
+      updateDemoModeUI();
+    }
     if (previousUserId !== user.id) {
       stopPaymentPolling();
       isCurrentUserAdmin = false;
@@ -5141,10 +6989,6 @@ function toggleLandscapeMode() {
   document.querySelectorAll('.btn-landscape-toggle').forEach(btn => btn.remove());
 }
 
-function updateLandscapeToggleText() {
-  document.querySelectorAll('.btn-landscape-toggle').forEach(btn => btn.remove());
-}
-
 function initLandscapeMode() {
   document.body.classList.add('landscape-layout');
   document.querySelectorAll('.btn-landscape-toggle').forEach(btn => btn.remove());
@@ -5228,10 +7072,6 @@ function closeProfileSetupModal() {
   if (legacyModal) legacyModal.hidden = true;
 }
 
-function openUsernameModal(userId, userEmail) {
-  openProfileSetupModal({ userId, userEmail, existingUsername: currentUsername, existingMobile: currentMobileNumber, whatsappConsent: currentWhatsappConsent });
-}
-
 function closeUsernameModal() {
   closeProfileSetupModal();
 }
@@ -5257,6 +7097,10 @@ async function checkAndEnforceUsername(userId, userEmail, prefetchedProfile = nu
       profErr = res.error;
     }
 
+    if (user && user.id !== userId) {
+      return;
+    }
+
     // If Supabase fetch failed or is unavailable, do NOT treat as missing mobile number (Requirement 8)
     if (!profile && profErr) {
       console.warn('[ProfileContact] Profile fetch unavailable; skipping popup enforcement until Supabase reconnects.');
@@ -5279,6 +7123,7 @@ async function checkAndEnforceUsername(userId, userEmail, prefetchedProfile = nu
 
     renderProfileAvatar();
     renderAuth();
+    refreshConversationLearnerIdentity();
 
     // If a valid mobile number already exists in the user's Supabase profile -> NEVER show the mobile number popup again! (Requirement 3)
     if (dbMobile) {
@@ -5411,6 +7256,7 @@ async function saveProfileContactDetails() {
     closeProfileSetupModal();
     renderProfileAvatar();
     renderAuth();
+    refreshConversationLearnerIdentity();
     await resumePendingAuthIntent();
   } catch (err) {
     console.error('[ProfileContact] Save exception:', err);
@@ -5520,6 +7366,9 @@ async function saveProfileModalContactChanges() {
     try { localStorage.setItem(`cracksql_username_${user.id}`, newUsername); } catch (_) {}
 
     toggleEditProfileContactForm(false);
+    renderProfileAvatar();
+    renderAuth();
+    refreshConversationLearnerIdentity();
     openProfileModal(); // Refresh modal view
   } catch (err) {
     console.error('[ProfileContact] Update exception:', err);
@@ -5532,6 +7381,17 @@ async function saveProfileModalContactChanges() {
 }
 
 function getUserInfo() {
+  if (isDemoMode) {
+    return {
+      isLoggedIn: false,
+      isDemo: true,
+      name: 'Demo Learner',
+      username: 'demo_preview',
+      email: 'Demo Mode (sessionStorage only)',
+      initial: 'D',
+      avatarUrl: null
+    };
+  }
   if (!user) {
     return {
       isLoggedIn: false,
@@ -5566,6 +7426,8 @@ function renderProfileAvatar() {
       avatarContent.innerHTML = `<img src="${escapeHtml(info.avatarUrl)}" alt="${escapeHtml(info.name)}" class="profile-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\\'profile-avatar-initial\\'>${escapeHtml(info.initial)}</span>';">`;
     } else if (info.isLoggedIn) {
       avatarContent.innerHTML = `<span class="profile-avatar-initial">${escapeHtml(info.initial)}</span>`;
+    } else if (info.isDemo) {
+      avatarContent.innerHTML = `<span class="profile-avatar-initial" style="background:#f59e0b;color:#fff;">🧪</span>`;
     } else {
       avatarContent.innerHTML = `<span style="font-size:18px;">👤</span>`;
     }
@@ -5577,6 +7439,8 @@ function renderProfileAvatar() {
       ddAvatar.innerHTML = `<img src="${escapeHtml(info.avatarUrl)}" alt="${escapeHtml(info.name)}" class="profile-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='${escapeHtml(info.initial)}';">`;
     } else if (info.isLoggedIn) {
       ddAvatar.textContent = info.initial;
+    } else if (info.isDemo) {
+      ddAvatar.innerHTML = '🧪';
     } else {
       ddAvatar.innerHTML = '👤';
     }
@@ -5586,6 +7450,8 @@ function renderProfileAvatar() {
   if (ddName) {
     if (user && isPaidUnlocked) {
       ddName.innerHTML = `${escapeHtml(info.name)} <span class="premium-badge" style="font-size:0.7rem;padding:1px 6px;">⭐ PREMIUM</span>`;
+    } else if (info.isDemo) {
+      ddName.innerHTML = `Demo Learner <span style="background:rgba(245,158,11,0.18);color:#fde68a;border:1px solid rgba(251,191,36,0.45);font-size:0.65rem;padding:1px 6px;border-radius:999px;font-weight:800;vertical-align:middle;margin-left:3px;">DEMO</span>`;
     } else {
       ddName.textContent = info.name;
     }
@@ -5594,20 +7460,70 @@ function renderProfileAvatar() {
   const ddEmail = $('dropdownEmail');
   if (ddEmail) ddEmail.textContent = info.email;
 
+  const hasUser = Boolean(user && user.id);
+  const demoIndicator = $('profileDemoIndicator');
+  if (demoIndicator) {
+    demoIndicator.hidden = !isDemoMode;
+    demoIndicator.style.display = isDemoMode ? 'flex' : 'none';
+  }
+
+  const googleSignInBtn = $('profileGoogleSignInBtn');
+  if (googleSignInBtn) {
+    googleSignInBtn.hidden = hasUser;
+    googleSignInBtn.style.display = hasUser ? 'none' : 'flex';
+  }
+
+  const viewProfileBtn = $('profileMenuViewBtn');
+  if (viewProfileBtn) {
+    viewProfileBtn.hidden = false;
+    viewProfileBtn.style.display = 'flex';
+  }
+
+  const progressBtn = $('profileMenuProgressBtn');
+  if (progressBtn) {
+    progressBtn.hidden = false;
+    progressBtn.style.display = 'flex';
+  }
+
+  const exitDemoBtn = $('profileExitDemoBtn');
+  const exitDemoLabel = $('profileExitDemoLabel');
+  if (exitDemoBtn) {
+    exitDemoBtn.hidden = !isDemoMode;
+    exitDemoBtn.style.display = isDemoMode ? 'flex' : 'none';
+  }
+  if (exitDemoLabel) {
+    exitDemoLabel.textContent = hasUser ? 'Exit Demo Mode' : 'Exit Demo Mode';
+  }
+
+  const signOutBtn = $('profileSignOutBtn');
   const signOutLabel = $('profileSignOutLabel');
   if (signOutLabel) {
-    signOutLabel.textContent = info.isLoggedIn ? 'Sign Out' : 'Sign in with Google';
+    signOutLabel.textContent = hasUser ? 'Sign Out' : (info.isDemo ? 'Exit Demo Mode' : 'Sign in with Google');
   }
+  if (signOutBtn) {
+    signOutBtn.hidden = !hasUser;
+    signOutBtn.style.display = hasUser ? 'flex' : 'none';
+  }
+
   updateAdminPortalVisibility();
+  refreshConversationLearnerIdentity();
 }
 
 function toggleProfileDropdown(event) {
   if (event) event.stopPropagation();
+  closeNotificationsDropdown();
   const dropdown = $('profileDropdown');
   if (!dropdown) return;
+  const triggerContainer = (event && event.currentTarget && typeof event.currentTarget.closest === 'function'
+    ? event.currentTarget.closest('.profile-container')
+    : null) || (currentActiveScreen === 'practice' ? $('practiceProfileContainer') : (currentActiveScreen === 'progress' ? $('progressProfileContainer') : $('profileContainer'))) || $('profileContainer');
+  if (triggerContainer && dropdown.parentElement !== triggerContainer) {
+    triggerContainer.appendChild(dropdown);
+    dropdown.hidden = true;
+  }
   const isHidden = dropdown.hidden;
   dropdown.hidden = !isHidden;
-  const btn = $('profileBtn');
+  const btn = (triggerContainer && triggerContainer.querySelector('.profile-avatar-btn')) || $('profileBtn');
   if (btn) btn.setAttribute('aria-expanded', String(isHidden));
 }
 
@@ -5615,14 +7531,13 @@ function closeProfileDropdown() {
   const dropdown = $('profileDropdown');
   if (dropdown && !dropdown.hidden) {
     dropdown.hidden = true;
-    const btn = $('profileBtn');
-    if (btn) btn.setAttribute('aria-expanded', 'false');
+    document.querySelectorAll('.profile-avatar-btn').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
   }
 }
 
 function openProfileModal() {
   closeProfileDropdown();
-  if (!user) {
+  if (!user && !isDemoMode) {
     requestGoogleLogin({
       destination: 'profile',
       domain: selectedDomain,
@@ -5640,6 +7555,8 @@ function openProfileModal() {
       mAvatar.innerHTML = `<img src="${escapeHtml(info.avatarUrl)}" alt="${escapeHtml(info.name)}" class="profile-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='${escapeHtml(info.initial)}';">`;
     } else if (info.isLoggedIn) {
       mAvatar.textContent = info.initial;
+    } else if (info.isDemo) {
+      mAvatar.innerHTML = '🧪';
     } else {
       mAvatar.innerHTML = '👤';
     }
@@ -5652,42 +7569,47 @@ function openProfileModal() {
     if (currentUsername) {
       uBadge.style.display = 'inline-block';
       uBadge.textContent = `@${currentUsername}`;
+    } else if (isDemoMode) {
+      uBadge.style.display = 'inline-block';
+      uBadge.textContent = '🧪 DEMO PREVIEW';
     } else {
       uBadge.style.display = 'none';
     }
   }
   if ($('modalProfileStatus')) {
-    $('modalProfileStatus').textContent = info.isLoggedIn ? '✓ Google Account Connected' : 'Guest Mode (Local Practice)';
-    $('modalProfileStatus').style.background = info.isLoggedIn ? '#dcfce7' : '#eff6ff';
-    $('modalProfileStatus').style.color = info.isLoggedIn ? '#166534' : '#1e40af';
+    $('modalProfileStatus').textContent = info.isLoggedIn
+      ? '✓ Google Account Connected'
+      : (isDemoMode ? '🧪 Demo Mode (Temporary Session Only)' : 'Guest Mode (Local Practice)');
+    $('modalProfileStatus').style.background = info.isLoggedIn ? '#dcfce7' : (isDemoMode ? '#fef3c7' : '#eff6ff');
+    $('modalProfileStatus').style.color = info.isLoggedIn ? '#166534' : (isDemoMode ? '#92400e' : '#1e40af');
   }
 
   if ($('modalProfileMobileVal')) {
-    $('modalProfileMobileVal').textContent = currentMobileNumber || 'Not provided';
+    $('modalProfileMobileVal').textContent = isDemoMode ? 'Demo Preview (Not stored)' : (currentMobileNumber || 'Not provided');
   }
   if ($('modalProfileWhatsappVal')) {
     const isConsented = currentWhatsappConsent === true;
-    $('modalProfileWhatsappVal').textContent = isConsented ? '✓ Subscribed' : 'Not subscribed';
+    $('modalProfileWhatsappVal').textContent = isDemoMode ? 'Demo Preview' : (isConsented ? '✓ Subscribed' : 'Not subscribed');
     $('modalProfileWhatsappVal').style.color = isConsented ? '#166534' : '#64748b';
   }
   toggleEditProfileContactForm(false);
 
-  const totalExercises = scenarios.length || 240;
+  const totalExercises = scenarios.length || 420;
   const verifiedCount = scenarios.filter(s => isCompleted(s, state.entries[s.id])).length;
   if ($('modalProfileSolved')) $('modalProfileSolved').textContent = `${verifiedCount} / ${totalExercises}`;
   if ($('modalProfileSync')) {
-    $('modalProfileSync').textContent = info.isLoggedIn ? 'Cloud Sync Active' : 'Saved on Device';
-    $('modalProfileSync').style.color = info.isLoggedIn ? '#166534' : '#64748b';
+    $('modalProfileSync').textContent = info.isLoggedIn ? 'Cloud Sync Active' : (isDemoMode ? 'sessionStorage (Resets on Exit)' : 'Saved on Device');
+    $('modalProfileSync').style.color = info.isLoggedIn ? '#166534' : (isDemoMode ? '#b45309' : '#64748b');
   }
 
   const earnedCerts = getEarnedCertificates(scenarios, state, user, currentUsername);
   if ($('modalProfileCertificates')) {
-    $('modalProfileCertificates').textContent = `${earnedCerts.length} / 21 Earned`;
+    $('modalProfileCertificates').textContent = isDemoMode ? `${earnedCerts.length} / 21 (Demo Preview)` : `${earnedCerts.length} / 21 Earned`;
   }
 
   const authBtn = $('modalAuthActionBtn');
   if (authBtn) {
-    authBtn.textContent = info.isLoggedIn ? 'Sign Out' : 'Sign in with Google';
+    authBtn.textContent = info.isLoggedIn ? 'Sign Out' : (isDemoMode ? 'Exit Demo & Sign In with Google' : 'Sign in with Google');
     authBtn.className = info.isLoggedIn ? 'action danger-btn' : 'action primary';
     authBtn.style.background = info.isLoggedIn ? '#dc2626' : 'var(--primary)';
     authBtn.style.color = '#ffffff';
@@ -5704,7 +7626,9 @@ function closeProfileModal() {
 
 function handleModalAuthAction() {
   closeProfileModal();
-  if (user) {
+  if (isDemoMode) {
+    signInFromDemo();
+  } else if (user) {
     signOut();
   } else {
     requestGoogleLogin({
@@ -5722,8 +7646,16 @@ function openMyProgress() {
 
 function handleProfileSignOut() {
   closeProfileDropdown();
-  if (user) {
+  if (user && user.id) {
+    if (isDemoMode) {
+      isDemoMode = false;
+      demoPremiumPreviewActive = false;
+      clearDemoStorage();
+      updateDemoModeUI();
+    }
     signOut();
+  } else if (isDemoMode) {
+    exitDemoMode();
   } else {
     requestGoogleLogin({
       destination: 'practice',
@@ -5736,7 +7668,7 @@ function handleProfileSignOut() {
 let isCurrentUserAdmin = false;
 
 async function checkAdminStatus() {
-  if (!user || !client) {
+  if (isDemoMode || !user || !client) {
     isCurrentUserAdmin = false;
     updateAdminPortalVisibility();
     return { isAdmin: false, error: null };
@@ -5809,18 +7741,39 @@ async function checkAdminStatus() {
 }
 
 function updateAdminPortalVisibility() {
+  const showAdmin = Boolean(user && isCurrentUserAdmin && !isDemoMode);
   const adminBtn = $('adminPortalBtn');
   if (adminBtn) {
-    adminBtn.hidden = !isCurrentUserAdmin;
+    adminBtn.hidden = !showAdmin;
   }
   const headerAdminBtn = $('headerAdminPortalBtn');
   if (headerAdminBtn) {
-    headerAdminBtn.hidden = !isCurrentUserAdmin;
+    headerAdminBtn.hidden = !showAdmin;
+  }
+  const adminDemoBtn = $('adminDemoModeBtn');
+  if (adminDemoBtn) {
+    adminDemoBtn.hidden = Boolean(isDemoMode);
+    adminDemoBtn.style.display = isDemoMode ? 'none' : 'flex';
+  }
+  const loginDemoBtn = $('startDemoModeBtn');
+  if (loginDemoBtn) {
+    loginDemoBtn.hidden = Boolean(isDemoMode);
+    loginDemoBtn.style.display = isDemoMode ? 'none' : 'inline-flex';
+  }
+  const homeTryBtn = $('homeTryDemoBtn');
+  if (homeTryBtn) {
+    homeTryBtn.hidden = Boolean(isDemoMode);
+    homeTryBtn.style.display = isDemoMode ? 'none' : 'inline-flex';
   }
 }
 
 function openAdminPortal() {
   closeProfileDropdown();
+  // Strictly block access to admin screens in Demo Mode or when not an authenticated admin
+  if (isDemoMode || !user || !isCurrentUserAdmin) {
+    console.warn('[Security] Admin portal access blocked: requires authenticated admin session.');
+    return false;
+  }
   const loc = window.location;
   if (loc.pathname.includes('/D2d/')) {
     const basePath = loc.pathname.substring(0, loc.pathname.indexOf('/D2d/') + 5);
@@ -5839,9 +7792,16 @@ async function toggleNotificationsDropdown(event) {
   closeProfileDropdown();
   const dropdown = $('notificationsDropdown');
   if (!dropdown) return;
+  const triggerContainer = (event && event.currentTarget && typeof event.currentTarget.closest === 'function'
+    ? event.currentTarget.closest('.notifications-container')
+    : null) || (currentActiveScreen === 'practice' ? $('practiceNotificationsContainer') : (currentActiveScreen === 'progress' ? $('progressNotificationsContainer') : $('notificationsContainer'))) || $('notificationsContainer');
+  if (triggerContainer && dropdown.parentElement !== triggerContainer) {
+    triggerContainer.appendChild(dropdown);
+    dropdown.hidden = true;
+  }
   const isHidden = dropdown.hidden;
   dropdown.hidden = !isHidden;
-  const btn = $('notificationsBtn');
+  const btn = (triggerContainer && triggerContainer.querySelector('.notification-avatar-btn')) || $('notificationsBtn');
   if (btn) btn.setAttribute('aria-expanded', String(isHidden));
   if (isHidden) {
     updateNotificationsUI();
@@ -5854,8 +7814,7 @@ function closeNotificationsDropdown() {
   const dropdown = $('notificationsDropdown');
   if (dropdown && !dropdown.hidden) {
     dropdown.hidden = true;
-    const btn = $('notificationsBtn');
-    if (btn) btn.setAttribute('aria-expanded', 'false');
+    document.querySelectorAll('.notification-avatar-btn').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
   }
 }
 
@@ -5900,18 +7859,40 @@ function handleNotificationAction(notifId, type, domain, level, completionDate) 
 }
 
 document.addEventListener('click', event => {
-  const container = $('profileContainer');
-  if (container && !container.contains(event.target)) {
+  const inProfile = event.target && typeof event.target.closest === 'function' && event.target.closest('.profile-container');
+  if (!inProfile) {
     closeProfileDropdown();
   }
-  const notifContainer = $('notificationsContainer');
-  if (notifContainer && !notifContainer.contains(event.target)) {
+  const inNotif = event.target && typeof event.target.closest === 'function' && event.target.closest('.notifications-container');
+  if (!inNotif) {
     closeNotificationsDropdown();
   }
 });
 
 document.addEventListener('keydown', event => {
+  if (isEmptyThinkingModalOpen()) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      closeEmptyThinkingModal({ restoreFocus: true });
+      return;
+    }
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      const okBtn = $('emptyThinkingOkBtn');
+      if (okBtn && typeof okBtn.focus === 'function') {
+        okBtn.focus();
+      }
+      return;
+    }
+  }
   if (event.key === 'Escape') {
+    clearDomainSelectionWarning();
+    const savedPracticeLevel = currentActiveScreen === 'practice' ? selectedLevel : null;
+    closeChooseLevelModal();
+    if (savedPracticeLevel) {
+      selectedLevel = savedPracticeLevel;
+    }
     closeProfileDropdown();
     closeNotificationsDropdown();
     closeProfileModal();
@@ -5973,9 +7954,345 @@ window.practiceDomainAndLevel = async (domain, level) => {
   await startPracticeSession();
 };
 
+
+// --- Numbered Mission Progression Map State & Helpers ---
+let mapScrollPositions = {};
+
+function showMapNotice(msg) {
+  const noticeEl = $('missionMapNotice');
+  if (!noticeEl) return;
+  noticeEl.textContent = msg;
+  noticeEl.hidden = false;
+  noticeEl.style.display = 'block';
+  clearTimeout(noticeEl._timeout);
+  noticeEl._timeout = setTimeout(() => {
+    noticeEl.hidden = true;
+    noticeEl.style.display = 'none';
+  }, 4000);
+}
+
+function openMissionMap(domain, level, restoreScroll = false) {
+  if (domain) selectedDomain = domain;
+  if (level) selectedLevel = level;
+  if (!selectedDomain) selectedDomain = 'Banking';
+  if (!selectedLevel) selectedLevel = 'Beginner';
+  void loadDomainScenarios(selectedDomain, { includeSql: true });
+
+  const chooseModal = $('chooseLevelModal');
+  if (chooseModal) {
+    chooseModal.hidden = true;
+    chooseModal.style.display = 'none';
+  }
+  document.body.style.overflow = '';
+
+  showScreen('missionMap');
+  renderMissionMap(selectedDomain, selectedLevel);
+
+  const viewport = $('missionMapViewport');
+  if (viewport) {
+    const key = `${selectedDomain}_${selectedLevel}`;
+    if (restoreScroll && typeof mapScrollPositions[key] === 'number') {
+      viewport.scrollTop = mapScrollPositions[key];
+    } else {
+      scrollToActiveMapNode();
+    }
+    viewport.onscroll = () => {
+      mapScrollPositions[`${selectedDomain}_${selectedLevel}`] = viewport.scrollTop;
+    };
+  }
+}
+
+function scrollToActiveMapNode() {
+  requestAnimationFrame(() => {
+    const viewport = $('missionMapViewport');
+    if (!viewport) return;
+    const activeNode = viewport.querySelector('.map-node.available') ||
+                       viewport.querySelector('.map-node.completed:last-of-type') ||
+                       viewport.querySelector('.map-node');
+    if (activeNode) {
+      const viewportHeight = viewport.clientHeight;
+      const nodeTop = activeNode.offsetTop;
+      const nodeHeight = activeNode.clientHeight;
+      viewport.scrollTo({
+        top: Math.max(0, nodeTop - (viewportHeight / 2) + (nodeHeight / 2)),
+        behavior: 'smooth'
+      });
+    }
+  });
+}
+
+function switchMapLevel(level) {
+  if (selectedDomain && !isLevelUnlocked(selectedDomain, level, scenarios, state)) {
+    onLockedLevelClick(selectedDomain, level);
+    return;
+  }
+  selectedLevel = level;
+  renderMissionMap(selectedDomain, selectedLevel);
+  scrollToActiveMapNode();
+}
+
+function exitMissionMapToExplore() {
+  showScreen('home');
+}
+
+function backFromPractice() {
+  if (selectedDomain && selectedLevel) {
+    openMissionMap(selectedDomain, selectedLevel, true);
+  } else {
+    goHome();
+  }
+}
+
+function renderMissionMap(domain, level) {
+  const canvas = $('missionMapCanvas');
+  const titleEl = $('missionMapDomainTitle');
+  const iconEl = $('missionMapDomainIcon');
+  const levelBadge = $('missionMapLevelBadge');
+  const countEl = $('missionMapSolvedCount');
+
+  if (titleEl) titleEl.textContent = domain;
+  if (iconEl) {
+    const meta = DOMAIN_METAS[domain] || { icon: '📁' };
+    iconEl.textContent = meta.icon;
+  }
+  if (levelBadge) {
+    levelBadge.textContent = level;
+    levelBadge.setAttribute('data-level', (level || '').toLowerCase());
+  }
+
+  ['Beginner', 'Intermediate', 'Expert'].forEach(l => {
+    const tab = $(`mapTier${l}Btn`);
+    if (tab) tab.classList.toggle('active', l === level);
+  });
+
+  const pool = scenarios.filter(s => s.domain === domain && s.level === level);
+  const total = pool.length;
+
+  if (total === 0) {
+    if (!fullScenariosLoaded && fullScenariosPromise) {
+      if (canvas) canvas.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:40px 0;">Loading scenarios…</div>';
+      if (countEl) countEl.textContent = '…';
+      return;
+    }
+    if (scenarioCatalogError) {
+      if (canvas) canvas.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:40px 0;">Could not load scenarios. <button type="button" class="action secondary sm" onclick="retryLoadScenarioCatalog()">Retry</button></div>';
+      if (countEl) countEl.textContent = '0/0';
+      return;
+    }
+    if (canvas) canvas.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:40px 0;">No scenarios found for this tier.</div>';
+    if (countEl) countEl.textContent = '0/0';
+    return;
+  }
+
+  const completedCount = pool.filter(s => isCompleted(s, state.entries[s.id])).length;
+  if (countEl) countEl.textContent = `${completedCount}/${total}`;
+
+  const W = 360;
+  const Y0 = 50;
+  const DY = 92;
+  const H = Y0 + (total - 1) * DY + 80;
+
+  let firstAvailableFound = false;
+  const nodeData = pool.map((s, i) => {
+    const xi = Math.round(180 + 95 * Math.sin(i * 0.95));
+    const yi = Y0 + i * DY;
+    const isDone = isCompleted(s, state.entries[s.id]);
+
+    let isUnlocked = false;
+    if (i === 0) {
+      isUnlocked = true;
+    } else {
+      const prevDone = isCompleted(pool[i - 1], state.entries[pool[i - 1].id]);
+      isUnlocked = prevDone || isDone;
+    }
+
+    let status = 'locked';
+    if (isDone) {
+      status = 'completed';
+    } else if (isUnlocked && !firstAvailableFound) {
+      status = 'available';
+      firstAvailableFound = true;
+    } else {
+      status = 'locked';
+    }
+
+    return { scenario: s, index: i, x: xi, y: yi, status, isDone, isUnlocked };
+  });
+
+  let fullPathD = `M ${nodeData[0].x} ${nodeData[0].y}`;
+  for (let i = 0; i < total - 1; i++) {
+    const p1 = nodeData[i];
+    const p2 = nodeData[i + 1];
+    const cy = (p1.y + p2.y) / 2;
+    fullPathD += ` C ${p1.x} ${cy}, ${p2.x} ${cy}, ${p2.x} ${p2.y}`;
+  }
+
+  let activeIndex = nodeData.findIndex(n => n.status === 'available');
+  if (activeIndex === -1) {
+    activeIndex = total - 1;
+  }
+  let activePathD = '';
+  if (activeIndex > 0) {
+    activePathD = `M ${nodeData[0].x} ${nodeData[0].y}`;
+    for (let i = 0; i < activeIndex; i++) {
+      const p1 = nodeData[i];
+      const p2 = nodeData[i + 1];
+      const cy = (p1.y + p2.y) / 2;
+      activePathD += ` C ${p1.x} ${cy}, ${p2.x} ${cy}, ${p2.x} ${p2.y}`;
+    }
+  }
+
+  let svgHtml = `
+    <svg class="mission-map-svg-trail" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" preserveAspectRatio="none">
+      <defs>
+        <filter id="trailGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#0d9488" flood-opacity="0.6"/>
+        </filter>
+      </defs>
+      <path d="${fullPathD}" stroke="#1e293b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <path d="${fullPathD}" stroke="#334155" stroke-width="2" stroke-dasharray="6,6" fill="none" />
+      ${activePathD ? `
+        <path d="${activePathD}" stroke="#0d9488" stroke-width="6" stroke-linecap="round" fill="none" filter="url(#trailGlow)" />
+        <path d="${activePathD}" stroke="#2dd4bf" stroke-width="2" fill="none" />
+      ` : ''}
+    </svg>
+  `;
+
+  let nodesHtml = nodeData.map(node => {
+    const s = node.scenario;
+    const num = node.index + 1;
+    let badgeHtml = '';
+    let clickHandler = '';
+    let ariaLabel = '';
+
+    if (node.status === 'completed') {
+      badgeHtml = `<span class="map-node-badge completed-badge" aria-hidden="true">✓</span>`;
+      clickHandler = `openCompletedReviewModal('${s.id}', ${num})`;
+      ariaLabel = `Scenario ${num}: Completed. Click to review answer.`;
+    } else if (node.status === 'available') {
+      badgeHtml = `<span class="map-node-badge available-badge" aria-hidden="true">▶</span>`;
+      clickHandler = `openScenario('${s.id}')`;
+      ariaLabel = `Scenario ${num}: Available. Click to start practice.`;
+    } else {
+      badgeHtml = `<span class="map-node-badge locked-badge" aria-hidden="true">🔒</span>`;
+      const prevNum = num - 1;
+      clickHandler = `showMapNotice('🔒 Complete Scenario ${prevNum} first to unlock Scenario ${num}')`;
+      ariaLabel = `Scenario ${num}: Locked. Complete Scenario ${prevNum} to unlock.`;
+    }
+
+    return `
+      <button type="button"
+              class="map-node ${node.status}"
+              style="left:${(node.x / W * 100).toFixed(2)}%; top:${node.y}px;"
+              onclick="${clickHandler}"
+              aria-label="${ariaLabel}">
+        <span class="map-node-number">${num}</span>
+        ${badgeHtml}
+      </button>
+    `;
+  }).join('');
+
+  if (canvas) {
+    canvas.style.height = `${H}px`;
+    canvas.innerHTML = svgHtml + nodesHtml;
+  }
+}
+
+// --- Completed Answer Review Panel (Read-Only) ---
+function openCompletedReviewModal(scenarioId, nodeNumber) {
+  const s = scenarios.find(item => item.id === scenarioId);
+  if (!s) return;
+
+  const modal = $('completedReviewModal');
+  if (!modal) return;
+
+  const titleEl = $('reviewModalTitle');
+  const domainBadgeEl = $('reviewDomainBadge');
+  const questionEl = $('reviewBusinessQuestion');
+  const thinkingEl = $('reviewLearnerThinking');
+  const scoreBadgeEl = $('reviewScoreBadge');
+  const feedbackEl = $('reviewFeedbackText');
+  const sqlCodeEl = $('reviewSqlCode');
+
+  if (titleEl) titleEl.textContent = `Scenario ${nodeNumber}: ${s.id}`;
+  if (domainBadgeEl) domainBadgeEl.textContent = `${s.domain} · ${s.level}`;
+  if (questionEl) questionEl.textContent = s.business_scenario || s.question || '';
+
+  const e = state.entries[s.id] || {};
+
+  const savedThinking = (e.thinking && e.thinking.response) || e.thinkingAnswer || e.response || '';
+  if (thinkingEl) {
+    if (savedThinking && savedThinking.trim()) {
+      thinkingEl.textContent = savedThinking.trim();
+      thinkingEl.classList.remove('empty-review-notice');
+    } else {
+      thinkingEl.innerHTML = '<span class="empty-review-notice">Saved answer unavailable</span>';
+    }
+  }
+
+  const score = typeof e.score === 'number'
+    ? e.score
+    : (typeof e.thinkingScore === 'number'
+      ? e.thinkingScore
+      : (typeof e.assessment?.score === 'number' ? e.assessment.score : null));
+  const feedback = e.feedback || e.assessment?.message || e.evaluation?.message || '';
+
+  if (scoreBadgeEl) {
+    if (score !== null) {
+      scoreBadgeEl.style.display = 'inline-flex';
+      scoreBadgeEl.textContent = `Score: ${score}/10 ${score >= 7 ? '✓ Passed' : ''}`;
+      scoreBadgeEl.style.borderColor = score >= 7 ? '#10b981' : '#f59e0b';
+      scoreBadgeEl.style.color = score >= 7 ? '#34d399' : '#fbbf24';
+      scoreBadgeEl.style.background = score >= 7 ? 'rgba(16,185,129,0.16)' : 'rgba(245,158,11,0.16)';
+    } else {
+      scoreBadgeEl.style.display = 'none';
+    }
+  }
+
+  if (feedbackEl) {
+    if (feedback && feedback.trim()) {
+      feedbackEl.textContent = feedback.trim();
+      feedbackEl.style.display = 'block';
+    } else if (score === null) {
+      feedbackEl.innerHTML = '<span class="empty-review-notice">No score or feedback recorded</span>';
+      feedbackEl.style.display = 'block';
+    } else {
+      feedbackEl.style.display = 'none';
+    }
+  }
+
+  const savedSql = e.sql || e.unlockedSql || e.revealedSql || '';
+  if (sqlCodeEl) {
+    if (savedSql && savedSql.trim()) {
+      sqlCodeEl.textContent = savedSql.trim();
+      sqlCodeEl.style.color = '#38bdf8';
+    } else {
+      sqlCodeEl.textContent = '-- SQL was not generated or saved for this scenario';
+      sqlCodeEl.style.color = '#64748b';
+    }
+  }
+
+  modal.hidden = false;
+  modal.style.display = 'flex';
+}
+
+function closeCompletedReviewModal() {
+  const modal = $('completedReviewModal');
+  if (modal) {
+    modal.hidden = true;
+    modal.style.display = 'none';
+  }
+}
+
 Object.assign(window,{
-  selectDomain,selectLevel,startPracticeSession,cancelGoogleLoginPopup,requestGoogleLogin,
+  openMissionMap,renderMissionMap,switchMapLevel,showMapNotice,
+  openCompletedReviewModal,closeCompletedReviewModal,backFromPractice,exitMissionMapToExplore,
+  selectDomain,selectLevel,selectCatalogLevel,openScenarioFromModal,renderChooseLevelScenarios,
+  startPracticeSession,cancelGoogleLoginPopup,requestGoogleLogin,
+  openChooseLevelModal,closeChooseLevelModal,showChooseLevelNotice,getAvailableDomains,toggleAdditionalDomains,
   openLoginModal,closeLoginModal,updateStartPracticeUI,
+  startDemoMode,exitDemoMode,signInFromDemo,handleProfileGoogleSignIn,simulateDemoPaymentPreview,openDemoContestPreviewModal,isDemoModeActive,
+  openPaywallModal,closePaywallModal,payCourseUnlockWithRazorpay,
   savePendingAuthIntent,readPendingAuthIntent,clearPendingAuthIntent,resumePendingAuthIntent,
   evaluatePlan,evaluateSql,nextScenario,goHome,
   generateSql,copySqlAndOpenFiddle,copyAllScripts,
@@ -6019,54 +8336,26 @@ Object.assign(window,{
   handleProgressionNoticeAction,
   startNextDomain,
   openMandatoryLevelFeedbackModal,
-  renderDomainAndLevelPickers
+  renderDomainAndLevelPickers,
+  getDomainManagerPersona,
+  getConversationLearnerName,
+  refreshConversationLearnerIdentity,
+  getScenarioConversationDialogue,
+  toggleSchemaSampleCard,
+  openEmptyThinkingModal,
+  closeEmptyThinkingModal
 });
 try {
   initLandscapeMode();
   initNotificationsState(null);
   renderProfileAvatar();
-  let scenarioDataUrl = './data/Crack_SQL_420_Simple.json';
-  let response = await fetch(scenarioDataUrl);
-  if (!response.ok) {
-    scenarioDataUrl = './data/Crack_SQL_420_Student_Business_Scenarios.json';
-    response = await fetch(scenarioDataUrl);
-  }
-  if (!response.ok) {
-    scenarioDataUrl = './data/scenarios.json';
-    response = await fetch(scenarioDataUrl);
-  }
-  if (!response.ok) throw Error('Scenario download failed');
-  data = await response.json();
-  const rawScenarios = Array.isArray(data) ? data : (data.scenarios || []);
-  scenarios = rawScenarios.map(s => {
-    if (!s) return null;
-    const question = String(s.business_scenario || s.question || '').trim();
-    const schemaText = String(s.schema || s.schemaText || '').trim();
-    const pseudo = String(s.solution_approach || s.pseudo || '').trim();
-    const sql = String(s.answer_sql || s.sql || '').trim();
-    let tables = Array.isArray(s.tables) && s.tables.length > 0 ? s.tables : [];
-    if (tables.length === 0 && schemaText) {
-      tables = schemaText.split(';').map(t => t.trim().split('(')[0].trim()).filter(Boolean);
-    }
-    return {
-      ...s,
-      id: s.id,
-      domain: s.domain,
-      level: s.level,
-      questionNo: typeof s.questionNo === 'number' ? s.questionNo : (parseInt(String(s.id).slice(-3) || '1', 10)),
-      question,
-      schemaText,
-      pseudo,
-      sql,
-      tables,
-      requiredTables: s.requiredTables || tables,
-      relevantColumns: s.relevantColumns || []
-    };
-  }).filter(Boolean);
+  scenarios = buildInitialScenarioStubs();
   ids = new Set(scenarios.map(s => s.id));
+  data = {
+    scenarios,
+    assets: { ...DOMAIN_SCHEMA_ASSETS }
+  };
   state = EMPTY();
-  // Preload full scenario execution data in background without blocking initial rendering
-  void loadFullScenariosInBackground();
   document.querySelectorAll('.domain,.level').forEach(el=>{
     el.setAttribute('role','button');el.tabIndex=0;
     el.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();el.click();}});
@@ -6074,11 +8363,14 @@ try {
   const thinkingEl = $('thinking');
   if (thinkingEl) {
     thinkingEl.addEventListener('input',()=>{
-      if (!user || !user.id) return;
-      const cur = entry();
+      if (!isDemoMode && (!user || !user.id)) return;
       changeEntry({
         thinking: readThinking(),
-        assessment: cur.assessment || null,
+        assessment: null,
+        evaluation: null,
+        score: null,
+        thinkingScore: null,
+        feedback: '',
         completed: false,
         status: 'in_progress',
         fiddleFingerprint: null,
@@ -6089,11 +8381,17 @@ try {
       if(typeof renderSqlEvaluation==='function') renderSqlEvaluation(null);
       updateGates();
     });
+    thinkingEl.addEventListener('keydown', event => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        evaluatePlan();
+      }
+    });
   }
   const sqlInput = $('learnerSql');
   if (sqlInput) {
     sqlInput.addEventListener('input', () => {
-      if (!user || !user.id) return;
+      if (!isDemoMode && (!user || !user.id)) return;
       changeEntry({ sql: sqlInput.value, fiddleFingerprint: null, evaluationFingerprint: null, evaluationResult: null });
       renderSqlEvaluation(null);
       updateSqlEditorView();
@@ -6137,8 +8435,19 @@ try {
   window.selectFeedbackEmoji = selectFeedbackEmoji;
   window.fetchUserFeedbackFromSupabase = fetchUserFeedbackFromSupabase;
   window.saveSubmittedFeedback = saveSubmittedFeedback;
+  window.loadDomainScenarios = loadDomainScenarios;
+  window.loadDomainAnswerSql = loadDomainAnswerSql;
+  window.retryLoadScenarioCatalog = () => (selectedDomain ? loadDomainScenarios(selectedDomain, { includeSql: true, forceRetry: true }) : loadFullScenariosInBackground(true));
   void initAuth();
-  if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  if ('serviceWorker' in navigator) {
+    if (document.readyState === 'complete') {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    } else {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }, { once: true });
+    }
+  }
 } catch(error) {
   if ($('syncStatus')) $('syncStatus').textContent='Could not load exercises. Reconnect and reload this page.';
   console.error(error);

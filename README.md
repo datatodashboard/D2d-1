@@ -56,6 +56,8 @@ Corrections include Banking status ownership; Healthcare specialization/city own
 
 ## Supabase setup and rollout
 
+> ⚠️ **CRITICAL PRODUCTION WARNING**: Never run `migrations/017_thinking_engine_2_0_global_reset.sql` or `migrations/017_thinking_logic_2_merge_and_reset.sql` on production. These are historical one-time destructive reset migrations that truncate `public.progress` and `public.certificates`. Running them will wipe real learner data. Note also that migrations contain duplicate `017_` numbering, which is preserved as-is for auditable history.
+
 For a new project, run [supabase_setup.sql](supabase_setup.sql) first. For both existing and new projects, run:
 
 **[migrations/002_learning_progress.sql](migrations/002_learning_progress.sql)**

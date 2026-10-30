@@ -4,6 +4,9 @@ import { stage, isCompleted, isAttempted } from './progress.js';
 import { escapeHtml, getOAuthRedirectUrl } from './util.js';
 import { evaluateContestSubmission } from './contest-ai-evaluator.js';
 
+window.ADMIN_MODE = 'LIVE_ADMIN';
+
+
 const SUPABASE_URL = 'https://qklnaqfspvmnlequqagf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_dthVX8zmvd1HvWaYWBaojA_2YbvHWe1';
 
@@ -24,6 +27,7 @@ const $ = id => document.getElementById(id);
 window.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
   await loadScenarioBank();
+
   await initSupabase();
 });
 
@@ -216,7 +220,7 @@ function showLoginRequired() {
     gateMsg.innerHTML = `
       <div style="font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 8px;">Administrator Sign In</div>
       <p style="margin-bottom: 20px;">Please sign in with your authorized admin Google account to view learner metrics.</p>
-      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
         <button class="action primary" id="googleLoginBtn">Sign In with Google</button>
       </div>
       <div id="emailLoginForm" style="margin-top:24px; max-width:320px; margin-left:auto; margin-right:auto; text-align:left;">
@@ -291,7 +295,9 @@ function renderAuthBox() {
     $('navSignOutBtn')?.addEventListener('click', signOut);
   } else {
     box.innerHTML = `
-      <button class="action primary" id="navSignInBtn" style="padding:6px 14px; font-size:0.85rem;">Sign In</button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="action primary sm" id="navSignInBtn" style="padding:6px 14px; font-size:0.85rem;">Sign In</button>
+      </div>
     `;
     $('navSignInBtn')?.addEventListener('click', signInWithGoogle);
   }
@@ -1269,9 +1275,9 @@ function renderPremiumTable() {
     list = list.filter(p =>
       (p.username || '').toLowerCase().includes(premiumSearchQuery) ||
       (p.email || '').toLowerCase().includes(premiumSearchQuery) ||
-      (p.user_id || '').toLowerCase().includes(premiumSearchQuery) ||
+      (p.user_id || p.profile_id || '').toLowerCase().includes(premiumSearchQuery) ||
       (p.payment_id || '').toLowerCase().includes(premiumSearchQuery) ||
-      (p.order_id || '').toLowerCase().includes(premiumSearchQuery)
+      (p.order_id || p.razorpay_order_id || '').toLowerCase().includes(premiumSearchQuery)
     );
   }
 
@@ -1281,22 +1287,28 @@ function renderPremiumTable() {
   }
 
   tbody.innerHTML = list.map((item, idx) => {
+    const rawUserId = item.user_id || item.profile_id || item.id || '';
+    const userIdDisplay = rawUserId ? `${rawUserId.slice(0, 8)}…` : '—';
+    const paymentId = item.payment_id || '—';
+    const orderId = item.order_id || item.razorpay_order_id || '—';
+    const amountVal = item.amount ? (typeof item.amount === 'number' ? `₹${item.amount}` : String(item.amount)) : '₹49';
+
     return `
       <tr>
         <td class="num">${idx + 1}</td>
-        <td><strong>${escapeHtml(item.username)}</strong></td>
-        <td>${escapeHtml(item.email)}</td>
-        <td><code style="font-size:0.75rem;color:var(--muted);" title="${escapeHtml(item.user_id)}">${escapeHtml(item.user_id.slice(0, 8))}…</code></td>
+        <td><strong>${escapeHtml(item.username || 'Learner')}</strong></td>
+        <td>${escapeHtml(item.email || '—')}</td>
+        <td><code style="font-size:0.75rem;color:var(--muted);" title="${escapeHtml(rawUserId)}">${escapeHtml(userIdDisplay)}</code></td>
         <td>
           ${item.is_refunded ? '<span class="badge danger">↩ REFUNDED</span>' : `
             <div class="badge verified" style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#15803d;border:1px solid #86efac;">⭐ PREMIUM CUSTOMER</div>
             <div style="color:#16a34a;font-weight:700;font-size:0.78rem;margin-top:2px;">✓ ACTIVE</div>
           `}
         </td>
-        <td><code style="font-size:0.8rem;background:#f1f5f9;padding:2px 6px;border-radius:4px;">${escapeHtml(item.payment_id)}</code></td>
-        <td><code style="font-size:0.8rem;background:#f1f5f9;padding:2px 6px;border-radius:4px;">${escapeHtml(item.order_id)}</code></td>
-        <td><strong>${escapeHtml(item.amount)}</strong></td>
-        <td>${escapeHtml(item.currency)}</td>
+        <td><code style="font-size:0.8rem;background:#f1f5f9;padding:2px 6px;border-radius:4px;">${escapeHtml(paymentId)}</code></td>
+        <td><code style="font-size:0.8rem;background:#f1f5f9;padding:2px 6px;border-radius:4px;">${escapeHtml(orderId)}</code></td>
+        <td><strong>${escapeHtml(amountVal)}</strong></td>
+        <td>${escapeHtml(item.currency || 'INR')}</td>
         <td>
           ${item.is_refunded
             ? '<span style="color:#b91c1c;font-weight:700;">REFUNDED</span>'
@@ -1305,7 +1317,7 @@ function renderPremiumTable() {
         <td style="font-size:0.8rem;color:var(--muted);">${formatDate(item.paid_on)}</td>
         <td style="font-size:0.8rem;color:var(--muted);">${formatDate(item.last_updated)}</td>
         <td>
-          <button class="action secondary sm" onclick="window.openPremiumCustomerDetail('${escapeHtml(item.user_id)}')">View Details</button>
+          <button class="action secondary sm" onclick="window.openPremiumCustomerDetail('${escapeHtml(rawUserId)}')">View Details</button>
         </td>
       </tr>
     `;
@@ -1322,29 +1334,40 @@ function renderReconciliationTable() {
   }
 
   tbody.innerHTML = reconciliationQueue.map((item, idx) => {
-    const isNeedsReview = item.user_match.includes('NEEDS REVIEW');
+    const userMatchStr = String(item.user_match || 'No Match Found');
+    const isNeedsReview = userMatchStr.includes('NEEDS REVIEW');
+    const currentPremStatus = String(item.current_premium_status || 'Pending');
+    const isPaymentFound = currentPremStatus.includes('PAYMENT FOUND');
+    const rzStatus = String(item.razorpay_status || item.status || 'captured').toUpperCase();
+    const customerEmail = item.customer_email || '—';
+    const username = item.username || 'Learner';
+    const paymentId = item.payment_id || '—';
+    const orderId = item.order_id || item.razorpay_order_id || '—';
+    const amountVal = item.amount ? (typeof item.amount === 'number' ? `₹${item.amount}` : String(item.amount)) : '₹49';
+    const currencyVal = item.currency || 'INR';
+
     return `
       <tr>
         <td class="num">${idx + 1}</td>
-        <td><strong>${escapeHtml(item.customer_email)}</strong></td>
-        <td>${escapeHtml(item.username)}</td>
-        <td><code style="font-size:0.8rem;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#92400e;">${escapeHtml(item.payment_id)}</code></td>
-        <td><code style="font-size:0.8rem;background:#f1f5f9;padding:2px 6px;border-radius:4px;">${escapeHtml(item.order_id)}</code></td>
-        <td><strong>${escapeHtml(item.amount)}</strong></td>
-        <td>${escapeHtml(item.currency)}</td>
-        <td><span class="badge warn" style="background:#fef3c7;color:#92400e;border:1px solid #f59e0b;">${escapeHtml(item.razorpay_status.toUpperCase())}</span></td>
+        <td><strong>${escapeHtml(customerEmail)}</strong></td>
+        <td>${escapeHtml(username)}</td>
+        <td><code style="font-size:0.8rem;background:#fef3c7;padding:2px 6px;border-radius:4px;color:#92400e;">${escapeHtml(paymentId)}</code></td>
+        <td><code style="font-size:0.8rem;background:#f1f5f9;padding:2px 6px;border-radius:4px;">${escapeHtml(orderId)}</code></td>
+        <td><strong>${escapeHtml(amountVal)}</strong></td>
+        <td>${escapeHtml(currencyVal)}</td>
+        <td><span class="badge warn" style="background:#fef3c7;color:#92400e;border:1px solid #f59e0b;">${escapeHtml(rzStatus)}</span></td>
         <td>
           ${isNeedsReview
             ? '<span class="badge danger" style="background:#fee2e2;color:#991b1b;border:1px solid #f87171;">⚠ NEEDS REVIEW</span>'
-            : `<span style="color:#16a34a;font-weight:600;font-size:0.82rem;">${escapeHtml(item.user_match)}</span>`}
+            : `<span style="color:#16a34a;font-weight:600;font-size:0.82rem;">${escapeHtml(userMatchStr)}</span>`}
         </td>
         <td>
-          ${item.current_premium_status.includes('PAYMENT FOUND')
+          ${isPaymentFound
             ? '<span class="badge warn" style="background:#fef3c7;color:#92400e;border:1px solid #f59e0b;font-weight:700;">⚠ PAYMENT FOUND — NEEDS RECONCILIATION</span>'
-            : `<span style="color:var(--muted);font-size:0.8rem;">${escapeHtml(item.current_premium_status)}</span>`}
+            : `<span style="color:var(--muted);font-size:0.8rem;">${escapeHtml(currentPremStatus)}</span>`}
         </td>
         <td>
-          <button class="action primary sm" style="white-space:nowrap;" onclick="window.reconcilePayment('${escapeHtml(item.payment_id)}', '${escapeHtml(item.customer_email)}', '${escapeHtml(item.order_id)}')">
+          <button class="action primary sm" style="white-space:nowrap;" onclick="window.reconcilePayment('${escapeHtml(paymentId)}', '${escapeHtml(customerEmail)}', '${escapeHtml(orderId)}')">
             Reconcile Payment
           </button>
         </td>
@@ -1440,6 +1463,7 @@ export function closePremiumDetailModal() {
 
 // Section 6: Secure Admin Reconciliation Action
 export async function reconcilePayment(paymentId, email, orderId = null) {
+
   if (!client) return;
 
   const targetEmail = (email || '').trim();
@@ -1548,6 +1572,7 @@ export async function submitManualReconciliation() {
 // Payment Verification Controller (Course ₹49 Unlock)
 // ------------------------------------------------------------
 export async function loadPayments() {
+
   if (!client) return;
   const tbody = $('paymentsTableBody');
   if (tbody) tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">Loading payments from database…</td></tr>';
@@ -1653,13 +1678,16 @@ function renderPaymentsTable() {
 
     const displayName = p.user_username ? `@${p.user_username}` : (p.user_email ? p.user_email.split('@')[0] : 'Learner');
 
+    const rawUserId = p.user_id || p.profile_id || p.id || '';
+    const userIdDisplay = rawUserId ? `ID: ${rawUserId.slice(0, 8)}…` : '';
+
     return `
       <tr>
         <td class="num">${idx + 1}</td>
         <td>
           <div style="font-weight:700;color:var(--ink);">${escapeHtml(displayName)}</div>
           ${p.user_username && p.user_name ? `<div style="font-size:0.75rem;color:var(--primary);font-weight:600;">@${escapeHtml(p.user_username)}</div>` : ''}
-          <div style="font-size:0.72rem;color:var(--muted);font-family:monospace;margin-top:2px;" title="${escapeHtml(p.user_id)}">ID: ${escapeHtml(p.user_id.slice(0, 8))}…</div>
+          ${userIdDisplay ? `<div style="font-size:0.72rem;color:var(--muted);font-family:monospace;margin-top:2px;" title="${escapeHtml(rawUserId)}">${escapeHtml(userIdDisplay)}</div>` : ''}
         </td>
         <td>
           <div style="font-weight:500;">${escapeHtml(p.user_email || '—')}</div>
@@ -1694,6 +1722,7 @@ function renderPaymentsTable() {
 }
 
 export async function verifyLearnerPayment(paymentId) {
+
   if (!client) return;
   const ok = confirm('Verify this ₹49 payment and unlock Questions 6 onward for this learner?\n\nNote: Please confirm you have matched this UTR in your receiving bank/UPI statement before verifying.');
   if (!ok) return;
@@ -1725,6 +1754,7 @@ export async function verifyLearnerPayment(paymentId) {
 }
 
 export async function rejectLearnerPayment(paymentId) {
+
   if (!client) return;
   const reason = prompt('Optional reason for rejecting this payment (e.g. UTR not found in bank statement, amount mismatch):');
   if (reason === null) return;
@@ -1799,6 +1829,7 @@ NOTIFY pgrst, 'reload schema';`;
 
 // 1. Load all contests
 export async function loadContests() {
+
   if (!client) return;
   const container = $('contestsContainer');
   if (container) container.innerHTML = '<p style="color:var(--muted);padding:14px;">Loading contests from database…</p>';
@@ -1986,6 +2017,7 @@ export function closeEditorModal() {
 }
 
 export async function saveContestForm() {
+
   if (!client) return;
 
   const id = $('editContestId')?.value;
@@ -2049,6 +2081,7 @@ export async function saveContestForm() {
 
 // 3. Duplicate Contest
 export async function duplicateContest(contestId) {
+
   if (!client) return;
   const original = contestsData.find(c => c.id === contestId);
   if (!original) return;
@@ -2087,6 +2120,7 @@ export async function duplicateContest(contestId) {
 
 // 4. Update Contest Status (Publish, Pause, etc.)
 export async function updateContestStatus(contestId, newStatus) {
+
   if (!client) return;
 
   if (newStatus === 'PUBLISHED') {
@@ -2252,6 +2286,7 @@ export function selectAllAudience(selectAll = true) {
 }
 
 export async function saveAudienceSelection() {
+
   if (!client || !selectedContestId) return;
 
   try {
@@ -2284,6 +2319,7 @@ export async function saveAudienceSelection() {
 
 // 6. Submissions & Participants Drill-down
 export async function openContestSubmissions(contestId) {
+
   selectedContestId = contestId;
   const contest = contestsData.find(c => c.id === contestId);
   if (!contest || !client) return;
@@ -2455,6 +2491,7 @@ function renderParticipantsTable() {
 
 // 7. Payment Verification
 export async function verifyPayment(contestId, userId, newStatus = 'VERIFIED') {
+
   if (!client) return;
   const ok = confirm(`Mark payment for participant as ${newStatus}?`);
   if (!ok) return;
@@ -2595,6 +2632,7 @@ function showAiBox(id, text) {
 }
 
 export async function saveEvaluation(evaluationStatus = 'DRAFT') {
+
   if (!client || !activeReviewSubmission) return;
 
   const contestId = activeReviewSubmission.contest.id;
@@ -2719,6 +2757,7 @@ export function closeResultsModal() {
 }
 
 export async function publishContestResults() {
+
   if (!client || !selectedContestId) return;
   const ok = confirm('Publish results to participants? All evaluated participants will be able to see their scores, ranks, and feedback.');
   if (!ok) return;
@@ -2749,7 +2788,9 @@ export async function publishContestResults() {
 
 let adminNotificationsList = [];
 
+
 export async function loadAdminNotifications() {
+
   if (!client) return;
   const tbody = $('adminNotificationsTableBody');
   if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted);">Loading notifications from Supabase…</td></tr>';
@@ -2838,6 +2879,7 @@ export function closeNotificationEditor() {
 }
 
 export async function saveAdminNotification() {
+
   if (!client) return;
   const title = ($('notifTitleInput')?.value || '').trim();
   const message = ($('notifMessageInput')?.value || '').trim();
@@ -2891,6 +2933,7 @@ export async function saveAdminNotification() {
 }
 
 export async function toggleNotificationActive(id, newStatus) {
+
   if (!client) return;
   try {
     const { error } = await client
@@ -2906,6 +2949,7 @@ export async function toggleNotificationActive(id, newStatus) {
 }
 
 export async function deleteAdminNotification(id) {
+
   if (!client) return;
   if (!confirm('Delete this notification permanently?')) return;
   try {
@@ -2934,6 +2978,7 @@ let feedbackData = [];
 let feedbackSearchQuery = '';
 
 export async function loadAdminFeedback() {
+
   if (!client) return;
   const tbody = $('feedbackLearnersTableBody');
   if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">Loading learner feedback from database...</td></tr>';
@@ -3200,6 +3245,7 @@ let gmailSentCount = 0;
 let isSendingGmail = false;
 
 export async function loadGmailLearners() {
+
   const tbody = $('gmailLearnersTableBody');
   if (tbody && gmailLearnersList.length === 0) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">Loading registered learners from Supabase…</td></tr>';

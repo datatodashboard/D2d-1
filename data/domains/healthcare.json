@@ -1,0 +1,602 @@
+[
+  {
+    "id": "HEA_BEG_001",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow the recorded details of appointments whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only appointments whose status is Active.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active appointment’s full details, or just the number of Active appointments?",
+    "manager_reply": "The full recorded details of each Active appointment, please."
+  },
+  {
+    "id": "HEA_BEG_002",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow the recorded details of appointments with bill amount above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter appointments where bill amount is greater than 50000.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an appointment has a bill amount of exactly ₹50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only appointments with a bill amount above ₹50,000."
+  },
+  {
+    "id": "HEA_BEG_003",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of patients.\n\nShow the recorded details of patients whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep patients whose city is Chennai.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should I include only patients whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for patients located in Chennai."
+  },
+  {
+    "id": "HEA_BEG_004",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nFind the total number of appointments on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the appointments table.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should the total count include appointments in every status, or only active ones?",
+    "manager_reply": "Count every recorded appointment once regardless of status, and show one single total."
+  },
+  {
+    "id": "HEA_BEG_005",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow all appointments with their recorded details, arranged by bill amount, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order appointments by bill amount from highest to lowest.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should all appointments be listed from the highest bill amount down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all appointments with the highest bill amount first."
+  },
+  {
+    "id": "HEA_BEG_006",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of doctors.\n\nPrepare a list of the different category values found in the doctors records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from doctors.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If several doctors belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several doctors belong to it."
+  },
+  {
+    "id": "HEA_BEG_007",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow the recorded details of appointments with appointment date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter appointments with appointment date on or after 1 January 2026.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should appointments with an appointment date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later appointment date."
+  },
+  {
+    "id": "HEA_BEG_008",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of visits.\n\nShow the recorded details of visits whose visit type is Consultation. Exclude other visit type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep visits whose visit type equals Consultation.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Do you want only visits recorded as Consultation, leaving out all other visit type values?",
+    "manager_reply": "Yes. Show the recorded details only for Consultation visits."
+  },
+  {
+    "id": "HEA_BEG_009",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of patients.\n\nShow up to 5 patients with their recorded details, arranged by patient number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by patient id and limit the result to five rows.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 patients starting from the smallest patient number?",
+    "manager_reply": "Yes. Arrange patients from the smallest patient number first and show up to 5 records."
+  },
+  {
+    "id": "HEA_BEG_010",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow the recorded details of appointments with bill amount from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep appointments whose bill amount is between 25000 and 75000.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Are appointments with a bill amount of exactly ₹25,000 or ₹75,000 included in this range?",
+    "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any bill amount in between."
+  },
+  {
+    "id": "HEA_BEG_011",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of patients.\n\nShow the recorded details of patients whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep patients names starting with A.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should I match only patient names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only patients whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "HEA_BEG_012",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow the recorded details of appointments whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep appointments when status is either Active or Pending.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending appointments be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any appointment marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "HEA_BEG_013",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of patients.\n\nShow the recorded details of patients whose patient group is Premium. Exclude other patient group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter patients to the Premium segment only.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should I include only patients in the Premium patient group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for patients marked as Premium."
+  },
+  {
+    "id": "HEA_BEG_014",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of visits.\n\nShow the recorded details of visits with visit date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter visits to dates between January and June 2026.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should visits dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all visits recorded between them."
+  },
+  {
+    "id": "HEA_BEG_015",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nFind the average bill amount across all appointments. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average bill amount across all appointments.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should the average bill amount cover appointments of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing bill amount values, and return one overall average."
+  },
+  {
+    "id": "HEA_BEG_016",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of visits.\n\nFind the largest visit charge across all visits. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should I look across all visit statuses to find the single largest visit amount?",
+    "manager_reply": "Yes. Check all recorded visits and return the single highest visit amount."
+  },
+  {
+    "id": "HEA_BEG_017",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator wants to understand where the registered patients live.\n\nFind how many different cities are recorded for these patients. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in patients.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If several patients live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "HEA_BEG_018",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of visits.\n\nShow the recorded details of visits whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep visits whose status is Completed.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed visits be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for visits whose status is Completed."
+  },
+  {
+    "id": "HEA_BEG_019",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator wants to organize appointments into three review groups.\n\nShow each appointment number, bill amount and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on bill amount with 100000 and 50000 boundaries.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Which group should an appointment with a bill amount of exactly ₹100,000 or ₹50,000 be placed in?",
+    "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000 or missing."
+  },
+  {
+    "id": "HEA_BEG_020",
+    "domain": "Healthcare",
+    "level": "Beginner",
+    "business_scenario": "A hospital coordinator is preparing a review of appointments.\n\nShow the recorded details of appointments marked Active with a bill amount of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and bill amount of at least 50000.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Does an appointment marked Active with a bill amount of exactly ₹50,000 qualify?",
+    "manager_reply": "Yes. Include Active appointments whose bill amount is ₹50,000 or higher."
+  },
+  {
+    "id": "HEA_INT_001",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to see related records clearly. The team has records of patients, appointments and visits.\n\nShow the patient name alongside each of their appointments, including the appointment number, status and bill amount. Include all statuses. Show a separate entry for each appointment, arranged by patient number and then appointment number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients to appointments using patient id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If a patient has multiple appointments, should each appointment appear as a separate entry?",
+    "manager_reply": "Yes. Show each appointment separately across all statuses, ordered by patient number and appointment number."
+  },
+  {
+    "id": "HEA_INT_002",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to check which records need attention. The team has records of patients, appointments and visits.\n\nFor each entry in the doctors directory, show its name and the number of linked appointments. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join doctors to appointments by doctor id. I will group each doctors item and count matching appointments.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an item in doctors has no linked appointments, should it still appear in the count?",
+    "manager_reply": "Yes. Include every doctors entry and show zero when it has no linked appointments."
+  },
+  {
+    "id": "HEA_INT_003",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to compare recorded totals. The team has records of patients, appointments and visits.\n\nFind appointments with no visits recorded at all. Show their appointment numbers. Any recorded visit disqualifies a appointment, regardless of its status or date. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join visits to appointments on appointment id and keep appointments with a null visit id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed visit still count as activity that disqualifies the appointment?",
+    "manager_reply": "Yes. Keep only appointments that have no recorded visits in any status."
+  },
+  {
+    "id": "HEA_INT_004",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to organize a review list. The team has records of patients, appointments and visits.\n\nFor every appointment, show its number and the total visit charge across its visits. Show zero when no value is available. Include all visit types and statuses and use the values as recorded. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join appointments to visits using appointment id. I will group by appointment id and sum event amounts.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "What total should appear for an appointment that has no recorded visits?",
+    "manager_reply": "Include every appointment and show zero as its total when no visits exist."
+  },
+  {
+    "id": "HEA_INT_005",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to compare activity amounts. The team has records of patients, appointments and visits.\n\nAdd the visit charge across the visits linked to each appointment. Show the appointment number and total only when above 20,000; exclude exactly 20,000. Include all visit types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join appointments and visits and group by appointment id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an appointment’s combined visit amount is exactly ₹20,000, should it be included?",
+    "manager_reply": "No. Show only appointments whose total visit amount is strictly above ₹20,000, largest total first."
+  },
+  {
+    "id": "HEA_INT_006",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to prepare a progress summary. The team has records of patients, appointments and visits.\n\nFor each group recorded in the patients directory, show the group label and the number of linked appointments, including every status. Count each appointment once. Show zero for a represented group with no appointments. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link appointments to patients by patient id. I will group by segment and count the matching appointments.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should patient segments with no linked appointments still show a count of zero?",
+    "manager_reply": "Yes. Include every represented patient segment and show zero if it has no linked appointments."
+  },
+  {
+    "id": "HEA_INT_007",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to review the largest values. The team has records of patients, appointments and visits.\n\nFor each doctors category with linked appointments, show the category and average bill amount. Give each appointment equal weight and include all statuses. Leave out categories with no linked appointments. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join doctors and appointments by doctor id. I will group by category and average bill amount.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should doctors categories that have no linked appointments be left out?",
+    "manager_reply": "Yes. Include only categories that have linked appointments when calculating the average bill amount."
+  },
+  {
+    "id": "HEA_INT_008",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to understand the contribution of each record. The team has records of patients, appointments and visits.\n\nShow each patient name alongside their appointment number, the name of its linked doctors entry, and the appointment status. Include all statuses and keep each appointment separate. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients, appointments and doctors through patient id and doctor id to show patient name, doctor name, and status.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the appointment status or the doctors status?",
+    "manager_reply": "Show the appointment status alongside the patient name, appointment number, and doctors name."
+  },
+  {
+    "id": "HEA_INT_009",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to compare values within related groups. The team has records of patients, appointments and visits.\n\nFor each patient with at least one appointment, add the bill amount across their appointments. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every appointment status and omit patients without appointments.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients and appointments and sum bill amount for each patients.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If two patients have the same name, should their bill amount totals be kept separate?",
+    "manager_reply": "Yes. Keep each patient separate by their patient number, and omit patients without appointments."
+  },
+  {
+    "id": "HEA_INT_010",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to compare the recorded values. The team has records of patients, appointments and visits.\n\nFind appointments whose bill amount is above the average bill amount of all recorded appointments. Include every status when calculating the average. Show the appointment number and bill amount, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each bill amount in appointments with the overall average from a subquery.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should appointments of all statuses be included when computing the overall average bill amount?",
+    "manager_reply": "Yes, use all appointments for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "HEA_INT_011",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to review the sequence of activity. The team has records of patients, appointments and visits.\n\nShow each visit number, date, type and visit charge, together with the status of the appointment it belongs to. Use the appointment's status, which may differ from the visit's status. Include every visit and arrange by visit number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join visits to appointments using the parent key.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each visit be the parent appointment’s status?",
+    "manager_reply": "Yes. Display each visit’s details together with the status of its parent appointment."
+  },
+  {
+    "id": "HEA_INT_012",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to prepare a status report. The team has records of patients, appointments and visits.\n\nFor every appointment, show its number and two separate totals of visit charge: one for visits marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no visits exist in a status. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join appointments and visits and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "How should Pending visits or appointments with no visits be reflected in the two totals?",
+    "manager_reply": "Pending visits add to neither total, and appointments without matching visits should show zero."
+  },
+  {
+    "id": "HEA_INT_013",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to compare results across groups. The team has records of patients, appointments and visits.\n\nCount the visits recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded visits need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from visit date, group visits and count each month.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include visits of every type and status?",
+    "manager_reply": "Yes. Count all visits in each calendar month and list the months in date order."
+  },
+  {
+    "id": "HEA_INT_014",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to check the recorded history. The team has records of patients, appointments and visits.\n\nShow the number and name of each registered patient who has no appointments at all. If even one appointment exists, exclude that patient, regardless of status. Arrange by patient number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join appointments to patients on patient id and keep patients with no appointments key.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If a patient only has a Closed or Pending appointment, should they still be excluded?",
+    "manager_reply": "Yes. Show only patients who have no linked appointments at all."
+  },
+  {
+    "id": "HEA_INT_015",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to review how activity is distributed. The team has records of patients, appointments and visits.\n\nShow the number and name of entries in the doctors directory that have no linked appointments. A linked appointment in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join appointments to doctors on doctor id and keep doctors with no matching appointments.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending appointment count as using a doctor entry?",
+    "manager_reply": "Yes. Show only doctors entries that have zero linked appointments across all statuses."
+  },
+  {
+    "id": "HEA_INT_016",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to prepare a summary for each group. The team has records of patients, appointments and visits.\n\nFor each patient with appointments, find the earliest recorded appointment date among them. Show the patient number, name and earliest date, arranged by patient number. Include all statuses; omit patients without appointments.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients and appointments, group by patient id and take the minimum appointment date.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should appointments of all statuses be considered when finding each patient’s earliest appointment date?",
+    "manager_reply": "Yes. Check all appointment statuses for each patient, and omit patients who have no appointments."
+  },
+  {
+    "id": "HEA_INT_017",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to identify records needing a closer look. The team has records of patients, appointments and visits.\n\nFor every appointment, show its number and most recent recorded visit date. Include all visit statuses. Leave the date empty when no dated activity is available. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join visits to appointments, group by appointment id and take the maximum visit date.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should appointments with no recorded visits still be listed?",
+    "manager_reply": "Yes. Include every appointment and leave its latest visit date empty when no visits exist."
+  },
+  {
+    "id": "HEA_INT_018",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to review the people represented in the records. The team has records of patients, appointments and visits.\n\nFind patients who have at least one visit marked Completed through any of their appointments. Show each qualifying patient's number and name once, even if several visits qualify. Arrange by patient number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients, appointments and visits, keep Completed events and remove duplicate patients.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If a patient has multiple Completed visits, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying patient’s number and name only once."
+  },
+  {
+    "id": "HEA_INT_019",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to compare activity across categories. The team has records of patients, appointments and visits.\n\nFor each doctors category with visits linked through its appointments, show the average visit charge. Give every visit equal weight. Include all visit types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join doctors, appointments and visits through their keys. I will group by category and average event amount.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded visits be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have visits, averaging across all visit statuses."
+  },
+  {
+    "id": "HEA_INT_020",
+    "domain": "Healthcare",
+    "level": "Intermediate",
+    "business_scenario": "A hospital coordinator wants to prepare an up-to-date review. The team has records of patients, appointments and visits.\n\nCount appointments for each combination of patient group and appointment status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients and appointments and group counts by segment and status.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should combinations of patient segment and appointment status with zero appointments be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "HEA_EXP_001",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to see related records clearly. The team has records of patients, appointments and visits.\n\nFor each patient with visits, add the visit charge across all their appointments. Show the patient number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller patient number first. Keep people with the same name separate and omit those without activity. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients, appointments and visits and total event amounts per patients. I will rank the totals from highest to lowest.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If two patients tie on total visit amount, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied patients by smaller patient number."
+  },
+  {
+    "id": "HEA_EXP_002",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to check which records need attention. The team has records of patients, appointments and visits.\n\nFind appointments whose most recent visit date is before 1 January 2026, or that have no recorded visit date. Show the appointment number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join visits to appointments using appointment id so appointments without activity remain. I will group each appointments by appointment id and use HAVING on its latest visit date.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an appointment’s latest visit date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only appointments whose latest visit date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "HEA_EXP_003",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to compare recorded totals. The team has records of patients, appointments and visits.\n\nAdd the bill amount across each patient's appointments. Find the average of these person-level totals, giving each patient equal weight and excluding patients without appointments. Show the patient number and total only when above this average, largest totals first. Exclude equal totals and include all appointment statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total bill amount by patient id in appointments. I will keep patients totals above the average total.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should patients without any appointments be left out when calculating the average patient total?",
+    "manager_reply": "Yes. Average across patients who have appointments, and return those strictly above that average."
+  },
+  {
+    "id": "HEA_EXP_004",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to organize a review list. The team has records of patients, appointments and visits.\n\nShow each appointment number, bill amount and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify appointments using CASE with 100000 and 50000 bill amount boundaries.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+    "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
+  },
+  {
+    "id": "HEA_EXP_005",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to compare activity amounts. The team has records of patients, appointments and visits.\n\nFor each appointment and calendar month with visits, add the visit charge. Show the appointment number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by appointment number and then month. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in visits by appointment id and month in a CTE. I will use LAG partitioned by appointment id and ordered by event month.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an appointment has no visits in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that appointment, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "HEA_EXP_006",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to prepare a progress summary. The team has records of patients, appointments and visits.\n\nFor each appointment, follow its visits in date order, using the smaller visit number first when dates match. Beside each visit, show the total visit charge accumulated so far, including that visit. Show the appointment number, visit number, date, value and running total. Arrange by appointment number and that activity sequence. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in visits partitioned by appointment id and ordered by visit date and visit id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "When two visits for the same appointment share the same visit date, which one comes first in the running total?",
+    "manager_reply": "Order same-day visits by the smaller visit number first, and include the current visit in the running total."
+  },
+  {
+    "id": "HEA_EXP_007",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to review the largest values. The team has records of patients, appointments and visits.\n\nFor each appointment with visits, select up to two with the largest visit charge. When values tie, choose the smaller visit number first. Show the visit number, appointment number and value. If only one exists, show it. Arrange by appointment number, then selected value highest first. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each appointment id in visits by descending amount. I will keep row numbers 1 and 2 for every appointment id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "What if an appointment has only one visit, or a tie for the second-largest visit amount?",
+    "manager_reply": "Return the single visit if only one exists, and break any amount ties by choosing the smaller visit number first."
+  },
+  {
+    "id": "HEA_EXP_008",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to understand the contribution of each record. The team has records of patients, appointments and visits.\n\nFor every appointment, total the visit charge from its visits, using zero if no value is available. Show the appointment number, total and its percentage of the combined total across all appointments. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all visit types and statuses and use the values as recorded. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join appointments and visits to total amounts for each appointments in a CTE. I will divide each appointments total by the windowed grand total.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should appointments with zero visits be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each appointment’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "HEA_EXP_009",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to compare values within related groups. The team has records of patients, appointments and visits.\n\nWithin each patient's appointments, rank the bill amount highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the patient number, appointment number, bill amount and rank. Arrange by patient number, rank and then appointment number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank appointments within each patient id by descending bill amount.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "When two appointments for the same patient have equal bill amount, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each patient, and order ties by appointment number."
+  },
+  {
+    "id": "HEA_EXP_010",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to compare the recorded values. The team has records of patients, appointments and visits.\n\nFor each appointment, follow visits by date and then by visit number when dates match. Show its number, each visit number, date, visit charge, and the previous visit's value for that same appointment. Leave the previous value empty for the first visit. Arrange by appointment number and that sequence. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in visits partitioned by appointment id ordered by visit date and visit id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first visit of an appointment?",
+    "manager_reply": "Leave the previous amount empty for each appointment’s first visit, ordering same-day activity by visit number."
+  },
+  {
+    "id": "HEA_EXP_011",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to review the sequence of activity. The team has records of patients, appointments and visits.\n\nFollow each appointment's visits by date, using the smaller visit number first when dates match. At each step, average the current visit charge and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the appointment number, visit number, date, value and average. Arrange by appointment number and that sequence. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in visits partitioned by appointment id ordered by visit date and visit id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "For the first two visits of an appointment, should the moving average use only the visits recorded so far?",
+    "manager_reply": "Yes. Average the current visit with up to two immediately preceding visits available for that appointment."
+  },
+  {
+    "id": "HEA_EXP_012",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to prepare a status report. The team has records of patients, appointments and visits.\n\nShow the number and name of each patient who has at least one appointment and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the patient. Exclude patients with no appointments. Arrange by patient number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each patients has at least one appointments. I will use NOT EXISTS to exclude patients with a non-Active appointments.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should patients with no appointments at all be excluded even though they have no non-Active appointments?",
+    "manager_reply": "Yes. A patient must have at least one appointment, and every one of their appointments must be Active."
+  },
+  {
+    "id": "HEA_EXP_013",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to compare results across groups. The team has records of patients, appointments and visits.\n\nFor each appointment, compare its bill amount with the average bill amount of appointments sharing its status. Show its number, status and bill amount only when above that average. Include the appointment itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then bill amount, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each appointments with the average bill amount for its own status.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should each appointment be compared only against the average bill amount of appointments with the same status?",
+    "manager_reply": "Yes. Compare each appointment to the average bill amount of its own status group, excluding exact ties."
+  },
+  {
+    "id": "HEA_EXP_014",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to check the recorded history. The team has records of patients, appointments and visits.\n\nFor every appointment with visits, show its number, earliest visit date, latest visit date and elapsed calendar days between them. The same first and last date gives zero days. Omit appointments without visits. Include all activity statuses. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join appointments and visits, group by appointment id and take minimum and maximum visit date. I will subtract the first date from the last date to get active days.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an appointment’s earliest and latest visit date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit appointments that have no visits."
+  },
+  {
+    "id": "HEA_EXP_015",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to review how activity is distributed. The team has records of patients, appointments and visits.\n\nFor every visit, show its number, linked appointment number, visit charge and percentage contribution to that appointment's total visit charge. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by appointment number and then visit number. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each visits amount by the total amount within its appointment id partition.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should each visit’s percentage be measured against its parent appointment’s total rather than all appointments?",
+    "manager_reply": "Yes. Divide each visit amount by that appointment’s total visit amount and round to two decimal places."
+  },
+  {
+    "id": "HEA_EXP_016",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to prepare a summary for each group. The team has records of patients, appointments and visits.\n\nAdd the bill amount across each patient's appointments, including all statuses. Within each patient group, select the one with the largest total. Break ties by choosing the smaller patient number. Show their number, name, group and total. Exclude patients without appointments, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join patients and appointments to total bill amount for every patients and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If two patients in the same segment tie for the highest total bill amount, which one should I return?",
+    "manager_reply": "Select the tied patient with the smaller patient number, and exclude patients without appointments."
+  },
+  {
+    "id": "HEA_EXP_017",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to identify records needing a closer look. The team has records of patients, appointments and visits.\n\nFind visits whose visit charge is above the average for all visits belonging to the same appointment. Include the current visit when calculating that average. Show the visit number, appointment number and value. Exclude values equal to the average. Arrange by appointment number and then value highest first. Include all visit types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each visits amount with the average amount for its parent appointment id.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should each visit be compared with the average amount for its own parent appointment?",
+    "manager_reply": "Yes. Include only visits whose amount is strictly above the average for their parent appointment."
+  },
+  {
+    "id": "HEA_EXP_018",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to review the people represented in the records. The team has records of patients, appointments and visits.\n\nCount the appointments belonging to every registered patient, including zero for those with none. Average those counts, giving each patient equal weight. Show the number, name and count for patients above that average. Include all appointment statuses. Sort by count highest first, using the smaller patient number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join patients and appointments and count appointments for every patients in a CTE. I will keep patients counts above the average master count.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should patients with zero appointments be included when calculating the overall average appointment count?",
+    "manager_reply": "Yes. Include zero-count patients in the average calculation, then list patients strictly above that average."
+  },
+  {
+    "id": "HEA_EXP_019",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to compare activity across categories. The team has records of patients, appointments and visits.\n\nFor every appointment, show its number and separate totals of visit charge for visits marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no visits. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join appointments and visits to conditionally sum Completed, Pending and Failed event amounts per appointments.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "Should every appointment display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every appointment, using zero whenever no matching visits exist."
+  },
+  {
+    "id": "HEA_EXP_020",
+    "domain": "Healthcare",
+    "level": "Expert",
+    "business_scenario": "A hospital coordinator wants to prepare an up-to-date review. The team has records of patients, appointments and visits.\n\nFor each appointment with visits, select the one with the latest date. If several share that date, select the largest visit number. Show its visit number, appointment number, date, type, visit charge and status. Include all activity statuses and omit appointments without activity. Arrange the list by appointment number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number visits partitioned by appointment id from newest to oldest by visit date and visit id. I will keep row number 1 as the latest event.",
+    "schema": "patients(patient_id PK, patient_name, city, segment, joined_date); doctors(doctor_id PK, doctor_name, category, status, base_value); appointments(appointment_id PK, patient_id FK, doctor_id FK, appointment_date, status, bill_amount); visits(visit_id PK, appointment_id FK, visit_date, visit_type, quantity, amount, status)",
+    "learner_question": "If an appointment has multiple visits on its latest visit date, which one should be selected?",
+    "manager_reply": "Pick the visit with the largest visit number on that latest date, and omit appointments without visits."
+  }
+]

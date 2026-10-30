@@ -1,0 +1,602 @@
+[
+  {
+    "id": "RET_BEG_001",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow the recorded details of orders whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only orders whose status is Active.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active order’s full details, or just the number of Active orders?",
+    "manager_reply": "The full recorded details of each Active order, please."
+  },
+  {
+    "id": "RET_BEG_002",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow the recorded details of orders with order total above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter orders where order total is greater than 50000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an order has a order total of exactly ₹50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only orders with a order total above ₹50,000."
+  },
+  {
+    "id": "RET_BEG_003",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of customers.\n\nShow the recorded details of customers whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep customers whose city is Chennai.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should I include only customers whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for customers located in Chennai."
+  },
+  {
+    "id": "RET_BEG_004",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nFind the total number of orders on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the orders table.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should the total count include orders in every status, or only active ones?",
+    "manager_reply": "Count every recorded order once regardless of status, and show one single total."
+  },
+  {
+    "id": "RET_BEG_005",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow all orders with their recorded details, arranged by order total, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order orders by order total from highest to lowest.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should all orders be listed from the highest order total down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all orders with the highest order total first."
+  },
+  {
+    "id": "RET_BEG_006",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of products.\n\nPrepare a list of the different category values found in the products records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from products.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If several products belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several products belong to it."
+  },
+  {
+    "id": "RET_BEG_007",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow the recorded details of orders with order date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter orders with order date on or after 1 January 2026.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should orders with an order date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later order date."
+  },
+  {
+    "id": "RET_BEG_008",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of order items.\n\nShow the recorded details of order items whose item type is Sale. Exclude other item type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep order items whose item type equals Sale.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Do you want only order items recorded as Sale, leaving out all other item type values?",
+    "manager_reply": "Yes. Show the recorded details only for Sale order items."
+  },
+  {
+    "id": "RET_BEG_009",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of customers.\n\nShow up to 5 customers with their recorded details, arranged by customer number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by customer id and limit the result to five rows.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 customers starting from the smallest customer number?",
+    "manager_reply": "Yes. Arrange customers from the smallest customer number first and show up to 5 records."
+  },
+  {
+    "id": "RET_BEG_010",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow the recorded details of orders with order total from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep orders whose order total is between 25000 and 75000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Are orders with a order total of exactly ₹25,000 or ₹75,000 included in this range?",
+    "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any order total in between."
+  },
+  {
+    "id": "RET_BEG_011",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of customers.\n\nShow the recorded details of customers whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep customers names starting with A.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should I match only customer names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only customers whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "RET_BEG_012",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow the recorded details of orders whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep orders when status is either Active or Pending.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending orders be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any order marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "RET_BEG_013",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of customers.\n\nShow the recorded details of customers whose customer group is Premium. Exclude other customer group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter customers to the Premium segment only.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should I include only customers in the Premium customer group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for customers marked as Premium."
+  },
+  {
+    "id": "RET_BEG_014",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of order items.\n\nShow the recorded details of order items with item date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter order items to dates between January and June 2026.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should order items dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all order items recorded between them."
+  },
+  {
+    "id": "RET_BEG_015",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nFind the average order total across all orders. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average order total across all orders.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should the average order total cover orders of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing order total values, and return one overall average."
+  },
+  {
+    "id": "RET_BEG_016",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of order items.\n\nFind the largest order-item amount across all order items. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should I look across all order item statuses to find the single largest order-item amount?",
+    "manager_reply": "Yes. Check all recorded order items and return the single highest order-item amount."
+  },
+  {
+    "id": "RET_BEG_017",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager wants to understand where the registered customers live.\n\nFind how many different cities are recorded for these customers. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If several customers live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "RET_BEG_018",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of order items.\n\nShow the recorded details of order items whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep order items whose status is Completed.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed order items be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for order items whose status is Completed."
+  },
+  {
+    "id": "RET_BEG_019",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager wants to organize orders into three review groups.\n\nShow each order number, order total and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on order total with 100000 and 50000 boundaries.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Which group should an order with a order total of exactly ₹100,000 or ₹50,000 be placed in?",
+    "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000 or missing."
+  },
+  {
+    "id": "RET_BEG_020",
+    "domain": "Retail",
+    "level": "Beginner",
+    "business_scenario": "A store manager is preparing a review of orders.\n\nShow the recorded details of orders marked Active with a order total of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and order total of at least 50000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Does an order marked Active with a order total of exactly ₹50,000 qualify?",
+    "manager_reply": "Yes. Include Active orders whose order total is ₹50,000 or higher."
+  },
+  {
+    "id": "RET_INT_001",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to see related records clearly. The team has records of customers, orders and order items.\n\nShow the customer name alongside each of their orders, including the order number, status and order total. Include all statuses. Show a separate entry for each order, arranged by customer number and then order number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers to orders using customer id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If a customer has multiple orders, should each order appear as a separate entry?",
+    "manager_reply": "Yes. Show each order separately across all statuses, ordered by customer number and order number."
+  },
+  {
+    "id": "RET_INT_002",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to check which records need attention. The team has records of customers, orders and order items.\n\nFor each entry in the products directory, show its name and the number of linked orders. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join products to orders by product id. I will group each products item and count matching orders.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an item in products has no linked orders, should it still appear in the count?",
+    "manager_reply": "Yes. Include every products entry and show zero when it has no linked orders."
+  },
+  {
+    "id": "RET_INT_003",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to compare recorded totals. The team has records of customers, orders and order items.\n\nFind orders with no order items recorded at all. Show their order numbers. Any recorded order item disqualifies a order, regardless of its status or date. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join order items to orders on order id and keep orders with a null order item id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed order item still count as activity that disqualifies the order?",
+    "manager_reply": "Yes. Keep only orders that have no recorded order items in any status."
+  },
+  {
+    "id": "RET_INT_004",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to organize a review list. The team has records of customers, orders and order items.\n\nFor every order, show its number and the total order-item amount across its order items. Show zero when no value is available. Include all order item types and statuses and use the values as recorded. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join orders to order items using order id. I will group by order id and sum event amounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "What total should appear for an order that has no recorded order items?",
+    "manager_reply": "Include every order and show zero as its total when no order items exist."
+  },
+  {
+    "id": "RET_INT_005",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to compare activity amounts. The team has records of customers, orders and order items.\n\nAdd the order-item amount across the order items linked to each order. Show the order number and total only when above 20,000; exclude exactly 20,000. Include all order item types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join orders and order items and group by order id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an order’s combined order-item amount is exactly ₹20,000, should it be included?",
+    "manager_reply": "No. Show only orders whose total order-item amount is strictly above ₹20,000, largest total first."
+  },
+  {
+    "id": "RET_INT_006",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to prepare a progress summary. The team has records of customers, orders and order items.\n\nFor each group recorded in the customers directory, show the group label and the number of linked orders, including every status. Count each order once. Show zero for a represented group with no orders. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link orders to customers by customer id. I will group by segment and count the matching orders.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should customer segments with no linked orders still show a count of zero?",
+    "manager_reply": "Yes. Include every represented customer segment and show zero if it has no linked orders."
+  },
+  {
+    "id": "RET_INT_007",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to review the largest values. The team has records of customers, orders and order items.\n\nFor each products category with linked orders, show the category and average order total. Give each order equal weight and include all statuses. Leave out categories with no linked orders. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join products and orders by product id. I will group by category and average order total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should products categories that have no linked orders be left out?",
+    "manager_reply": "Yes. Include only categories that have linked orders when calculating the average order total."
+  },
+  {
+    "id": "RET_INT_008",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to understand the contribution of each record. The team has records of customers, orders and order items.\n\nShow each customer name alongside their order number, the name of its linked products entry, and the order status. Include all statuses and keep each order separate. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, orders and products through customer id and product id to show customer name, product name, and status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the order status or the products status?",
+    "manager_reply": "Show the order status alongside the customer name, order number, and products name."
+  },
+  {
+    "id": "RET_INT_009",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to compare values within related groups. The team has records of customers, orders and order items.\n\nFor each customer with at least one order, add the order total across their orders. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every order status and omit customers without orders.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and orders and sum order total for each customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If two customers have the same name, should their order total totals be kept separate?",
+    "manager_reply": "Yes. Keep each customer separate by their customer number, and omit customers without orders."
+  },
+  {
+    "id": "RET_INT_010",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to compare the recorded values. The team has records of customers, orders and order items.\n\nFind orders whose order total is above the average order total of all recorded orders. Include every status when calculating the average. Show the order number and order total, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each order total in orders with the overall average from a subquery.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should orders of all statuses be included when computing the overall average order total?",
+    "manager_reply": "Yes, use all orders for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "RET_INT_011",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to review the sequence of activity. The team has records of customers, orders and order items.\n\nShow each order item number, date, type and order-item amount, together with the status of the order it belongs to. Use the order's status, which may differ from the order item's status. Include every order item and arrange by order item number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join order items to orders using the parent key.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each order item be the parent order’s status?",
+    "manager_reply": "Yes. Display each order item’s details together with the status of its parent order."
+  },
+  {
+    "id": "RET_INT_012",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to prepare a status report. The team has records of customers, orders and order items.\n\nFor every order, show its number and two separate totals of order-item amount: one for order items marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no order items exist in a status. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join orders and order items and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "How should Pending order items or orders with no order items be reflected in the two totals?",
+    "manager_reply": "Pending order items add to neither total, and orders without matching order items should show zero."
+  },
+  {
+    "id": "RET_INT_013",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to compare results across groups. The team has records of customers, orders and order items.\n\nCount the order items recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded order items need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from item date, group order items and count each month.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include order items of every type and status?",
+    "manager_reply": "Yes. Count all order items in each calendar month and list the months in date order."
+  },
+  {
+    "id": "RET_INT_014",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to check the recorded history. The team has records of customers, orders and order items.\n\nShow the number and name of each registered customer who has no orders at all. If even one order exists, exclude that customer, regardless of status. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join orders to customers on customer id and keep customers with no orders key.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If a customer only has a Closed or Pending order, should they still be excluded?",
+    "manager_reply": "Yes. Show only customers who have no linked orders at all."
+  },
+  {
+    "id": "RET_INT_015",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to review how activity is distributed. The team has records of customers, orders and order items.\n\nShow the number and name of entries in the products directory that have no linked orders. A linked order in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join orders to products on product id and keep products with no matching orders.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending order count as using a product entry?",
+    "manager_reply": "Yes. Show only products entries that have zero linked orders across all statuses."
+  },
+  {
+    "id": "RET_INT_016",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to prepare a summary for each group. The team has records of customers, orders and order items.\n\nFor each customer with orders, find the earliest recorded order date among them. Show the customer number, name and earliest date, arranged by customer number. Include all statuses; omit customers without orders.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and orders, group by customer id and take the minimum order date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should orders of all statuses be considered when finding each customer’s earliest order date?",
+    "manager_reply": "Yes. Check all order statuses for each customer, and omit customers who have no orders."
+  },
+  {
+    "id": "RET_INT_017",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to identify records needing a closer look. The team has records of customers, orders and order items.\n\nFor every order, show its number and most recent recorded order item date. Include all order item statuses. Leave the date empty when no dated activity is available. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join order items to orders, group by order id and take the maximum item date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should orders with no recorded order items still be listed?",
+    "manager_reply": "Yes. Include every order and leave its latest item date empty when no order items exist."
+  },
+  {
+    "id": "RET_INT_018",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to review the people represented in the records. The team has records of customers, orders and order items.\n\nFind customers who have at least one order item marked Completed through any of their orders. Show each qualifying customer's number and name once, even if several order items qualify. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, orders and order items, keep Completed events and remove duplicate customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If a customer has multiple Completed order items, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying customer’s number and name only once."
+  },
+  {
+    "id": "RET_INT_019",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to compare activity across categories. The team has records of customers, orders and order items.\n\nFor each products category with order items linked through its orders, show the average order-item amount. Give every order item equal weight. Include all order item types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join products, orders and order items through their keys. I will group by category and average event amount.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded order items be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have order items, averaging across all order item statuses."
+  },
+  {
+    "id": "RET_INT_020",
+    "domain": "Retail",
+    "level": "Intermediate",
+    "business_scenario": "A store manager wants to prepare an up-to-date review. The team has records of customers, orders and order items.\n\nCount orders for each combination of customer group and order status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and orders and group counts by segment and status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should combinations of customer segment and order status with zero orders be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "RET_EXP_001",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to see related records clearly. The team has records of customers, orders and order items.\n\nFor each customer with order items, add the order-item amount across all their orders. Show the customer number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller customer number first. Keep people with the same name separate and omit those without activity. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, orders and order items and total event amounts per customers. I will rank the totals from highest to lowest.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If two customers tie on total order-item amount, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied customers by smaller customer number."
+  },
+  {
+    "id": "RET_EXP_002",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to check which records need attention. The team has records of customers, orders and order items.\n\nFind orders whose most recent order item date is before 1 January 2026, or that have no recorded order item date. Show the order number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join order items to orders using order id so orders without activity remain. I will group each orders by order id and use HAVING on its latest item date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an order’s latest item date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only orders whose latest item date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "RET_EXP_003",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to compare recorded totals. The team has records of customers, orders and order items.\n\nAdd the order total across each customer's orders. Find the average of these person-level totals, giving each customer equal weight and excluding customers without orders. Show the customer number and total only when above this average, largest totals first. Exclude equal totals and include all order statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total order total by customer id in orders. I will keep customers totals above the average total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should customers without any orders be left out when calculating the average customer total?",
+    "manager_reply": "Yes. Average across customers who have orders, and return those strictly above that average."
+  },
+  {
+    "id": "RET_EXP_004",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to organize a review list. The team has records of customers, orders and order items.\n\nShow each order number, order total and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify orders using CASE with 100000 and 50000 order total boundaries.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+    "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
+  },
+  {
+    "id": "RET_EXP_005",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to compare activity amounts. The team has records of customers, orders and order items.\n\nFor each order and calendar month with order items, add the order-item amount. Show the order number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by order number and then month. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in order items by order id and month in a CTE. I will use LAG partitioned by order id and ordered by event month.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an order has no order items in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that order, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "RET_EXP_006",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to prepare a progress summary. The team has records of customers, orders and order items.\n\nFor each order, follow its order items in date order, using the smaller order item number first when dates match. Beside each order item, show the total order-item amount accumulated so far, including that order item. Show the order number, order item number, date, value and running total. Arrange by order number and that activity sequence. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in order items partitioned by order id and ordered by item date and order item id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "When two order items for the same order share the same item date, which one comes first in the running total?",
+    "manager_reply": "Order same-day order items by the smaller order item number first, and include the current order item in the running total."
+  },
+  {
+    "id": "RET_EXP_007",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to review the largest values. The team has records of customers, orders and order items.\n\nFor each order with order items, select up to two with the largest order-item amount. When values tie, choose the smaller order item number first. Show the order item number, order number and value. If only one exists, show it. Arrange by order number, then selected value highest first. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each order id in order items by descending amount. I will keep row numbers 1 and 2 for every order id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "What if an order has only one order item, or a tie for the second-largest order-item amount?",
+    "manager_reply": "Return the single order item if only one exists, and break any amount ties by choosing the smaller order item number first."
+  },
+  {
+    "id": "RET_EXP_008",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to understand the contribution of each record. The team has records of customers, orders and order items.\n\nFor every order, total the order-item amount from its order items, using zero if no value is available. Show the order number, total and its percentage of the combined total across all orders. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all order item types and statuses and use the values as recorded. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join orders and order items to total amounts for each orders in a CTE. I will divide each orders total by the windowed grand total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should orders with zero order items be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each order’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "RET_EXP_009",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to compare values within related groups. The team has records of customers, orders and order items.\n\nWithin each customer's orders, rank the order total highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the customer number, order number, order total and rank. Arrange by customer number, rank and then order number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank orders within each customer id by descending order total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "When two orders for the same customer have equal order total, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each customer, and order ties by order number."
+  },
+  {
+    "id": "RET_EXP_010",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to compare the recorded values. The team has records of customers, orders and order items.\n\nFor each order, follow order items by date and then by order item number when dates match. Show its number, each order item number, date, order-item amount, and the previous order item's value for that same order. Leave the previous value empty for the first order item. Arrange by order number and that sequence. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in order items partitioned by order id ordered by item date and order item id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first order item of an order?",
+    "manager_reply": "Leave the previous amount empty for each order’s first order item, ordering same-day activity by order item number."
+  },
+  {
+    "id": "RET_EXP_011",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to review the sequence of activity. The team has records of customers, orders and order items.\n\nFollow each order's order items by date, using the smaller order item number first when dates match. At each step, average the current order-item amount and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the order number, order item number, date, value and average. Arrange by order number and that sequence. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in order items partitioned by order id ordered by item date and order item id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "For the first two order items of an order, should the moving average use only the order items recorded so far?",
+    "manager_reply": "Yes. Average the current order item with up to two immediately preceding order items available for that order."
+  },
+  {
+    "id": "RET_EXP_012",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to prepare a status report. The team has records of customers, orders and order items.\n\nShow the number and name of each customer who has at least one order and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the customer. Exclude customers with no orders. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each customers has at least one orders. I will use NOT EXISTS to exclude customers with a non-Active orders.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should customers with no orders at all be excluded even though they have no non-Active orders?",
+    "manager_reply": "Yes. A customer must have at least one order, and every one of their orders must be Active."
+  },
+  {
+    "id": "RET_EXP_013",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to compare results across groups. The team has records of customers, orders and order items.\n\nFor each order, compare its order total with the average order total of orders sharing its status. Show its number, status and order total only when above that average. Include the order itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then order total, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each orders with the average order total for its own status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should each order be compared only against the average order total of orders with the same status?",
+    "manager_reply": "Yes. Compare each order to the average order total of its own status group, excluding exact ties."
+  },
+  {
+    "id": "RET_EXP_014",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to check the recorded history. The team has records of customers, orders and order items.\n\nFor every order with order items, show its number, earliest order item date, latest order item date and elapsed calendar days between them. The same first and last date gives zero days. Omit orders without order items. Include all activity statuses. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join orders and order items, group by order id and take minimum and maximum item date. I will subtract the first date from the last date to get active days.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an order’s earliest and latest item date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit orders that have no order items."
+  },
+  {
+    "id": "RET_EXP_015",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to review how activity is distributed. The team has records of customers, orders and order items.\n\nFor every order item, show its number, linked order number, order-item amount and percentage contribution to that order's total order-item amount. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by order number and then order item number. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each order items amount by the total amount within its order id partition.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should each order item’s percentage be measured against its parent order’s total rather than all orders?",
+    "manager_reply": "Yes. Divide each order item amount by that order’s total order-item amount and round to two decimal places."
+  },
+  {
+    "id": "RET_EXP_016",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to prepare a summary for each group. The team has records of customers, orders and order items.\n\nAdd the order total across each customer's orders, including all statuses. Within each customer group, select the one with the largest total. Break ties by choosing the smaller customer number. Show their number, name, group and total. Exclude customers without orders, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and orders to total order total for every customers and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If two customers in the same segment tie for the highest total order total, which one should I return?",
+    "manager_reply": "Select the tied customer with the smaller customer number, and exclude customers without orders."
+  },
+  {
+    "id": "RET_EXP_017",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to identify records needing a closer look. The team has records of customers, orders and order items.\n\nFind order items whose order-item amount is above the average for all order items belonging to the same order. Include the current order item when calculating that average. Show the order item number, order number and value. Exclude values equal to the average. Arrange by order number and then value highest first. Include all order item types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each order items amount with the average amount for its parent order id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should each order item be compared with the average amount for its own parent order?",
+    "manager_reply": "Yes. Include only order items whose amount is strictly above the average for their parent order."
+  },
+  {
+    "id": "RET_EXP_018",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to review the people represented in the records. The team has records of customers, orders and order items.\n\nCount the orders belonging to every registered customer, including zero for those with none. Average those counts, giving each customer equal weight. Show the number, name and count for customers above that average. Include all order statuses. Sort by count highest first, using the smaller customer number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join customers and orders and count orders for every customers in a CTE. I will keep customers counts above the average master count.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should customers with zero orders be included when calculating the overall average order count?",
+    "manager_reply": "Yes. Include zero-count customers in the average calculation, then list customers strictly above that average."
+  },
+  {
+    "id": "RET_EXP_019",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to compare activity across categories. The team has records of customers, orders and order items.\n\nFor every order, show its number and separate totals of order-item amount for order items marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no order items. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join orders and order items to conditionally sum Completed, Pending and Failed event amounts per orders.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "Should every order display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every order, using zero whenever no matching order items exist."
+  },
+  {
+    "id": "RET_EXP_020",
+    "domain": "Retail",
+    "level": "Expert",
+    "business_scenario": "A store manager wants to prepare an up-to-date review. The team has records of customers, orders and order items.\n\nFor each order with order items, select the one with the latest date. If several share that date, select the largest order item number. Show its order item number, order number, date, type, order-item amount and status. Include all activity statuses and omit orders without activity. Arrange the list by order number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number order items partitioned by order id from newest to oldest by item date and order item id. I will keep row number 1 as the latest event.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); products(product_id PK, product_name, category, status, base_value); orders(order_id PK, customer_id FK, product_id FK, order_date, status, order_total); order_items(order_item_id PK, order_id FK, item_date, item_type, quantity, amount, status)",
+    "learner_question": "If an order has multiple order items on its latest item date, which one should be selected?",
+    "manager_reply": "Pick the order item with the largest order item number on that latest date, and omit orders without order items."
+  }
+]

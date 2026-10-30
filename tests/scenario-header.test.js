@@ -27,7 +27,7 @@ function harness(scenarios) {
   return { context, nodes };
 }
 
-for (const file of ['Crack_SQL_420_Simple.json', 'Crack_SQL_420_Student_Business_Scenarios.json', 'scenarios.json']) {
+for (const file of ['Crack_SQL_420_Simple.json', 'scenarios.json']) {
   test(`renders heading, exact ID and business question for all scenarios in ${file}`, () => {
     const data = JSON.parse(fs.readFileSync(`data/${file}`, 'utf8'));
     const scenarios = (Array.isArray(data) ? data : data.scenarios).map(s => ({

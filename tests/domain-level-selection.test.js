@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 describe('UI Selection & Level Buttons Verification Suite', () => {
-  const indexHtml = fs.readFileSync('index.html', 'utf8');
+  const indexHtml = fs.readFileSync('index.html', 'utf8') + '\n' + fs.readFileSync('styles.css', 'utf8');
   const appJs = fs.readFileSync('js/app.js', 'utf8');
 
   test('1. selectedDomain and selectedLevel initialize as null on startup and login', () => {
@@ -105,5 +105,44 @@ describe('UI Selection & Level Buttons Verification Suite', () => {
     // Verify state.entries is intact and certificates rendering is intact
     assert.match(appJs, /updateProgress\(\);/);
     assert.match(appJs, /renderScenarioCatalog\(\);/);
+  });
+
+  test('6. Domain selection cards do not display the trailing arrow mark', () => {
+    const renderDomainFn = appJs.match(/function renderMissionDomainCard\([\s\S]*?\n  \}/);
+    assert.ok(renderDomainFn, 'renderMissionDomainCard must exist');
+    assert.doesNotMatch(renderDomainFn[0], /mission-arrow/, 'renderMissionDomainCard must not render .mission-arrow');
+    const homeGridsMatch = indexHtml.match(/<div class="domain-missions-grid" id="allDomainsGrid">[\s\S]*?<\/section>/);
+    assert.ok(homeGridsMatch, 'allDomainsGrid section must exist');
+    assert.doesNotMatch(homeGridsMatch[0], /class="mission-arrow"/, 'Static domain cards must not render .mission-arrow');
+  });
+
+  test('7. Practice button click without selecting a domain displays warning toast and stays on domain screen', () => {
+    // Verify toast markup exists in index.html above domain missions
+    assert.match(indexHtml, /id="domainSelectionWarning"/);
+    assert.match(indexHtml, /class="domain-selection-toast"/);
+    assert.match(indexHtml, /Please select a domain to start practicing\./);
+    assert.match(indexHtml, /⚠/);
+
+    // Verify warning logic in appJs
+    assert.match(appJs, /function showDomainSelectionWarning\(\)/);
+    assert.match(appJs, /function clearDomainSelectionWarning\(/);
+    assert.match(appJs, /if\s*\(!chosenDomain\)\s*\{\s*showDomainSelectionWarning\(\);/);
+  });
+
+  test('8. Warning toast has amber gaming theme styling, rounded corners, and auto-dismisses', () => {
+    // Toast CSS rules
+    assert.match(indexHtml, /\.domain-selection-toast-inner\s*\{[^}]*border-radius:\s*12px/);
+    assert.match(indexHtml, /\.domain-selection-toast-inner\s*\{[^}]*border:\s*1px solid rgba\(251,\s*191,\s*36/);
+    assert.match(indexHtml, /\.domain-missions-section\.highlight-choose-domain/);
+
+    // 4-second auto-dismissal
+    assert.match(appJs, /setTimeout\(\(\)\s*=>\s*\{\s*clearDomainSelectionWarning\(true\);\s*\},\s*4000\)/);
+  });
+
+  test('9. Selecting a domain clears the warning toast and preserves level selection flow', () => {
+    // selectDomain clears warning
+    assert.match(appJs, /function selectDomain\(domain,\s*el\)\s*\{\s*clearDomainSelectionWarning\(false\);/);
+    // Preserves openChooseLevelModal
+    assert.match(appJs, /openChooseLevelModal\(domain\);/);
   });
 });

@@ -1,0 +1,602 @@
+[
+  {
+    "id": "SEM_BEG_001",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow the recorded details of production batches whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only production batches whose status is Active.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active production batch’s full details, or just the number of Active production batches?",
+    "manager_reply": "The full recorded details of each Active production batch, please."
+  },
+  {
+    "id": "SEM_BEG_002",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow the recorded details of production batches with batch cost above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter production batches where batch cost is greater than 50000.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a production batch has a batch cost of exactly 50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only production batches with a batch cost above 50,000."
+  },
+  {
+    "id": "SEM_BEG_003",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of clients.\n\nShow the recorded details of clients whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep clients whose city is Chennai.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should I include only clients whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for clients located in Chennai."
+  },
+  {
+    "id": "SEM_BEG_004",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nFind the total number of production batches on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the production batches table.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should the total count include production batches in every status, or only active ones?",
+    "manager_reply": "Count every recorded production batch once regardless of status, and show one single total."
+  },
+  {
+    "id": "SEM_BEG_005",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow all production batches with their recorded details, arranged by batch cost, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order production batches by batch cost from highest to lowest.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should all production batches be listed from the highest batch cost down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all production batches with the highest batch cost first."
+  },
+  {
+    "id": "SEM_BEG_006",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of chip products.\n\nPrepare a list of the different category values found in the chip products records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from chip products.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If several chip products belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several chip products belong to it."
+  },
+  {
+    "id": "SEM_BEG_007",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow the recorded details of production batches with production date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter production batches with production date on or after 1 January 2026.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should production batches with a production date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later production date."
+  },
+  {
+    "id": "SEM_BEG_008",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of test results.\n\nShow the recorded details of test results whose test type is Functional. Exclude other test type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep test results whose test type equals Functional.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Do you want only test results recorded as Functional, leaving out all other test type values?",
+    "manager_reply": "Yes. Show the recorded details only for Functional test results."
+  },
+  {
+    "id": "SEM_BEG_009",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of clients.\n\nShow up to 5 clients with their recorded details, arranged by client number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by client id and limit the result to five rows.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 clients starting from the smallest client number?",
+    "manager_reply": "Yes. Arrange clients from the smallest client number first and show up to 5 records."
+  },
+  {
+    "id": "SEM_BEG_010",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow the recorded details of production batches with batch cost from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep production batches whose batch cost is between 25000 and 75000.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Are production batches with a batch cost of exactly 25,000 or 75,000 included in this range?",
+    "manager_reply": "Yes. Include both 25,000 and 75,000 as well as any batch cost in between."
+  },
+  {
+    "id": "SEM_BEG_011",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of clients.\n\nShow the recorded details of clients whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep clients names starting with A.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should I match only client names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only clients whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "SEM_BEG_012",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow the recorded details of production batches whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep production batches when status is either Active or Pending.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending production batches be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any production batch marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "SEM_BEG_013",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of clients.\n\nShow the recorded details of clients whose client group is Premium. Exclude other client group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter clients to the Premium segment only.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should I include only clients in the Premium client group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for clients marked as Premium."
+  },
+  {
+    "id": "SEM_BEG_014",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of test results.\n\nShow the recorded details of test results with test date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter test results to dates between January and June 2026.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should test results dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all test results recorded between them."
+  },
+  {
+    "id": "SEM_BEG_015",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nFind the average batch cost across all production batches. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average batch cost across all production batches.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should the average batch cost cover production batches of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing batch cost values, and return one overall average."
+  },
+  {
+    "id": "SEM_BEG_016",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of test results.\n\nFind the largest recorded test value across all test results. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should I look across all test result statuses to find the single largest recorded test value?",
+    "manager_reply": "Yes. Check all recorded test results and return the single highest recorded test value."
+  },
+  {
+    "id": "SEM_BEG_017",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager wants to understand where the registered clients live.\n\nFind how many different cities are recorded for these clients. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in clients.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If several clients live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "SEM_BEG_018",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of test results.\n\nShow the recorded details of test results whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep test results whose status is Completed.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed test results be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for test results whose status is Completed."
+  },
+  {
+    "id": "SEM_BEG_019",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager wants to organize production batches into three review groups.\n\nShow each production batch number, batch cost and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on batch cost with 100000 and 50000 boundaries.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Which group should a production batch with a batch cost of exactly 100,000 or 50,000 be placed in?",
+    "manager_reply": "Use High for 100,000 or more, Medium from 50,000 up to below 100,000, and Low for below 50,000 or missing."
+  },
+  {
+    "id": "SEM_BEG_020",
+    "domain": "Semiconductor",
+    "level": "Beginner",
+    "business_scenario": "A production manager is preparing a review of production batches.\n\nShow the recorded details of production batches marked Active with a batch cost of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and batch cost of at least 50000.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Does a production batch marked Active with a batch cost of exactly 50,000 qualify?",
+    "manager_reply": "Yes. Include Active production batches whose batch cost is 50,000 or higher."
+  },
+  {
+    "id": "SEM_INT_001",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to see related records clearly. The team has records of clients, production batches and test results.\n\nShow the client name alongside each of their production batches, including the production batch number, status and batch cost. Include all statuses. Show a separate entry for each production batch, arranged by client number and then production batch number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients to production batches using client id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a client has multiple production batches, should each production batch appear as a separate entry?",
+    "manager_reply": "Yes. Show each production batch separately across all statuses, ordered by client number and production batch number."
+  },
+  {
+    "id": "SEM_INT_002",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to check which records need attention. The team has records of clients, production batches and test results.\n\nFor each entry in the chip products directory, show its name and the number of linked production batches. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join chip products to production batches by product id. I will group each chip products item and count matching production batches.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If an item in chip products has no linked production batches, should it still appear in the count?",
+    "manager_reply": "Yes. Include every chip products entry and show zero when it has no linked production batches."
+  },
+  {
+    "id": "SEM_INT_003",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to compare recorded totals. The team has records of clients, production batches and test results.\n\nFind production batches with no test results recorded at all. Show their production batch numbers. Any recorded test result disqualifies a production batch, regardless of its status or date. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join test results to production batches on batch id and keep production batches with a null test id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed test result still count as activity that disqualifies the production batch?",
+    "manager_reply": "Yes. Keep only production batches that have no recorded test results in any status."
+  },
+  {
+    "id": "SEM_INT_004",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to organize a review list. The team has records of clients, production batches and test results.\n\nFor every production batch, show its number and the total recorded test value across its test results. Show zero when no value is available. Include all test result types and statuses and use the values as recorded. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join production batches to test results using batch id. I will group by batch id and sum event amounts.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "What total should appear for a production batch that has no recorded test results?",
+    "manager_reply": "Include every production batch and show zero as its total when no test results exist."
+  },
+  {
+    "id": "SEM_INT_005",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to compare activity amounts. The team has records of clients, production batches and test results.\n\nAdd the recorded test value across the test results linked to each production batch. Show the production batch number and total only when above 20,000; exclude exactly 20,000. Include all test result types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join production batches and test results and group by batch id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a production batch’s combined recorded test value is exactly 20,000, should it be included?",
+    "manager_reply": "No. Show only production batches whose total recorded test value is strictly above 20,000, largest total first."
+  },
+  {
+    "id": "SEM_INT_006",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to prepare a progress summary. The team has records of clients, production batches and test results.\n\nFor each group recorded in the clients directory, show the group label and the number of linked production batches, including every status. Count each production batch once. Show zero for a represented group with no production batches. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link production batches to clients by client id. I will group by segment and count the matching production batches.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should client segments with no linked production batches still show a count of zero?",
+    "manager_reply": "Yes. Include every represented client segment and show zero if it has no linked production batches."
+  },
+  {
+    "id": "SEM_INT_007",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to review the largest values. The team has records of clients, production batches and test results.\n\nFor each chip products category with linked production batches, show the category and average batch cost. Give each production batch equal weight and include all statuses. Leave out categories with no linked production batches. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join chip products and production batches by product id. I will group by category and average batch cost.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should chip products categories that have no linked production batches be left out?",
+    "manager_reply": "Yes. Include only categories that have linked production batches when calculating the average batch cost."
+  },
+  {
+    "id": "SEM_INT_008",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to understand the contribution of each record. The team has records of clients, production batches and test results.\n\nShow each client name alongside their production batch number, the name of its linked chip products entry, and the production batch status. Include all statuses and keep each production batch separate. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients, production batches and chip products through client id and product id to show client name, product name, and status.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the production batch status or the chip products status?",
+    "manager_reply": "Show the production batch status alongside the client name, production batch number, and chip products name."
+  },
+  {
+    "id": "SEM_INT_009",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to compare values within related groups. The team has records of clients, production batches and test results.\n\nFor each client with at least one production batch, add the batch cost across their production batches. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every production batch status and omit clients without production batches.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients and production batches and sum batch cost for each clients.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If two clients have the same name, should their batch cost totals be kept separate?",
+    "manager_reply": "Yes. Keep each client separate by their client number, and omit clients without production batches."
+  },
+  {
+    "id": "SEM_INT_010",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to compare the recorded values. The team has records of clients, production batches and test results.\n\nFind production batches whose batch cost is above the average batch cost of all recorded production batches. Include every status when calculating the average. Show the production batch number and batch cost, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each batch cost in production batches with the overall average from a subquery.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should production batches of all statuses be included when computing the overall average batch cost?",
+    "manager_reply": "Yes, use all production batches for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "SEM_INT_011",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to review the sequence of activity. The team has records of clients, production batches and test results.\n\nShow each test result number, date, type and recorded test value, together with the status of the production batch it belongs to. Use the production batch's status, which may differ from the test result's status. Include every test result and arrange by test result number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join test results to production batches using the parent key.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each test result be the parent production batch’s status?",
+    "manager_reply": "Yes. Display each test result’s details together with the status of its parent production batch."
+  },
+  {
+    "id": "SEM_INT_012",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to prepare a status report. The team has records of clients, production batches and test results.\n\nFor every production batch, show its number and two separate totals of recorded test value: one for test results marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no test results exist in a status. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join production batches and test results and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "How should Pending test results or production batches with no test results be reflected in the two totals?",
+    "manager_reply": "Pending test results add to neither total, and production batches without matching test results should show zero."
+  },
+  {
+    "id": "SEM_INT_013",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to compare results across groups. The team has records of clients, production batches and test results.\n\nCount the test results recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded test results need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from test date, group test results and count each month.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include test results of every type and status?",
+    "manager_reply": "Yes. Count all test results in each calendar month and list the months in date order."
+  },
+  {
+    "id": "SEM_INT_014",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to check the recorded history. The team has records of clients, production batches and test results.\n\nShow the number and name of each registered client who has no production batches at all. If even one production batch exists, exclude that client, regardless of status. Arrange by client number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join production batches to clients on client id and keep clients with no production batches key.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a client only has a Closed or Pending production batch, should they still be excluded?",
+    "manager_reply": "Yes. Show only clients who have no linked production batches at all."
+  },
+  {
+    "id": "SEM_INT_015",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to review how activity is distributed. The team has records of clients, production batches and test results.\n\nShow the number and name of entries in the chip products directory that have no linked production batches. A linked production batch in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join production batches to chip products on product id and keep chip products with no matching production batches.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending production batch count as using a chip product entry?",
+    "manager_reply": "Yes. Show only chip products entries that have zero linked production batches across all statuses."
+  },
+  {
+    "id": "SEM_INT_016",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to prepare a summary for each group. The team has records of clients, production batches and test results.\n\nFor each client with production batches, find the earliest recorded production date among them. Show the client number, name and earliest date, arranged by client number. Include all statuses; omit clients without production batches.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients and production batches, group by client id and take the minimum production date.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should production batches of all statuses be considered when finding each client’s earliest production date?",
+    "manager_reply": "Yes. Check all production batch statuses for each client, and omit clients who have no production batches."
+  },
+  {
+    "id": "SEM_INT_017",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to identify records needing a closer look. The team has records of clients, production batches and test results.\n\nFor every production batch, show its number and most recent recorded test result date. Include all test result statuses. Leave the date empty when no dated activity is available. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join test results to production batches, group by batch id and take the maximum test date.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should production batches with no recorded test results still be listed?",
+    "manager_reply": "Yes. Include every production batch and leave its latest test date empty when no test results exist."
+  },
+  {
+    "id": "SEM_INT_018",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to review the people represented in the records. The team has records of clients, production batches and test results.\n\nFind clients who have at least one test result marked Completed through any of their production batches. Show each qualifying client's number and name once, even if several test results qualify. Arrange by client number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients, production batches and test results, keep Completed events and remove duplicate clients.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a client has multiple Completed test results, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying client’s number and name only once."
+  },
+  {
+    "id": "SEM_INT_019",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to compare activity across categories. The team has records of clients, production batches and test results.\n\nFor each chip products category with test results linked through its production batches, show the average recorded test value. Give every test result equal weight. Include all test result types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join chip products, production batches and test results through their keys. I will group by category and average event amount.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded test results be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have test results, averaging across all test result statuses."
+  },
+  {
+    "id": "SEM_INT_020",
+    "domain": "Semiconductor",
+    "level": "Intermediate",
+    "business_scenario": "A production manager wants to prepare an up-to-date review. The team has records of clients, production batches and test results.\n\nCount production batches for each combination of client group and production batch status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients and production batches and group counts by segment and status.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should combinations of client segment and production batch status with zero production batches be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "SEM_EXP_001",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to see related records clearly. The team has records of clients, production batches and test results.\n\nFor each client with test results, add the recorded test value across all their production batches. Show the client number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller client number first. Keep people with the same name separate and omit those without activity. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients, production batches and test results and total event amounts per clients. I will rank the totals from highest to lowest.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If two clients tie on total recorded test value, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied clients by smaller client number."
+  },
+  {
+    "id": "SEM_EXP_002",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to check which records need attention. The team has records of clients, production batches and test results.\n\nFind production batches whose most recent test result date is before 1 January 2026, or that have no recorded test result date. Show the production batch number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join test results to production batches using batch id so production batches without activity remain. I will group each production batches by batch id and use HAVING on its latest test date.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a production batch’s latest test date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only production batches whose latest test date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "SEM_EXP_003",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to compare recorded totals. The team has records of clients, production batches and test results.\n\nAdd the batch cost across each client's production batches. Find the average of these person-level totals, giving each client equal weight and excluding clients without production batches. Show the client number and total only when above this average, largest totals first. Exclude equal totals and include all production batch statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total batch cost by client id in production batches. I will keep clients totals above the average total.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should clients without any production batches be left out when calculating the average client total?",
+    "manager_reply": "Yes. Average across clients who have production batches, and return those strictly above that average."
+  },
+  {
+    "id": "SEM_EXP_004",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to organize a review list. The team has records of clients, production batches and test results.\n\nShow each production batch number, batch cost and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify production batches using CASE with 100000 and 50000 batch cost boundaries.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of 50,000 and 100,000 be classified into bands?",
+    "manager_reply": "Use High for 100,000 or above, Medium from 50,000 up to below 100,000, and Low for below 50,000."
+  },
+  {
+    "id": "SEM_EXP_005",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to compare activity amounts. The team has records of clients, production batches and test results.\n\nFor each production batch and calendar month with test results, add the recorded test value. Show the production batch number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by production batch number and then month. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in test results by batch id and month in a CTE. I will use LAG partitioned by batch id and ordered by event month.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a production batch has no test results in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that production batch, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "SEM_EXP_006",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to prepare a progress summary. The team has records of clients, production batches and test results.\n\nFor each production batch, follow its test results in date order, using the smaller test result number first when dates match. Beside each test result, show the total recorded test value accumulated so far, including that test result. Show the production batch number, test result number, date, value and running total. Arrange by production batch number and that activity sequence. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in test results partitioned by batch id and ordered by test date and test id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "When two test results for the same production batch share the same test date, which one comes first in the running total?",
+    "manager_reply": "Order same-day test results by the smaller test result number first, and include the current test result in the running total."
+  },
+  {
+    "id": "SEM_EXP_007",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to review the largest values. The team has records of clients, production batches and test results.\n\nFor each production batch with test results, select up to two with the largest recorded test value. When values tie, choose the smaller test result number first. Show the test result number, production batch number and value. If only one exists, show it. Arrange by production batch number, then selected value highest first. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each batch id in test results by descending amount. I will keep row numbers 1 and 2 for every batch id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "What if a production batch has only one test result, or a tie for the second-largest recorded test value?",
+    "manager_reply": "Return the single test result if only one exists, and break any amount ties by choosing the smaller test result number first."
+  },
+  {
+    "id": "SEM_EXP_008",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to understand the contribution of each record. The team has records of clients, production batches and test results.\n\nFor every production batch, total the recorded test value from its test results, using zero if no value is available. Show the production batch number, total and its percentage of the combined total across all production batches. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all test result types and statuses and use the values as recorded. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join production batches and test results to total amounts for each production batches in a CTE. I will divide each production batches total by the windowed grand total.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should production batches with zero test results be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each production batch’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "SEM_EXP_009",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to compare values within related groups. The team has records of clients, production batches and test results.\n\nWithin each client's production batches, rank the batch cost highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the client number, production batch number, batch cost and rank. Arrange by client number, rank and then production batch number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank production batches within each client id by descending batch cost.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "When two production batches for the same client have equal batch cost, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each client, and order ties by production batch number."
+  },
+  {
+    "id": "SEM_EXP_010",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to compare the recorded values. The team has records of clients, production batches and test results.\n\nFor each production batch, follow test results by date and then by test result number when dates match. Show its number, each test result number, date, recorded test value, and the previous test result's value for that same production batch. Leave the previous value empty for the first test result. Arrange by production batch number and that sequence. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in test results partitioned by batch id ordered by test date and test id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first test result of a production batch?",
+    "manager_reply": "Leave the previous amount empty for each production batch’s first test result, ordering same-day activity by test result number."
+  },
+  {
+    "id": "SEM_EXP_011",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to review the sequence of activity. The team has records of clients, production batches and test results.\n\nFollow each production batch's test results by date, using the smaller test result number first when dates match. At each step, average the current recorded test value and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the production batch number, test result number, date, value and average. Arrange by production batch number and that sequence. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in test results partitioned by batch id ordered by test date and test id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "For the first two test results of a production batch, should the moving average use only the test results recorded so far?",
+    "manager_reply": "Yes. Average the current test result with up to two immediately preceding test results available for that production batch."
+  },
+  {
+    "id": "SEM_EXP_012",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to prepare a status report. The team has records of clients, production batches and test results.\n\nShow the number and name of each client who has at least one production batch and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the client. Exclude clients with no production batches. Arrange by client number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each clients has at least one production batches. I will use NOT EXISTS to exclude clients with a non-Active production batches.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should clients with no production batches at all be excluded even though they have no non-Active production batches?",
+    "manager_reply": "Yes. A client must have at least one production batch, and every one of their production batches must be Active."
+  },
+  {
+    "id": "SEM_EXP_013",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to compare results across groups. The team has records of clients, production batches and test results.\n\nFor each production batch, compare its batch cost with the average batch cost of production batches sharing its status. Show its number, status and batch cost only when above that average. Include the production batch itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then batch cost, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each production batches with the average batch cost for its own status.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should each production batch be compared only against the average batch cost of production batches with the same status?",
+    "manager_reply": "Yes. Compare each production batch to the average batch cost of its own status group, excluding exact ties."
+  },
+  {
+    "id": "SEM_EXP_014",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to check the recorded history. The team has records of clients, production batches and test results.\n\nFor every production batch with test results, show its number, earliest test result date, latest test result date and elapsed calendar days between them. The same first and last date gives zero days. Omit production batches without test results. Include all activity statuses. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join production batches and test results, group by batch id and take minimum and maximum test date. I will subtract the first date from the last date to get active days.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a production batch’s earliest and latest test date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit production batches that have no test results."
+  },
+  {
+    "id": "SEM_EXP_015",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to review how activity is distributed. The team has records of clients, production batches and test results.\n\nFor every test result, show its number, linked production batch number, recorded test value and percentage contribution to that production batch's total recorded test value. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by production batch number and then test result number. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each test results amount by the total amount within its batch id partition.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should each test result’s percentage be measured against its parent production batch’s total rather than all production batches?",
+    "manager_reply": "Yes. Divide each test result amount by that production batch’s total recorded test value and round to two decimal places."
+  },
+  {
+    "id": "SEM_EXP_016",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to prepare a summary for each group. The team has records of clients, production batches and test results.\n\nAdd the batch cost across each client's production batches, including all statuses. Within each client group, select the one with the largest total. Break ties by choosing the smaller client number. Show their number, name, group and total. Exclude clients without production batches, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join clients and production batches to total batch cost for every clients and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If two clients in the same segment tie for the highest total batch cost, which one should I return?",
+    "manager_reply": "Select the tied client with the smaller client number, and exclude clients without production batches."
+  },
+  {
+    "id": "SEM_EXP_017",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to identify records needing a closer look. The team has records of clients, production batches and test results.\n\nFind test results whose recorded test value is above the average for all test results belonging to the same production batch. Include the current test result when calculating that average. Show the test result number, production batch number and value. Exclude values equal to the average. Arrange by production batch number and then value highest first. Include all test result types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each test results amount with the average amount for its parent batch id.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should each test result be compared with the average amount for its own parent production batch?",
+    "manager_reply": "Yes. Include only test results whose amount is strictly above the average for their parent production batch."
+  },
+  {
+    "id": "SEM_EXP_018",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to review the people represented in the records. The team has records of clients, production batches and test results.\n\nCount the production batches belonging to every registered client, including zero for those with none. Average those counts, giving each client equal weight. Show the number, name and count for clients above that average. Include all production batch statuses. Sort by count highest first, using the smaller client number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join clients and production batches and count production batches for every clients in a CTE. I will keep clients counts above the average master count.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should clients with zero production batches be included when calculating the overall average production batch count?",
+    "manager_reply": "Yes. Include zero-count clients in the average calculation, then list clients strictly above that average."
+  },
+  {
+    "id": "SEM_EXP_019",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to compare activity across categories. The team has records of clients, production batches and test results.\n\nFor every production batch, show its number and separate totals of recorded test value for test results marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no test results. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join production batches and test results to conditionally sum Completed, Pending and Failed event amounts per production batches.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "Should every production batch display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every production batch, using zero whenever no matching test results exist."
+  },
+  {
+    "id": "SEM_EXP_020",
+    "domain": "Semiconductor",
+    "level": "Expert",
+    "business_scenario": "A production manager wants to prepare an up-to-date review. The team has records of clients, production batches and test results.\n\nFor each production batch with test results, select the one with the latest date. If several share that date, select the largest test result number. Show its test result number, production batch number, date, type, recorded test value and status. Include all activity statuses and omit production batches without activity. Arrange the list by production batch number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number test results partitioned by batch id from newest to oldest by test date and test id. I will keep row number 1 as the latest event.",
+    "schema": "clients(client_id PK, client_name, city, segment, joined_date); chip_products(product_id PK, product_name, category, status, base_value); production_batches(batch_id PK, client_id FK, product_id FK, production_date, status, batch_cost); test_results(test_id PK, batch_id FK, test_date, test_type, quantity, amount, status)",
+    "learner_question": "If a production batch has multiple test results on its latest test date, which one should be selected?",
+    "manager_reply": "Pick the test result with the largest test result number on that latest date, and omit production batches without test results."
+  }
+]

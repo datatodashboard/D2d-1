@@ -34,21 +34,23 @@ for (const width of [1280, 768, 390]) {
       if (!hasInstruction) await expect(page.locator('#thinkingInstructionCard')).toBeHidden();
     }
     await isolateRenderedCard(page);
-    await expect(page.locator('#title')).toBeVisible();
+    await expect(page.locator('#scenarioId')).toBeVisible();
     await expect(page.locator('#question')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
   test(`long question separates instruction without duplication at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     // Exercise question-field-only content through the real loader without editing production JSON.
-    await page.route('**/data/Crack_SQL_420_Simple.json', async route => {
+    const fulfillFixture = async route => {
       const fixture = structuredClone(catalog);
       const s = fixture.find(s => s.id === 'BAN_BEG_006');
       delete s.business_scenario;
       s.question = business + '\n\n' + instruction;
       s.pseudo = 'ANSWER MUST NOT APPEAR';
       await route.fulfill({ json: fixture });
-    });
+    };
+    await page.route('**/data/Crack_SQL_420_Simple.json', fulfillFixture);
+    await page.route('**/data/domains/banking.json', fulfillFixture);
     await openApp(page);
     await page.evaluate(() => window.openScenario('BAN_BEG_006'));
     await expect(page.locator('#question')).toHaveText(business);

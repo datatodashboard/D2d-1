@@ -1,0 +1,602 @@
+[
+  {
+    "id": "BAN_BEG_001",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only accounts whose status is Active.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active account’s full details, or just the number of Active accounts?",
+    "manager_reply": "The full recorded details of each Active account, please."
+  },
+  {
+    "id": "BAN_BEG_002",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts with balance above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter accounts where balance is greater than 50000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an account has exactly ₹50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only accounts with a balance above ₹50,000."
+  },
+  {
+    "id": "BAN_BEG_003",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of customers.\n\nShow the recorded details of customers whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep customers whose city is Chennai.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should I include only customers whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for customers located in Chennai."
+  },
+  {
+    "id": "BAN_BEG_004",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nFind the total number of accounts on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the accounts table.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should the total count include accounts in every status, or only active ones?",
+    "manager_reply": "Count every recorded account once regardless of status, and show one single total."
+  },
+  {
+    "id": "BAN_BEG_005",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow all accounts with their recorded details, arranged by balance, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order accounts by balance from highest to lowest.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should all accounts be listed from the highest balance down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all accounts with the highest balance first."
+  },
+  {
+    "id": "BAN_BEG_006",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of account products.\n\nPrepare a list of the different category values found in the account products records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from account products.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If several products belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several products belong to it."
+  },
+  {
+    "id": "BAN_BEG_007",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts with open date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter accounts with open date on or after 1 January 2026.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should accounts with an open date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later open date."
+  },
+  {
+    "id": "BAN_BEG_008",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of transactions.\n\nShow the recorded details of transactions whose transaction type is Credit. Exclude other transaction type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep transactions whose transaction type equals Credit.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Do you want only transactions recorded as Credit, leaving out all other transaction type values?",
+    "manager_reply": "Yes. Show the recorded details only for Credit transactions."
+  },
+  {
+    "id": "BAN_BEG_009",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of customers.\n\nShow up to 5 customers with their recorded details, arranged by customer number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by customer id and limit the result to five rows.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 customers starting from the smallest customer number?",
+    "manager_reply": "Yes. Arrange customers from the smallest customer number first and show up to 5 records."
+  },
+  {
+    "id": "BAN_BEG_010",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts with balance from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep accounts whose balance is between 25000 and 75000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Are accounts with a balance of exactly ₹25,000 or ₹75,000 included in this range?",
+    "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any balance in between."
+  },
+  {
+    "id": "BAN_BEG_011",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of customers.\n\nShow the recorded details of customers whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep customers names starting with A.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should I match only customer names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only customers whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "BAN_BEG_012",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep accounts when status is either Active or Pending.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending accounts be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any account marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "BAN_BEG_013",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of customers.\n\nShow the recorded details of customers whose customer group is Premium. Exclude other customer group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter customers to the Premium segment only.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should I include only customers in the Premium customer group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for customers marked as Premium."
+  },
+  {
+    "id": "BAN_BEG_014",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of transactions.\n\nShow the recorded details of transactions with transaction date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter transactions to dates between January and June 2026.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should transactions dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all transactions recorded between them."
+  },
+  {
+    "id": "BAN_BEG_015",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nFind the average balance across all accounts. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average balance across all accounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should the average balance cover accounts of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing balance values, and return one overall average."
+  },
+  {
+    "id": "BAN_BEG_016",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of transactions.\n\nFind the largest transaction amount across all transactions. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should I look across all transaction statuses to find the single largest transaction amount?",
+    "manager_reply": "Yes. Check all recorded transactions and return the single highest transaction amount."
+  },
+  {
+    "id": "BAN_BEG_017",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager wants to understand where the registered customers live.\n\nFind how many different cities are recorded for these customers. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If several customers live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "BAN_BEG_018",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of transactions.\n\nShow the recorded details of transactions whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep transactions whose status is Completed.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed transactions be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for transactions whose status is Completed."
+  },
+  {
+    "id": "BAN_BEG_019",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager wants to organize accounts into three review groups.\n\nShow each account number, balance and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on balance with 100000 and 50000 boundaries.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Which group should an account with a balance of exactly ₹100,000 or ₹50,000 be placed in?",
+    "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000 or missing."
+  },
+  {
+    "id": "BAN_BEG_020",
+    "domain": "Banking",
+    "level": "Beginner",
+    "business_scenario": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts marked Active with a balance of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and balance of at least 50000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Does an account marked Active with a balance of exactly ₹50,000 qualify?",
+    "manager_reply": "Yes. Include Active accounts whose balance is ₹50,000 or higher."
+  },
+  {
+    "id": "BAN_INT_001",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to see related records clearly. The team has records of customers, accounts and transactions.\n\nShow the customer name alongside each of their accounts, including the account number, status and balance. Include all statuses. Show a separate entry for each account, arranged by customer number and then account number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers to accounts using customer id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If a customer has multiple accounts, should each account appear as a separate entry?",
+    "manager_reply": "Yes. Show each account separately across all statuses, ordered by customer number and account number."
+  },
+  {
+    "id": "BAN_INT_002",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to check which records need attention. The team has records of customers, accounts and transactions.\n\nFor each entry in the account products directory, show its name and the number of linked accounts. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join account products to accounts by product id. I will group each account products item and count matching accounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an item in account products has no linked accounts, should it still appear in the count?",
+    "manager_reply": "Yes. Include every account products entry and show zero when it has no linked accounts."
+  },
+  {
+    "id": "BAN_INT_003",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to compare recorded totals. The team has records of customers, accounts and transactions.\n\nFind accounts with no transactions recorded at all. Show their account numbers. Any recorded transaction disqualifies a account, regardless of its status or date. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join transactions to accounts on account id and keep accounts with a null transaction id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed transaction still count as activity that disqualifies the account?",
+    "manager_reply": "Yes. Keep only accounts that have no recorded transactions in any status."
+  },
+  {
+    "id": "BAN_INT_004",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to organize a review list. The team has records of customers, accounts and transactions.\n\nFor every account, show its number and the total transaction amount across its transactions. Show zero when no value is available. Include all transaction types and statuses and use the values as recorded. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join accounts to transactions using account id. I will group by account id and sum event amounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "What total should appear for an account that has no recorded transactions?",
+    "manager_reply": "Include every account and show zero as its total when no transactions exist."
+  },
+  {
+    "id": "BAN_INT_005",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to compare activity amounts. The team has records of customers, accounts and transactions.\n\nAdd the transaction amount across the transactions linked to each account. Show the account number and total only when above 20,000; exclude exactly 20,000. Include all transaction types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join accounts and transactions and group by account id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an account’s combined transaction amount is exactly ₹20,000, should it be included?",
+    "manager_reply": "No. Show only accounts whose total transaction amount is strictly above ₹20,000, largest total first."
+  },
+  {
+    "id": "BAN_INT_006",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to prepare a progress summary. The team has records of customers, accounts and transactions.\n\nFor each group recorded in the customers directory, show the group label and the number of linked accounts, including every status. Count each account once. Show zero for a represented group with no accounts. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link accounts to customers by customer id. I will group by segment and count the matching accounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should customer segments with no linked accounts still show a count of zero?",
+    "manager_reply": "Yes. Include every represented customer segment and show zero if it has no linked accounts."
+  },
+  {
+    "id": "BAN_INT_007",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to review the largest values. The team has records of customers, accounts and transactions.\n\nFor each account products category with linked accounts, show the category and average balance. Give each account equal weight and include all statuses. Leave out categories with no linked accounts. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join account products and accounts by product id. I will group by category and average balance.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should account products categories that have no linked accounts be left out?",
+    "manager_reply": "Yes. Include only categories that have linked accounts when calculating the average balance."
+  },
+  {
+    "id": "BAN_INT_008",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to understand the contribution of each record. The team has records of customers, accounts and transactions.\n\nShow each customer name alongside their account number, the name of its linked account products entry, and the account status. Include all statuses and keep each account separate. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, accounts and account products through customer id and product id to show customer name, product name, and status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the account status or the account products status?",
+    "manager_reply": "Show the account status alongside the customer name, account number, and account products name."
+  },
+  {
+    "id": "BAN_INT_009",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to compare values within related groups. The team has records of customers, accounts and transactions.\n\nFor each customer with at least one account, add the balance across their accounts. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every account status and omit customers without accounts.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and accounts and sum balance for each customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If two customers have the same name, should their balance totals be kept separate?",
+    "manager_reply": "Yes. Keep each customer separate by their customer number, and omit customers without accounts."
+  },
+  {
+    "id": "BAN_INT_010",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to compare the recorded values. The team has records of customers, accounts and transactions.\n\nFind accounts whose balance is above the average balance of all recorded accounts. Include every status when calculating the average. Show the account number and balance, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each balance in accounts with the overall average from a subquery.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should accounts of all statuses be included when computing the overall average balance?",
+    "manager_reply": "Yes, use all accounts for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "BAN_INT_011",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to review the sequence of activity. The team has records of customers, accounts and transactions.\n\nShow each transaction number, date, type and transaction amount, together with the status of the account it belongs to. Use the account's status, which may differ from the transaction's status. Include every transaction and arrange by transaction number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join transactions to accounts using the parent key.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each transaction be the parent account’s status?",
+    "manager_reply": "Yes. Display each transaction’s details together with the status of its parent account."
+  },
+  {
+    "id": "BAN_INT_012",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to prepare a status report. The team has records of customers, accounts and transactions.\n\nFor every account, show its number and two separate totals of transaction amount: one for transactions marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no transactions exist in a status. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join accounts and transactions and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "How should Pending transactions or accounts with no transactions be reflected in the two totals?",
+    "manager_reply": "Pending transactions add to neither total, and accounts without matching transactions should show zero."
+  },
+  {
+    "id": "BAN_INT_013",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to compare results across groups. The team has records of customers, accounts and transactions.\n\nCount the transactions recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded transactions need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from transaction date, group transactions and count each month.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include transactions of every type and status?",
+    "manager_reply": "Yes. Count all transactions in each calendar month and list the months in date order."
+  },
+  {
+    "id": "BAN_INT_014",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to check the recorded history. The team has records of customers, accounts and transactions.\n\nShow the number and name of each registered customer who has no accounts at all. If even one account exists, exclude that customer, regardless of status. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join accounts to customers on customer id and keep customers with no accounts key.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If a customer only has a Closed or Pending account, should they still be excluded?",
+    "manager_reply": "Yes. Show only customers who have no linked accounts at all."
+  },
+  {
+    "id": "BAN_INT_015",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to review how activity is distributed. The team has records of customers, accounts and transactions.\n\nShow the number and name of entries in the account products directory that have no linked accounts. A linked account in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join accounts to account products on product id and keep account products with no matching accounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending account count as using a product entry?",
+    "manager_reply": "Yes. Show only account products entries that have zero linked accounts across all statuses."
+  },
+  {
+    "id": "BAN_INT_016",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to prepare a summary for each group. The team has records of customers, accounts and transactions.\n\nFor each customer with accounts, find the earliest recorded account opening date among them. Show the customer number, name and earliest date, arranged by customer number. Include all statuses; omit customers without accounts.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and accounts, group by customer id and take the minimum open date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should accounts of all statuses be considered when finding each customer’s earliest open date?",
+    "manager_reply": "Yes. Check all account statuses for each customer, and omit customers who have no accounts."
+  },
+  {
+    "id": "BAN_INT_017",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to identify records needing a closer look. The team has records of customers, accounts and transactions.\n\nFor every account, show its number and most recent recorded transaction date. Include all transaction statuses. Leave the date empty when no dated activity is available. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join transactions to accounts, group by account id and take the maximum transaction date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should accounts with no recorded transactions still be listed?",
+    "manager_reply": "Yes. Include every account and leave its latest transaction date empty when no transactions exist."
+  },
+  {
+    "id": "BAN_INT_018",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to review the people represented in the records. The team has records of customers, accounts and transactions.\n\nFind customers who have at least one transaction marked Completed through any of their accounts. Show each qualifying customer's number and name once, even if several transactions qualify. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, accounts and transactions, keep Completed events and remove duplicate customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If a customer has multiple Completed transactions, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying customer’s number and name only once."
+  },
+  {
+    "id": "BAN_INT_019",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to compare activity across categories. The team has records of customers, accounts and transactions.\n\nFor each account products category with transactions linked through its accounts, show the average transaction amount. Give every transaction equal weight. Include all transaction types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join account products, accounts and transactions through their keys. I will group by category and average event amount.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded transactions be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have transactions, averaging across all transaction statuses."
+  },
+  {
+    "id": "BAN_INT_020",
+    "domain": "Banking",
+    "level": "Intermediate",
+    "business_scenario": "A bank manager wants to prepare an up-to-date review. The team has records of customers, accounts and transactions.\n\nCount accounts for each combination of customer group and account status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and accounts and group counts by segment and status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should combinations of customer segment and account status with zero accounts be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "BAN_EXP_001",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to see related records clearly. The team has records of customers, accounts and transactions.\n\nFor each customer with transactions, add the transaction amount across all their accounts. Show the customer number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller customer number first. Keep people with the same name separate and omit those without activity. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, accounts and transactions and total event amounts per customers. I will rank the totals from highest to lowest.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If two customers tie on total transaction amount, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied customers by smaller customer number."
+  },
+  {
+    "id": "BAN_EXP_002",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to check which records need attention. The team has records of customers, accounts and transactions.\n\nFind accounts whose most recent transaction date is before 1 January 2026, or that have no recorded transaction date. Show the account number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join transactions to accounts using account id so accounts without activity remain. I will group each accounts by account id and use HAVING on its latest transaction date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an account’s latest transaction date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only accounts whose latest transaction date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "BAN_EXP_003",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to compare recorded totals. The team has records of customers, accounts and transactions.\n\nAdd the balance across each customer's accounts. Find the average of these person-level totals, giving each customer equal weight and excluding customers without accounts. Show the customer number and total only when above this average, largest totals first. Exclude equal totals and include all account statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total balance by customer id in accounts. I will keep customers totals above the average total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should customers without any accounts be left out when calculating the average customer total?",
+    "manager_reply": "Yes. Average across customers who have accounts, and return those strictly above that average."
+  },
+  {
+    "id": "BAN_EXP_004",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to organize a review list. The team has records of customers, accounts and transactions.\n\nShow each account number, balance and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify accounts using CASE with 100000 and 50000 balance boundaries.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+    "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
+  },
+  {
+    "id": "BAN_EXP_005",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to compare activity amounts. The team has records of customers, accounts and transactions.\n\nFor each account and calendar month with transactions, add the transaction amount. Show the account number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by account number and then month. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in transactions by account id and month in a CTE. I will use LAG partitioned by account id and ordered by event month.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an account has no transactions in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that account, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "BAN_EXP_006",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to prepare a progress summary. The team has records of customers, accounts and transactions.\n\nFor each account, follow its transactions in date order, using the smaller transaction number first when dates match. Beside each transaction, show the total transaction amount accumulated so far, including that transaction. Show the account number, transaction number, date, value and running total. Arrange by account number and that activity sequence. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in transactions partitioned by account id and ordered by transaction date and transaction id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "When two transactions for the same account share the same transaction date, which one comes first in the running total?",
+    "manager_reply": "Order same-day transactions by the smaller transaction number first, and include the current transaction in the running total."
+  },
+  {
+    "id": "BAN_EXP_007",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to review the largest values. The team has records of customers, accounts and transactions.\n\nFor each account with transactions, select up to two with the largest transaction amount. When values tie, choose the smaller transaction number first. Show the transaction number, account number and value. If only one exists, show it. Arrange by account number, then selected value highest first. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each account id in transactions by descending amount. I will keep row numbers 1 and 2 for every account id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "What if an account has only one transaction, or a tie for the second-largest transaction amount?",
+    "manager_reply": "Return the single transaction if only one exists, and break any amount ties by choosing the smaller transaction number first."
+  },
+  {
+    "id": "BAN_EXP_008",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to understand the contribution of each record. The team has records of customers, accounts and transactions.\n\nFor every account, total the transaction amount from its transactions, using zero if no value is available. Show the account number, total and its percentage of the combined total across all accounts. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all transaction types and statuses and use the values as recorded. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join accounts and transactions to total amounts for each accounts in a CTE. I will divide each accounts total by the windowed grand total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should accounts with zero transactions be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each account’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "BAN_EXP_009",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to compare values within related groups. The team has records of customers, accounts and transactions.\n\nWithin each customer's accounts, rank the balance highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the customer number, account number, balance and rank. Arrange by customer number, rank and then account number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank accounts within each customer id by descending balance.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "When two accounts for the same customer have equal balance, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each customer, and order ties by account number."
+  },
+  {
+    "id": "BAN_EXP_010",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to compare the recorded values. The team has records of customers, accounts and transactions.\n\nFor each account, follow transactions by date and then by transaction number when dates match. Show its number, each transaction number, date, transaction amount, and the previous transaction's value for that same account. Leave the previous value empty for the first transaction. Arrange by account number and that sequence. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in transactions partitioned by account id ordered by transaction date and transaction id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first transaction of an account?",
+    "manager_reply": "Leave the previous amount empty for each account’s first transaction, ordering same-day activity by transaction number."
+  },
+  {
+    "id": "BAN_EXP_011",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to review the sequence of activity. The team has records of customers, accounts and transactions.\n\nFollow each account's transactions by date, using the smaller transaction number first when dates match. At each step, average the current transaction amount and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the account number, transaction number, date, value and average. Arrange by account number and that sequence. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in transactions partitioned by account id ordered by transaction date and transaction id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "For the first two transactions of an account, should the moving average use only the transactions recorded so far?",
+    "manager_reply": "Yes. Average the current transaction with up to two immediately preceding transactions available for that account."
+  },
+  {
+    "id": "BAN_EXP_012",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to prepare a status report. The team has records of customers, accounts and transactions.\n\nShow the number and name of each customer who has at least one account and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the customer. Exclude customers with no accounts. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each customers has at least one accounts. I will use NOT EXISTS to exclude customers with a non-Active accounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should customers with no accounts at all be excluded even though they have no non-Active accounts?",
+    "manager_reply": "Yes. A customer must have at least one account, and every one of their accounts must be Active."
+  },
+  {
+    "id": "BAN_EXP_013",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to compare results across groups. The team has records of customers, accounts and transactions.\n\nFor each account, compare its balance with the average balance of accounts sharing its status. Show its number, status and balance only when above that average. Include the account itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then balance, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each accounts with the average balance for its own status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should each account be compared only against the average balance of accounts with the same status?",
+    "manager_reply": "Yes. Compare each account to the average balance of its own status group, excluding exact ties."
+  },
+  {
+    "id": "BAN_EXP_014",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to check the recorded history. The team has records of customers, accounts and transactions.\n\nFor every account with transactions, show its number, earliest transaction date, latest transaction date and elapsed calendar days between them. The same first and last date gives zero days. Omit accounts without transactions. Include all activity statuses. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join accounts and transactions, group by account id and take minimum and maximum transaction date. I will subtract the first date from the last date to get active days.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an account’s earliest and latest transaction date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit accounts that have no transactions."
+  },
+  {
+    "id": "BAN_EXP_015",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to review how activity is distributed. The team has records of customers, accounts and transactions.\n\nFor every transaction, show its number, linked account number, transaction amount and percentage contribution to that account's total transaction amount. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by account number and then transaction number. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each transactions amount by the total amount within its account id partition.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should each transaction’s percentage be measured against its parent account’s total rather than all accounts?",
+    "manager_reply": "Yes. Divide each transaction amount by that account’s total transaction amount and round to two decimal places."
+  },
+  {
+    "id": "BAN_EXP_016",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to prepare a summary for each group. The team has records of customers, accounts and transactions.\n\nAdd the balance across each customer's accounts, including all statuses. Within each customer group, select the one with the largest total. Break ties by choosing the smaller customer number. Show their number, name, group and total. Exclude customers without accounts, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and accounts to total balance for every customers and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If two customers in the same segment tie for the highest total balance, which one should I return?",
+    "manager_reply": "Select the tied customer with the smaller customer number, and exclude customers without accounts."
+  },
+  {
+    "id": "BAN_EXP_017",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to identify records needing a closer look. The team has records of customers, accounts and transactions.\n\nFind transactions whose transaction amount is above the average for all transactions belonging to the same account. Include the current transaction when calculating that average. Show the transaction number, account number and value. Exclude values equal to the average. Arrange by account number and then value highest first. Include all transaction types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each transactions amount with the average amount for its parent account id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should each transaction be compared with the average amount for its own parent account?",
+    "manager_reply": "Yes. Include only transactions whose amount is strictly above the average for their parent account."
+  },
+  {
+    "id": "BAN_EXP_018",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to review the people represented in the records. The team has records of customers, accounts and transactions.\n\nCount the accounts belonging to every registered customer, including zero for those with none. Average those counts, giving each customer equal weight. Show the number, name and count for customers above that average. Include all account statuses. Sort by count highest first, using the smaller customer number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join customers and accounts and count accounts for every customers in a CTE. I will keep customers counts above the average master count.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should customers with zero accounts be included when calculating the overall average account count?",
+    "manager_reply": "Yes. Include zero-count customers in the average calculation, then list customers strictly above that average."
+  },
+  {
+    "id": "BAN_EXP_019",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to compare activity across categories. The team has records of customers, accounts and transactions.\n\nFor every account, show its number and separate totals of transaction amount for transactions marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no transactions. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join accounts and transactions to conditionally sum Completed, Pending and Failed event amounts per accounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "Should every account display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every account, using zero whenever no matching transactions exist."
+  },
+  {
+    "id": "BAN_EXP_020",
+    "domain": "Banking",
+    "level": "Expert",
+    "business_scenario": "A bank manager wants to prepare an up-to-date review. The team has records of customers, accounts and transactions.\n\nFor each account with transactions, select the one with the latest date. If several share that date, select the largest transaction number. Show its transaction number, account number, date, type, transaction amount and status. Include all activity statuses and omit accounts without activity. Arrange the list by account number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number transactions partitioned by account id from newest to oldest by transaction date and transaction id. I will keep row number 1 as the latest event.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+    "learner_question": "If an account has multiple transactions on its latest transaction date, which one should be selected?",
+    "manager_reply": "Pick the transaction with the largest transaction number on that latest date, and omit accounts without transactions."
+  }
+]

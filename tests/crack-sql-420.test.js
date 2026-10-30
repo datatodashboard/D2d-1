@@ -5,7 +5,7 @@ import { validateScenariosData, resolveCanonicalScenarioId } from '../js/curricu
 import { isCompleted, sanitize, EMPTY, mergeProgress } from '../js/progress.js';
 
 describe('Crack SQL 420 Scenarios & Progress System Verification', () => {
-  const rawJson = fs.readFileSync('./data/Crack_SQL_420_Student_Business_Scenarios.json', 'utf8');
+  const rawJson = fs.readFileSync('./data/scenarios.json', 'utf8');
   const data = JSON.parse(rawJson);
 
   it('validates JSON loads exactly 420 canonical scenarios and 7 domains with 20 per domain/level', () => {

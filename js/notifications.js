@@ -217,23 +217,27 @@ export function renderNotificationsUI({ scenarios, state, user, currentUsername,
     listContainer.innerHTML = notifications.map(item => {
       const isUnread = !item.isRead && !item.isClaimed;
       let icon = '🔔';
-      let iconBg = '#eff6ff';
+      let iconBg = 'rgba(20, 184, 166, 0.18)';
+      let iconBorder = 'rgba(45, 212, 191, 0.35)';
       if (item.type === 'certificate') {
         icon = '🏆';
-        iconBg = '#fef3c7';
+        iconBg = 'rgba(212, 175, 55, 0.18)';
+        iconBorder = 'rgba(212, 175, 55, 0.42)';
       } else if (item.type === 'contest') {
         icon = '🚀';
-        iconBg = '#f0fdf4';
+        iconBg = 'rgba(16, 185, 129, 0.18)';
+        iconBorder = 'rgba(52, 211, 153, 0.38)';
       } else if (item.type === 'announcement') {
         icon = '📢';
-        iconBg = '#ede9fe';
+        iconBg = 'rgba(45, 212, 191, 0.16)';
+        iconBorder = 'rgba(45, 212, 191, 0.35)';
       }
 
       const formattedTime = formatNotificationTime(item.timestamp);
 
       return `
         <div class="notification-item ${isUnread ? 'unread' : 'read'}" id="notif-item-${escapeHtml(item.id)}">
-          <div class="notif-icon-box" style="background:${iconBg};">
+          <div class="notif-icon-box" style="background:${iconBg};border:1px solid ${iconBorder};">
             ${icon}
           </div>
           <div class="notif-content">

@@ -1,0 +1,602 @@
+[
+  {
+    "id": "CAP_BEG_001",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow the recorded details of holdings whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only holdings whose status is Active.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active holding’s full details, or just the number of Active holdings?",
+    "manager_reply": "The full recorded details of each Active holding, please."
+  },
+  {
+    "id": "CAP_BEG_002",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow the recorded details of holdings with market value above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter holdings where market value is greater than 50000.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a holding has a market value of exactly ₹50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only holdings with a market value above ₹50,000."
+  },
+  {
+    "id": "CAP_BEG_003",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of investors.\n\nShow the recorded details of investors whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep investors whose city is Chennai.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should I include only investors whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for investors located in Chennai."
+  },
+  {
+    "id": "CAP_BEG_004",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nFind the total number of holdings on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the holdings table.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should the total count include holdings in every status, or only active ones?",
+    "manager_reply": "Count every recorded holding once regardless of status, and show one single total."
+  },
+  {
+    "id": "CAP_BEG_005",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow all holdings with their recorded details, arranged by market value, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order holdings by market value from highest to lowest.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should all holdings be listed from the highest market value down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all holdings with the highest market value first."
+  },
+  {
+    "id": "CAP_BEG_006",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of securities.\n\nPrepare a list of the different category values found in the securities records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from securities.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If several securities belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several securities belong to it."
+  },
+  {
+    "id": "CAP_BEG_007",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow the recorded details of holdings with acquired date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter holdings with acquired date on or after 1 January 2026.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should holdings with an acquired date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later acquired date."
+  },
+  {
+    "id": "CAP_BEG_008",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of trades.\n\nShow the recorded details of trades whose trade type is Buy. Exclude other trade type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep trades whose trade type equals Buy.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Do you want only trades recorded as Buy, leaving out all other trade type values?",
+    "manager_reply": "Yes. Show the recorded details only for Buy trades."
+  },
+  {
+    "id": "CAP_BEG_009",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of investors.\n\nShow up to 5 investors with their recorded details, arranged by investor number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by investor id and limit the result to five rows.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 investors starting from the smallest investor number?",
+    "manager_reply": "Yes. Arrange investors from the smallest investor number first and show up to 5 records."
+  },
+  {
+    "id": "CAP_BEG_010",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow the recorded details of holdings with market value from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep holdings whose market value is between 25000 and 75000.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Are holdings with a market value of exactly ₹25,000 or ₹75,000 included in this range?",
+    "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any market value in between."
+  },
+  {
+    "id": "CAP_BEG_011",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of investors.\n\nShow the recorded details of investors whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep investors names starting with A.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should I match only investor names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only investors whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "CAP_BEG_012",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow the recorded details of holdings whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep holdings when status is either Active or Pending.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending holdings be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any holding marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "CAP_BEG_013",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of investors.\n\nShow the recorded details of investors whose investor group is Premium. Exclude other investor group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter investors to the Premium segment only.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should I include only investors in the Premium investor group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for investors marked as Premium."
+  },
+  {
+    "id": "CAP_BEG_014",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of trades.\n\nShow the recorded details of trades with trade date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter trades to dates between January and June 2026.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should trades dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all trades recorded between them."
+  },
+  {
+    "id": "CAP_BEG_015",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nFind the average market value across all holdings. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average market value across all holdings.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should the average market value cover holdings of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing market value values, and return one overall average."
+  },
+  {
+    "id": "CAP_BEG_016",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of trades.\n\nFind the largest trade amount across all trades. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should I look across all trade statuses to find the single largest trade amount?",
+    "manager_reply": "Yes. Check all recorded trades and return the single highest trade amount."
+  },
+  {
+    "id": "CAP_BEG_017",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager wants to understand where the registered investors live.\n\nFind how many different cities are recorded for these investors. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in investors.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If several investors live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "CAP_BEG_018",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of trades.\n\nShow the recorded details of trades whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep trades whose status is Completed.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed trades be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for trades whose status is Completed."
+  },
+  {
+    "id": "CAP_BEG_019",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager wants to organize holdings into three review groups.\n\nShow each holding number, market value and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on market value with 100000 and 50000 boundaries.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Which group should a holding with a market value of exactly ₹100,000 or ₹50,000 be placed in?",
+    "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000 or missing."
+  },
+  {
+    "id": "CAP_BEG_020",
+    "domain": "Capital Markets",
+    "level": "Beginner",
+    "business_scenario": "An investment service manager is preparing a review of holdings.\n\nShow the recorded details of holdings marked Active with a market value of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and market value of at least 50000.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Does a holding marked Active with a market value of exactly ₹50,000 qualify?",
+    "manager_reply": "Yes. Include Active holdings whose market value is ₹50,000 or higher."
+  },
+  {
+    "id": "CAP_INT_001",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to see related records clearly. The team has records of investors, holdings and trades.\n\nShow the investor name alongside each of their holdings, including the holding number, status and market value. Include all statuses. Show a separate entry for each holding, arranged by investor number and then holding number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors to holdings using investor id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a investor has multiple holdings, should each holding appear as a separate entry?",
+    "manager_reply": "Yes. Show each holding separately across all statuses, ordered by investor number and holding number."
+  },
+  {
+    "id": "CAP_INT_002",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to check which records need attention. The team has records of investors, holdings and trades.\n\nFor each entry in the securities directory, show its name and the number of linked holdings. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join securities to holdings by security id. I will group each securities item and count matching holdings.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If an item in securities has no linked holdings, should it still appear in the count?",
+    "manager_reply": "Yes. Include every securities entry and show zero when it has no linked holdings."
+  },
+  {
+    "id": "CAP_INT_003",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to compare recorded totals. The team has records of investors, holdings and trades.\n\nFind holdings with no trades recorded at all. Show their holding numbers. Any recorded trade disqualifies a holding, regardless of its status or date. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join trades to holdings on holding id and keep holdings with a null trade id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed trade still count as activity that disqualifies the holding?",
+    "manager_reply": "Yes. Keep only holdings that have no recorded trades in any status."
+  },
+  {
+    "id": "CAP_INT_004",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to organize a review list. The team has records of investors, holdings and trades.\n\nFor every holding, show its number and the total trade amount across its trades. Show zero when no value is available. Include all trade types and statuses and use the values as recorded. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join holdings to trades using holding id. I will group by holding id and sum event amounts.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "What total should appear for a holding that has no recorded trades?",
+    "manager_reply": "Include every holding and show zero as its total when no trades exist."
+  },
+  {
+    "id": "CAP_INT_005",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to compare activity amounts. The team has records of investors, holdings and trades.\n\nAdd the trade amount across the trades linked to each holding. Show the holding number and total only when above 20,000; exclude exactly 20,000. Include all trade types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join holdings and trades and group by holding id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a holding’s combined trade amount is exactly ₹20,000, should it be included?",
+    "manager_reply": "No. Show only holdings whose total trade amount is strictly above ₹20,000, largest total first."
+  },
+  {
+    "id": "CAP_INT_006",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to prepare a progress summary. The team has records of investors, holdings and trades.\n\nFor each group recorded in the investors directory, show the group label and the number of linked holdings, including every status. Count each holding once. Show zero for a represented group with no holdings. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link holdings to investors by investor id. I will group by segment and count the matching holdings.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should investor segments with no linked holdings still show a count of zero?",
+    "manager_reply": "Yes. Include every represented investor segment and show zero if it has no linked holdings."
+  },
+  {
+    "id": "CAP_INT_007",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to review the largest values. The team has records of investors, holdings and trades.\n\nFor each securities category with linked holdings, show the category and average market value. Give each holding equal weight and include all statuses. Leave out categories with no linked holdings. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join securities and holdings by security id. I will group by category and average market value.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should securities categories that have no linked holdings be left out?",
+    "manager_reply": "Yes. Include only categories that have linked holdings when calculating the average market value."
+  },
+  {
+    "id": "CAP_INT_008",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to understand the contribution of each record. The team has records of investors, holdings and trades.\n\nShow each investor name alongside their holding number, the name of its linked securities entry, and the holding status. Include all statuses and keep each holding separate. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors, holdings and securities through investor id and security id to show investor name, security name, and status.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the holding status or the securities status?",
+    "manager_reply": "Show the holding status alongside the investor name, holding number, and securities name."
+  },
+  {
+    "id": "CAP_INT_009",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to compare values within related groups. The team has records of investors, holdings and trades.\n\nFor each investor with at least one holding, add the market value across their holdings. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every holding status and omit investors without holdings.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors and holdings and sum market value for each investors.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If two investors have the same name, should their market value totals be kept separate?",
+    "manager_reply": "Yes. Keep each investor separate by their investor number, and omit investors without holdings."
+  },
+  {
+    "id": "CAP_INT_010",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to compare the recorded values. The team has records of investors, holdings and trades.\n\nFind holdings whose market value is above the average market value of all recorded holdings. Include every status when calculating the average. Show the holding number and market value, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each market value in holdings with the overall average from a subquery.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should holdings of all statuses be included when computing the overall average market value?",
+    "manager_reply": "Yes, use all holdings for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "CAP_INT_011",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to review the sequence of activity. The team has records of investors, holdings and trades.\n\nShow each trade number, date, type and trade amount, together with the status of the holding it belongs to. Use the holding's status, which may differ from the trade's status. Include every trade and arrange by trade number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join trades to holdings using the parent key.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each trade be the parent holding’s status?",
+    "manager_reply": "Yes. Display each trade’s details together with the status of its parent holding."
+  },
+  {
+    "id": "CAP_INT_012",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to prepare a status report. The team has records of investors, holdings and trades.\n\nFor every holding, show its number and two separate totals of trade amount: one for trades marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no trades exist in a status. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join holdings and trades and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "How should Pending trades or holdings with no trades be reflected in the two totals?",
+    "manager_reply": "Pending trades add to neither total, and holdings without matching trades should show zero."
+  },
+  {
+    "id": "CAP_INT_013",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to compare results across groups. The team has records of investors, holdings and trades.\n\nCount the trades recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded trades need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from trade date, group trades and count each month.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include trades of every type and status?",
+    "manager_reply": "Yes. Count all trades in each calendar month and list the months in date order."
+  },
+  {
+    "id": "CAP_INT_014",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to check the recorded history. The team has records of investors, holdings and trades.\n\nShow the number and name of each registered investor who has no holdings at all. If even one holding exists, exclude that investor, regardless of status. Arrange by investor number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join holdings to investors on investor id and keep investors with no holdings key.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a investor only has a Closed or Pending holding, should they still be excluded?",
+    "manager_reply": "Yes. Show only investors who have no linked holdings at all."
+  },
+  {
+    "id": "CAP_INT_015",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to review how activity is distributed. The team has records of investors, holdings and trades.\n\nShow the number and name of entries in the securities directory that have no linked holdings. A linked holding in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join holdings to securities on security id and keep securities with no matching holdings.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending holding count as using a security entry?",
+    "manager_reply": "Yes. Show only securities entries that have zero linked holdings across all statuses."
+  },
+  {
+    "id": "CAP_INT_016",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to prepare a summary for each group. The team has records of investors, holdings and trades.\n\nFor each investor with holdings, find the earliest recorded acquisition date among them. Show the investor number, name and earliest date, arranged by investor number. Include all statuses; omit investors without holdings.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors and holdings, group by investor id and take the minimum acquired date.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should holdings of all statuses be considered when finding each investor’s earliest acquired date?",
+    "manager_reply": "Yes. Check all holding statuses for each investor, and omit investors who have no holdings."
+  },
+  {
+    "id": "CAP_INT_017",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to identify records needing a closer look. The team has records of investors, holdings and trades.\n\nFor every holding, show its number and most recent recorded trade date. Include all trade statuses. Leave the date empty when no dated activity is available. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join trades to holdings, group by holding id and take the maximum trade date.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should holdings with no recorded trades still be listed?",
+    "manager_reply": "Yes. Include every holding and leave its latest trade date empty when no trades exist."
+  },
+  {
+    "id": "CAP_INT_018",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to review the people represented in the records. The team has records of investors, holdings and trades.\n\nFind investors who have at least one trade marked Completed through any of their holdings. Show each qualifying investor's number and name once, even if several trades qualify. Arrange by investor number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors, holdings and trades, keep Completed events and remove duplicate investors.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a investor has multiple Completed trades, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying investor’s number and name only once."
+  },
+  {
+    "id": "CAP_INT_019",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to compare activity across categories. The team has records of investors, holdings and trades.\n\nFor each securities category with trades linked through its holdings, show the average trade amount. Give every trade equal weight. Include all trade types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join securities, holdings and trades through their keys. I will group by category and average event amount.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded trades be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have trades, averaging across all trade statuses."
+  },
+  {
+    "id": "CAP_INT_020",
+    "domain": "Capital Markets",
+    "level": "Intermediate",
+    "business_scenario": "An investment service manager wants to prepare an up-to-date review. The team has records of investors, holdings and trades.\n\nCount holdings for each combination of investor group and holding status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors and holdings and group counts by segment and status.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should combinations of investor segment and holding status with zero holdings be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "CAP_EXP_001",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to see related records clearly. The team has records of investors, holdings and trades.\n\nFor each investor with trades, add the trade amount across all their holdings. Show the investor number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller investor number first. Keep people with the same name separate and omit those without activity. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors, holdings and trades and total event amounts per investors. I will rank the totals from highest to lowest.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If two investors tie on total trade amount, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied investors by smaller investor number."
+  },
+  {
+    "id": "CAP_EXP_002",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to check which records need attention. The team has records of investors, holdings and trades.\n\nFind holdings whose most recent trade date is before 1 January 2026, or that have no recorded trade date. Show the holding number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join trades to holdings using holding id so holdings without activity remain. I will group each holdings by holding id and use HAVING on its latest trade date.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a holding’s latest trade date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only holdings whose latest trade date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "CAP_EXP_003",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to compare recorded totals. The team has records of investors, holdings and trades.\n\nAdd the market value across each investor's holdings. Find the average of these person-level totals, giving each investor equal weight and excluding investors without holdings. Show the investor number and total only when above this average, largest totals first. Exclude equal totals and include all holding statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total market value by investor id in holdings. I will keep investors totals above the average total.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should investors without any holdings be left out when calculating the average investor total?",
+    "manager_reply": "Yes. Average across investors who have holdings, and return those strictly above that average."
+  },
+  {
+    "id": "CAP_EXP_004",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to organize a review list. The team has records of investors, holdings and trades.\n\nShow each holding number, market value and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify holdings using CASE with 100000 and 50000 market value boundaries.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+    "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
+  },
+  {
+    "id": "CAP_EXP_005",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to compare activity amounts. The team has records of investors, holdings and trades.\n\nFor each holding and calendar month with trades, add the trade amount. Show the holding number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by holding number and then month. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in trades by holding id and month in a CTE. I will use LAG partitioned by holding id and ordered by event month.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a holding has no trades in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that holding, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "CAP_EXP_006",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to prepare a progress summary. The team has records of investors, holdings and trades.\n\nFor each holding, follow its trades in date order, using the smaller trade number first when dates match. Beside each trade, show the total trade amount accumulated so far, including that trade. Show the holding number, trade number, date, value and running total. Arrange by holding number and that activity sequence. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in trades partitioned by holding id and ordered by trade date and trade id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "When two trades for the same holding share the same trade date, which one comes first in the running total?",
+    "manager_reply": "Order same-day trades by the smaller trade number first, and include the current trade in the running total."
+  },
+  {
+    "id": "CAP_EXP_007",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to review the largest values. The team has records of investors, holdings and trades.\n\nFor each holding with trades, select up to two with the largest trade amount. When values tie, choose the smaller trade number first. Show the trade number, holding number and value. If only one exists, show it. Arrange by holding number, then selected value highest first. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each holding id in trades by descending amount. I will keep row numbers 1 and 2 for every holding id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "What if a holding has only one trade, or a tie for the second-largest trade amount?",
+    "manager_reply": "Return the single trade if only one exists, and break any amount ties by choosing the smaller trade number first."
+  },
+  {
+    "id": "CAP_EXP_008",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to understand the contribution of each record. The team has records of investors, holdings and trades.\n\nFor every holding, total the trade amount from its trades, using zero if no value is available. Show the holding number, total and its percentage of the combined total across all holdings. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all trade types and statuses and use the values as recorded. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join holdings and trades to total amounts for each holdings in a CTE. I will divide each holdings total by the windowed grand total.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should holdings with zero trades be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each holding’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "CAP_EXP_009",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to compare values within related groups. The team has records of investors, holdings and trades.\n\nWithin each investor's holdings, rank the market value highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the investor number, holding number, market value and rank. Arrange by investor number, rank and then holding number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank holdings within each investor id by descending market value.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "When two holdings for the same investor have equal market value, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each investor, and order ties by holding number."
+  },
+  {
+    "id": "CAP_EXP_010",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to compare the recorded values. The team has records of investors, holdings and trades.\n\nFor each holding, follow trades by date and then by trade number when dates match. Show its number, each trade number, date, trade amount, and the previous trade's value for that same holding. Leave the previous value empty for the first trade. Arrange by holding number and that sequence. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in trades partitioned by holding id ordered by trade date and trade id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first trade of a holding?",
+    "manager_reply": "Leave the previous amount empty for each holding’s first trade, ordering same-day activity by trade number."
+  },
+  {
+    "id": "CAP_EXP_011",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to review the sequence of activity. The team has records of investors, holdings and trades.\n\nFollow each holding's trades by date, using the smaller trade number first when dates match. At each step, average the current trade amount and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the holding number, trade number, date, value and average. Arrange by holding number and that sequence. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in trades partitioned by holding id ordered by trade date and trade id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "For the first two trades of a holding, should the moving average use only the trades recorded so far?",
+    "manager_reply": "Yes. Average the current trade with up to two immediately preceding trades available for that holding."
+  },
+  {
+    "id": "CAP_EXP_012",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to prepare a status report. The team has records of investors, holdings and trades.\n\nShow the number and name of each investor who has at least one holding and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the investor. Exclude investors with no holdings. Arrange by investor number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each investors has at least one holdings. I will use NOT EXISTS to exclude investors with a non-Active holdings.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should investors with no holdings at all be excluded even though they have no non-Active holdings?",
+    "manager_reply": "Yes. A investor must have at least one holding, and every one of their holdings must be Active."
+  },
+  {
+    "id": "CAP_EXP_013",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to compare results across groups. The team has records of investors, holdings and trades.\n\nFor each holding, compare its market value with the average market value of holdings sharing its status. Show its number, status and market value only when above that average. Include the holding itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then market value, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each holdings with the average market value for its own status.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should each holding be compared only against the average market value of holdings with the same status?",
+    "manager_reply": "Yes. Compare each holding to the average market value of its own status group, excluding exact ties."
+  },
+  {
+    "id": "CAP_EXP_014",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to check the recorded history. The team has records of investors, holdings and trades.\n\nFor every holding with trades, show its number, earliest trade date, latest trade date and elapsed calendar days between them. The same first and last date gives zero days. Omit holdings without trades. Include all activity statuses. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join holdings and trades, group by holding id and take minimum and maximum trade date. I will subtract the first date from the last date to get active days.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a holding’s earliest and latest trade date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit holdings that have no trades."
+  },
+  {
+    "id": "CAP_EXP_015",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to review how activity is distributed. The team has records of investors, holdings and trades.\n\nFor every trade, show its number, linked holding number, trade amount and percentage contribution to that holding's total trade amount. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by holding number and then trade number. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each trades amount by the total amount within its holding id partition.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should each trade’s percentage be measured against its parent holding’s total rather than all holdings?",
+    "manager_reply": "Yes. Divide each trade amount by that holding’s total trade amount and round to two decimal places."
+  },
+  {
+    "id": "CAP_EXP_016",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to prepare a summary for each group. The team has records of investors, holdings and trades.\n\nAdd the market value across each investor's holdings, including all statuses. Within each investor group, select the one with the largest total. Break ties by choosing the smaller investor number. Show their number, name, group and total. Exclude investors without holdings, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join investors and holdings to total market value for every investors and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If two investors in the same segment tie for the highest total market value, which one should I return?",
+    "manager_reply": "Select the tied investor with the smaller investor number, and exclude investors without holdings."
+  },
+  {
+    "id": "CAP_EXP_017",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to identify records needing a closer look. The team has records of investors, holdings and trades.\n\nFind trades whose trade amount is above the average for all trades belonging to the same holding. Include the current trade when calculating that average. Show the trade number, holding number and value. Exclude values equal to the average. Arrange by holding number and then value highest first. Include all trade types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each trades amount with the average amount for its parent holding id.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should each trade be compared with the average amount for its own parent holding?",
+    "manager_reply": "Yes. Include only trades whose amount is strictly above the average for their parent holding."
+  },
+  {
+    "id": "CAP_EXP_018",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to review the people represented in the records. The team has records of investors, holdings and trades.\n\nCount the holdings belonging to every registered investor, including zero for those with none. Average those counts, giving each investor equal weight. Show the number, name and count for investors above that average. Include all holding statuses. Sort by count highest first, using the smaller investor number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join investors and holdings and count holdings for every investors in a CTE. I will keep investors counts above the average master count.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should investors with zero holdings be included when calculating the overall average holding count?",
+    "manager_reply": "Yes. Include zero-count investors in the average calculation, then list investors strictly above that average."
+  },
+  {
+    "id": "CAP_EXP_019",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to compare activity across categories. The team has records of investors, holdings and trades.\n\nFor every holding, show its number and separate totals of trade amount for trades marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no trades. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join holdings and trades to conditionally sum Completed, Pending and Failed event amounts per holdings.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "Should every holding display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every holding, using zero whenever no matching trades exist."
+  },
+  {
+    "id": "CAP_EXP_020",
+    "domain": "Capital Markets",
+    "level": "Expert",
+    "business_scenario": "An investment service manager wants to prepare an up-to-date review. The team has records of investors, holdings and trades.\n\nFor each holding with trades, select the one with the latest date. If several share that date, select the largest trade number. Show its trade number, holding number, date, type, trade amount and status. Include all activity statuses and omit holdings without activity. Arrange the list by holding number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number trades partitioned by holding id from newest to oldest by trade date and trade id. I will keep row number 1 as the latest event.",
+    "schema": "investors(investor_id PK, investor_name, city, segment, joined_date); securities(security_id PK, security_name, category, status, base_value); holdings(holding_id PK, investor_id FK, security_id FK, acquired_date, status, market_value); trades(trade_id PK, holding_id FK, trade_date, trade_type, quantity, amount, status)",
+    "learner_question": "If a holding has multiple trades on its latest trade date, which one should be selected?",
+    "manager_reply": "Pick the trade with the largest trade number on that latest date, and omit holdings without trades."
+  }
+]

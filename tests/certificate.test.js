@@ -233,7 +233,7 @@ describe('Crack SQL Certificate of Completion System', () => {
 
     // 8. Completion statement
     assert.ok(certSvg.includes('The learner has successfully completed 20 SQL scenarios'), 'Must include scenarios statement');
-    assert.ok(certSvg.includes('and demonstrated the required SQL thinking skills for this level.'), 'Must include thinking statement');
+    assert.ok(certSvg.includes('and verified the required SQL thinking skills for this level.'), 'Must include thinking statement');
 
     // 9. Completion date: Completion Date & [COMPLETION DATE]
     assert.ok(certSvg.includes('Completion Date'), 'Must include Completion Date label');

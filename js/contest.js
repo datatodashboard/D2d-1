@@ -267,17 +267,17 @@ export function renderContestWaitingCard() {
 
   wrapper.style.display = 'block';
   wrapper.innerHTML = `
-    <div class="contest-invitation-card" style="border: 1px solid #bae6fd; background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);">
+    <div class="contest-invitation-card" style="border: 1.5px solid rgba(45, 212, 191, 0.38); background: linear-gradient(135deg, #0d1b33 0%, #132546 100%);">
       <div class="contest-card-header">
-        <div class="contest-tag" style="background:#dcfce7;color:#15803d;padding:4px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">
+        <div class="contest-tag" style="background:rgba(16, 185, 129, 0.18);color:#6ee7b7;border:1px solid rgba(52, 211, 153, 0.35);padding:4px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">
           <span>🏆 Contest Eligible</span>
         </div>
-        <div class="contest-fee-badge" style="background:#e0f2fe;color:#0284c7;font-weight:700;">18+ Solved</div>
+        <div class="contest-fee-badge" style="background:rgba(212, 175, 55, 0.18);color:#fbbf24;border:1px solid rgba(212, 175, 55, 0.4);font-weight:700;">18+ Solved</div>
       </div>
-      <h3 class="contest-card-title" style="font-size:1.05rem;margin-top:8px;line-height:1.4;">
+      <h3 class="contest-card-title" style="font-size:1.05rem;margin-top:8px;line-height:1.4;color:#f8fafc;">
         Congratulations! You have completed 18 SQL thinking challenges and are now eligible for Think and Crack SQL contests.
       </h3>
-      <p style="font-size:0.88rem;color:var(--muted);margin:8px 0 0;line-height:1.5;">
+      <p style="font-size:0.88rem;color:#cbd5e1;margin:8px 0 0;line-height:1.5;">
         You're contest eligible. The next contest will appear here when it is announced.
       </p>
     </div>
@@ -301,17 +301,17 @@ export function renderAdminNoContestCard() {
 
   wrapper.style.display = 'block';
   wrapper.innerHTML = `
-    <div class="contest-invitation-card" style="border: 1px solid #cbd5e1; background: #f8fafc;">
+    <div class="contest-invitation-card" style="border: 1.5px solid rgba(212, 175, 55, 0.38); background: linear-gradient(135deg, #0d1b33 0%, #132546 100%);">
       <div class="contest-card-header">
-        <div class="contest-tag" style="background:#e2e8f0;color:#334155;padding:4px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">
+        <div class="contest-tag" style="background:rgba(20, 184, 166, 0.18);color:#5eead4;border:1px solid rgba(45, 212, 191, 0.35);padding:4px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">
           <span>🛠️ Contest Management</span>
         </div>
-        <div class="contest-fee-badge" style="background:#f1f5f9;color:#64748b;">Admin Mode</div>
+        <div class="contest-fee-badge" style="background:rgba(212, 175, 55, 0.18);color:#fbbf24;border:1px solid rgba(212, 175, 55, 0.4);">Admin Mode</div>
       </div>
-      <h3 class="contest-card-title" style="font-size:1.05rem;margin-top:8px;line-height:1.4;">
+      <h3 class="contest-card-title" style="font-size:1.05rem;margin-top:8px;line-height:1.4;color:#f8fafc;">
         No contest is currently published for participation.
       </h3>
-      <p style="font-size:0.88rem;color:var(--muted);margin:8px 0 12px;line-height:1.5;">
+      <p style="font-size:0.88rem;color:#cbd5e1;margin:8px 0 12px;line-height:1.5;">
         As an administrator, you can create, publish, and manage contests from the Admin Portal.
       </p>
       <button class="action secondary sm" onclick="window.openAdminPortal ? window.openAdminPortal() : (window.location.href='admin.html')" style="font-weight:700;">
@@ -375,27 +375,27 @@ export function renderContestCard() {
     : (Number(currentContest.entry_fee) > 0 ? `₹${currentContest.entry_fee}` : 'FREE ENTRY');
 
   wrapper.innerHTML = `
-    <div class="contest-invitation-card" style="border: 1.5px solid #bfdbfe; background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%); border-radius: 16px; padding: 14px 16px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);">
+    <div class="contest-invitation-card" style="border: 1.5px solid rgba(212, 175, 55, 0.42); background: linear-gradient(135deg, #0d1b33 0%, #132546 100%); border-radius: 18px; padding: 16px 18px; box-shadow: 0 12px 30px rgba(2, 6, 23, 0.55);">
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span style="font-size: 16px;">🏆</span>
-          <span style="font-weight: 800; font-size: 13.5px; color: #1e40af;">
+          <span style="font-weight: 800; font-size: 13.5px; color: #5eead4;">
             ${activeIsAdmin ? 'Admin Contest Mode' : 'Crack SQL Contest'}
           </span>
           <span class="${badgeClass}" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;">${badgeText}</span>
         </div>
-        <div style="font-size: 12px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 3px 10px; border-radius: 999px;">${feeDisplay}</div>
+        <div style="font-size: 12px; font-weight: 800; color: #fbbf24; background: rgba(212, 175, 55, 0.18); border: 1px solid rgba(212, 175, 55, 0.4); padding: 3px 10px; border-radius: 999px;">${feeDisplay}</div>
       </div>
 
-      <div style="font-size: 14.5px; font-weight: 800; color: var(--ink); margin-bottom: 6px; line-height: 1.35;">${escapeHtml(currentContest.title)}</div>
+      <div style="font-size: 15px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; line-height: 1.35;">${escapeHtml(currentContest.title)}</div>
       
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; border-top: 1px solid #dbeafe; padding-top: 10px;">
-        <div style="font-size: 12px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap;">
-          <span>🥇 1st: <strong>${escapeHtml(currentContest.first_prize || '₹1,000')}</strong></span>
-          <span>🥈 2nd: <strong>${escapeHtml(currentContest.second_prize || '₹500')}</strong></span>
-          <span>🥉 3rd: <strong>${escapeHtml(currentContest.third_prize || '₹250')}</strong></span>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; border-top: 1px solid rgba(148, 163, 184, 0.2); padding-top: 10px;">
+        <div style="font-size: 12px; color: #cbd5e1; display: flex; gap: 10px; flex-wrap: wrap;">
+          <span>🥇 1st: <strong style="color:#fbbf24;">${escapeHtml(currentContest.first_prize || '₹1,000')}</strong></span>
+          <span>🥈 2nd: <strong style="color:#fbbf24;">${escapeHtml(currentContest.second_prize || '₹500')}</strong></span>
+          <span>🥉 3rd: <strong style="color:#fbbf24;">${escapeHtml(currentContest.third_prize || '₹250')}</strong></span>
         </div>
-        <button id="contestJoinBtn" class="action primary sm" style="padding: 7px 16px; font-weight: 800; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+        <button id="contestJoinBtn" class="action primary sm" style="padding: 8px 16px; font-weight: 800; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
           <span>${btnIcon}</span>
           <span>${btnLabel}</span>
         </button>
@@ -765,15 +765,15 @@ function renderModalContent(stage) {
           </div>
 
           ${isFee ? `
-            <div class="contest-section-block" style="text-align: center; padding: 20px 16px;">
-              <div style="font-size: 1.15rem; font-weight: 800; color: var(--ink); margin-bottom: 4px;">Premium Unlock</div>
-              <div style="font-size: 2.2rem; font-weight: 900; color: #2563eb; margin-bottom: 18px;">₹49</div>
+            <div class="contest-section-block" style="text-align: center; padding: 20px 16px; background: linear-gradient(180deg, #fffdf9 0%, #faf6ee 100%); border: 1.5px solid #d4af37; border-radius: 14px;">
+              <div style="font-size: 1.05rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Premium Unlock</div>
+              <div style="font-size: 2.2rem; font-weight: 900; color: #0f172a; margin-bottom: 18px;">₹49</div>
 
               <button id="btnPayContest" class="action primary" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;font-size:16px;font-weight:800;border-radius:10px;cursor:pointer;">
                 <span>Pay ₹49</span>
               </button>
 
-              <div id="payOrderError" style="display:none;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;padding:10px 14px;border-radius:8px;font-size:0.88rem;margin-top:12px;font-weight:600;text-align:left;"></div>
+              <div id="payOrderError" style="display:none;color:#991b1b;background:#fef2f2;border:1px solid #fecaca;padding:10px 14px;border-radius:8px;font-size:0.88rem;margin-top:12px;font-weight:600;text-align:left;"></div>
               <div id="paymentNotice" class="alert-box" style="margin-top:14px;${isPending ? '' : 'display:none;'}">
                 ⏳ Payment verification submitted. Waiting for verification.
               </div>

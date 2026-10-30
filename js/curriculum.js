@@ -57,7 +57,7 @@ export function getEffectiveScenario(scenario, userId = 'guest_user', state = nu
   if (tables.length === 0 && schemaText) {
     tables = schemaText.split(';').map(t => t.trim().split('(')[0].trim()).filter(Boolean);
   }
-  return {
+  const effective = {
     ...scenario,
     canonicalId: scenario.id,
     question,
@@ -68,6 +68,13 @@ export function getEffectiveScenario(scenario, userId = 'guest_user', state = nu
     requiredTables: scenario.requiredTables || tables,
     relevantColumns: scenario.relevantColumns || []
   };
+  if (typeof scenario.learner_question === 'string') {
+    effective.learner_question = scenario.learner_question;
+  }
+  if (typeof scenario.manager_reply === 'string') {
+    effective.manager_reply = scenario.manager_reply;
+  }
+  return effective;
 }
 
 /**

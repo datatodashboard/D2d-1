@@ -117,6 +117,20 @@ function extractRelevantColumns(sqlStr, requiredTables, schemaText) {
   return [...resolved];
 }
 
+let existingDialoguesById = new Map();
+try {
+  const existingRaw = JSON.parse(fs.readFileSync(new URL('../data/scenarios.json', import.meta.url), 'utf8'));
+  const existingList = Array.isArray(existingRaw) ? existingRaw : (existingRaw.scenarios || []);
+  for (const item of existingList) {
+    if (item && item.id && typeof item.learner_question === 'string' && typeof item.manager_reply === 'string') {
+      existingDialoguesById.set(item.id, {
+        learner_question: item.learner_question,
+        manager_reply: item.manager_reply
+      });
+    }
+  }
+} catch (_) {}
+
 function makeScenario(d,level,index,spec,schemaText) {
   const code={Beginner:'BEG',Intermediate:'INT',Expert:'EXP'}[level];
   const id=`${d.prefix}_${code}_${String(index).padStart(3,'0')}`;
@@ -173,6 +187,10 @@ function makeScenario(d,level,index,spec,schemaText) {
     });
   }
 
+  const savedDialogue = existingDialoguesById.get(id);
+  const learner_question = spec.learner_question || savedDialogue?.learner_question || '';
+  const manager_reply = spec.manager_reply || savedDialogue?.manager_reply || '';
+
   return {
     id,
     domain: d.domain,
@@ -189,6 +207,7 @@ function makeScenario(d,level,index,spec,schemaText) {
       'Describe the filter or transformation logic'
     ],
     question: spec.question,
+    ...(learner_question && manager_reply ? { learner_question, manager_reply } : {}),
     pseudo: steps.map(x=>x.example).join(' '),
     sql: spec.sql.trim(),
     schemaText,

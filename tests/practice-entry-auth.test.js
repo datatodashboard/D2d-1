@@ -61,7 +61,7 @@ describe('Crack SQL – Move Google Login to Practice Entry Verification Suite',
 
     // Verify selecting Domain and Level updates selection without opening login until Start Practice is clicked
     assert.match(appJs, /async function startPracticeSession\(\)/);
-    assert.match(appJs, /if\s*\(!user\)\s*\{\s*requestGoogleLogin\(\{\s*destination:\s*'practice',\s*domain:\s*selectedDomain,\s*level:\s*selectedLevel\s*\}\);\s*return;\s*\}/);
+    assert.match(appJs, /if\s*\(!user(?:\s*&&\s*!isDemoMode)?\)\s*\{\s*requestGoogleLogin\(\{\s*destination:\s*'practice',\s*domain:\s*selectedDomain,\s*level:\s*selectedLevel\s*\}\);\s*return;\s*\}/);
   });
 
   test('4 & 5. Complete login → Saved Supabase progress loaded first → Banking Beginner Practice opens at pending question', () => {
@@ -123,14 +123,14 @@ describe('Crack SQL – Move Google Login to Practice Entry Verification Suite',
   });
 
   test('8 & 9. Unauthenticated users cannot submit Thinking answers or save guest progress; existing learner data, scores, certificates, and payments are protected', () => {
-    // 1. persist() and changeEntry() block unauthenticated writes
-    assert.match(appJs, /function persist\([^)]*\)\s*\{\s*if\s*\(!user\s*\|\|\s*!user\.id\)\s*\{\s*updateProgress\(\);\s*return;\s*\}/);
-    assert.match(appJs, /function changeEntry\([^)]*\)\s*\{\s*if\s*\(!current\s*\|\|\s*!user\s*\|\|\s*!user\.id\)\s*return;/);
+    // 1. persist() and changeEntry() block unauthenticated writes outside Demo Mode
+    assert.match(appJs, /function persist\([^)]*\)\s*\{[\s\S]*?if\s*\(!user\s*\|\|\s*!user\.id\)\s*\{\s*updateProgress\(\);\s*return;\s*\}/);
+    assert.match(appJs, /function changeEntry\([^)]*\)\s*\{[\s\S]*?if\s*\(!current\s*\|\|\s*!user\s*\|\|\s*!user\.id\)\s*return;/);
 
-    // 2. evaluatePlan() and evaluateSql() require authenticated user
+    // 2. evaluatePlan() and evaluateSql() require authenticated user (when not in Demo Mode)
     const evalPlanMatch = appJs.match(/function evaluatePlan\(\)\s*\{([\s\S]*?)\n\}/);
     assert.ok(evalPlanMatch);
-    assert.ok(evalPlanMatch[1].includes('if (!user || !user.id)'));
+    assert.ok(evalPlanMatch[1].includes('if (!isDemoMode && (!user || !user.id))') || evalPlanMatch[1].includes('if (!user || !user.id)'));
     assert.ok(evalPlanMatch[1].includes('requestGoogleLogin'));
 
     // 3. Protected features (Progress, Profile, Certificates, Paywall) require login and record destination intent

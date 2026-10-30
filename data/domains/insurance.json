@@ -1,0 +1,602 @@
+[
+  {
+    "id": "INS_BEG_001",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow the recorded details of policies whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep only policies whose status is Active.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Do you need each Active policy’s full details, or just the number of Active policies?",
+    "manager_reply": "The full recorded details of each Active policy, please."
+  },
+  {
+    "id": "INS_BEG_002",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow the recorded details of policies with premium amount above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter policies where premium amount is greater than 50000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a policy has a premium amount of exactly ₹50,000, should I leave it out?",
+    "manager_reply": "Yes. Include only policies with a premium amount above ₹50,000."
+  },
+  {
+    "id": "INS_BEG_003",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of customers.\n\nShow the recorded details of customers whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep customers whose city is Chennai.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should I include only customers whose recorded city is Chennai, and leave out all other cities?",
+    "manager_reply": "Yes. Show the recorded details only for customers located in Chennai."
+  },
+  {
+    "id": "INS_BEG_004",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nFind the total number of policies on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count every row in the policies table.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should the total count include policies in every status, or only active ones?",
+    "manager_reply": "Count every recorded policy once regardless of status, and show one single total."
+  },
+  {
+    "id": "INS_BEG_005",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow all policies with their recorded details, arranged by premium amount, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order policies by premium amount from highest to lowest.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should all policies be listed from the highest premium amount down to the lowest?",
+    "manager_reply": "Yes. Show the full details of all policies with the highest premium amount first."
+  },
+  {
+    "id": "INS_BEG_006",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of insurance products.\n\nPrepare a list of the different category values found in the insurance products records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will return distinct category values from insurance products.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If several insurance products belong to the same category, should that category appear more than once?",
+    "manager_reply": "No. Show each category only once, even if several insurance products belong to it."
+  },
+  {
+    "id": "INS_BEG_007",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow the recorded details of policies with start date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter policies with start date on or after 1 January 2026.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should policies with a start date on 1 January 2026 itself be included?",
+    "manager_reply": "Yes. Include 1 January 2026 as well as any later start date."
+  },
+  {
+    "id": "INS_BEG_008",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of claims.\n\nShow the recorded details of claims whose claim type is Medical. Exclude other claim type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep claims whose claim type equals Medical.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Do you want only claims recorded as Medical, leaving out all other claim type values?",
+    "manager_reply": "Yes. Show the recorded details only for Medical claims."
+  },
+  {
+    "id": "INS_BEG_009",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of customers.\n\nShow up to 5 customers with their recorded details, arranged by customer number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will order by customer id and limit the result to five rows.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should I take the first 5 customers starting from the smallest customer number?",
+    "manager_reply": "Yes. Arrange customers from the smallest customer number first and show up to 5 records."
+  },
+  {
+    "id": "INS_BEG_010",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow the recorded details of policies with premium amount from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep policies whose premium amount is between 25000 and 75000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Are policies with a premium amount of exactly ₹25,000 or ₹75,000 included in this range?",
+    "manager_reply": "Yes. Include both ₹25,000 and ₹75,000 as well as any premium amount in between."
+  },
+  {
+    "id": "INS_BEG_011",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of customers.\n\nShow the recorded details of customers whose recorded name is starting with the uppercase letter 'A'. Use the letter exactly as written, including its case.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a prefix match to keep customers names starting with A.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should I match only customer names that begin with the capital letter A?",
+    "manager_reply": "Yes. Include only customers whose recorded name starts with uppercase A."
+  },
+  {
+    "id": "INS_BEG_012",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow the recorded details of policies whose status is either Active or Pending. Include both groups and exclude other values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep policies when status is either Active or Pending.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should both Active and Pending policies be included while Closed ones are left out?",
+    "manager_reply": "Yes. Include any policy marked Active or Pending, and exclude other statuses."
+  },
+  {
+    "id": "INS_BEG_013",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of customers.\n\nShow the recorded details of customers whose customer group is Premium. Exclude other customer group values. Here, Premium is the group label recorded in the directory.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter customers to the Premium segment only.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should I include only customers in the Premium customer group and exclude other tiers?",
+    "manager_reply": "Yes. Show the recorded details only for customers marked as Premium."
+  },
+  {
+    "id": "INS_BEG_014",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of claims.\n\nShow the recorded details of claims with claim date from 1 January 2026 through 30 June 2026. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will filter claims to dates between January and June 2026.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should claims dated on 1 January 2026 and 30 June 2026 both be included?",
+    "manager_reply": "Yes. Include both boundary dates and all claims recorded between them."
+  },
+  {
+    "id": "INS_BEG_015",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nFind the average premium amount across all policies. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will calculate the average premium amount across all policies.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should the average premium amount cover policies of all statuses, and how should missing values be handled?",
+    "manager_reply": "Include all statuses, ignore missing premium amount values, and return one overall average."
+  },
+  {
+    "id": "INS_BEG_016",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of claims.\n\nFind the largest claim amount across all claims. Include all statuses. Ignore missing values; leave the answer empty if no value is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use MAX on amount to find the largest event value.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should I look across all claim statuses to find the single largest claim amount?",
+    "manager_reply": "Yes. Check all recorded claims and return the single highest claim amount."
+  },
+  {
+    "id": "INS_BEG_017",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager wants to understand where the registered customers live.\n\nFind how many different cities are recorded for these customers. Count each city once even if several people live there. Leave out missing city values. Show one total, using zero if no city is recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will count the distinct city values in customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If several customers live in the same city, should that city be counted only once?",
+    "manager_reply": "Yes. Count each distinct city once and ignore any missing city values."
+  },
+  {
+    "id": "INS_BEG_018",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of claims.\n\nShow the recorded details of claims whose status is Completed. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will keep claims whose status is Completed.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should Pending and Failed claims be excluded from this list?",
+    "manager_reply": "Yes. Show the recorded details only for claims whose status is Completed."
+  },
+  {
+    "id": "INS_BEG_019",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager wants to organize policies into three review groups.\n\nShow each policy number, premium amount and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use CASE on premium amount with 100000 and 50000 boundaries.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Which group should a policy with a premium amount of exactly ₹100,000 or ₹50,000 be placed in?",
+    "manager_reply": "Use High for ₹100,000 or more, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000 or missing."
+  },
+  {
+    "id": "INS_BEG_020",
+    "domain": "Insurance",
+    "level": "Beginner",
+    "business_scenario": "An insurance service manager is preparing a review of policies.\n\nShow the recorded details of policies marked Active with a premium amount of at least 50,000. Both conditions must be met. Include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will require Active status and premium amount of at least 50000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Does a policy marked Active with a premium amount of exactly ₹50,000 qualify?",
+    "manager_reply": "Yes. Include Active policies whose premium amount is ₹50,000 or higher."
+  },
+  {
+    "id": "INS_INT_001",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to see related records clearly. The team has records of customers, policies and claims.\n\nShow the customer name alongside each of their policies, including the policy number, status and premium amount. Include all statuses. Show a separate entry for each policy, arranged by customer number and then policy number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers to policies using customer id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a customer has multiple policies, should each policy appear as a separate entry?",
+    "manager_reply": "Yes. Show each policy separately across all statuses, ordered by customer number and policy number."
+  },
+  {
+    "id": "INS_INT_002",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to check which records need attention. The team has records of customers, policies and claims.\n\nFor each entry in the insurance products directory, show its name and the number of linked policies. Include entries with none and show zero for them. Keep different catalog numbers separate even when names match. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join insurance products to policies by product id. I will group each insurance products item and count matching policies.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If an item in insurance products has no linked policies, should it still appear in the count?",
+    "manager_reply": "Yes. Include every insurance products entry and show zero when it has no linked policies."
+  },
+  {
+    "id": "INS_INT_003",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to compare recorded totals. The team has records of customers, policies and claims.\n\nFind policies with no claims recorded at all. Show their policy numbers. Any recorded claim disqualifies a policy, regardless of its status or date. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join claims to policies on policy id and keep policies with a null claim id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Does a Pending or Failed claim still count as activity that disqualifies the policy?",
+    "manager_reply": "Yes. Keep only policies that have no recorded claims in any status."
+  },
+  {
+    "id": "INS_INT_004",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to organize a review list. The team has records of customers, policies and claims.\n\nFor every policy, show its number and the total claim amount across its claims. Show zero when no value is available. Include all claim types and statuses and use the values as recorded. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join policies to claims using policy id. I will group by policy id and sum event amounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "What total should appear for a policy that has no recorded claims?",
+    "manager_reply": "Include every policy and show zero as its total when no claims exist."
+  },
+  {
+    "id": "INS_INT_005",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to compare activity amounts. The team has records of customers, policies and claims.\n\nAdd the claim amount across the claims linked to each policy. Show the policy number and total only when above 20,000; exclude exactly 20,000. Include all claim types and statuses and use the values as recorded. Put the largest totals first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join policies and claims and group by policy id to sum event amounts. I will use HAVING to keep totals above 20000.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a policy’s combined claim amount is exactly ₹20,000, should it be included?",
+    "manager_reply": "No. Show only policies whose total claim amount is strictly above ₹20,000, largest total first."
+  },
+  {
+    "id": "INS_INT_006",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to prepare a progress summary. The team has records of customers, policies and claims.\n\nFor each group recorded in the customers directory, show the group label and the number of linked policies, including every status. Count each policy once. Show zero for a represented group with no policies. Arrange group labels alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will link policies to customers by customer id. I will group by segment and count the matching policies.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should customer segments with no linked policies still show a count of zero?",
+    "manager_reply": "Yes. Include every represented customer segment and show zero if it has no linked policies."
+  },
+  {
+    "id": "INS_INT_007",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to review the largest values. The team has records of customers, policies and claims.\n\nFor each insurance products category with linked policies, show the category and average premium amount. Give each policy equal weight and include all statuses. Leave out categories with no linked policies. Arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join insurance products and policies by product id. I will group by category and average premium amount.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should insurance products categories that have no linked policies be left out?",
+    "manager_reply": "Yes. Include only categories that have linked policies when calculating the average premium amount."
+  },
+  {
+    "id": "INS_INT_008",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to understand the contribution of each record. The team has records of customers, policies and claims.\n\nShow each customer name alongside their policy number, the name of its linked insurance products entry, and the policy status. Include all statuses and keep each policy separate. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, policies and insurance products through customer id and product id to show customer name, product name, and status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Which status should be shown—the policy status or the insurance products status?",
+    "manager_reply": "Show the policy status alongside the customer name, policy number, and insurance products name."
+  },
+  {
+    "id": "INS_INT_009",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to compare values within related groups. The team has records of customers, policies and claims.\n\nFor each customer with at least one policy, add the premium amount across their policies. Show their number, name and total, largest totals first. Keep people with the same name separate. Include every policy status and omit customers without policies.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and policies and sum premium amount for each customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If two customers have the same name, should their premium amount totals be kept separate?",
+    "manager_reply": "Yes. Keep each customer separate by their customer number, and omit customers without policies."
+  },
+  {
+    "id": "INS_INT_010",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to compare the recorded values. The team has records of customers, policies and claims.\n\nFind policies whose premium amount is above the average premium amount of all recorded policies. Include every status when calculating the average. Show the policy number and premium amount, highest first. Exclude values equal to the average.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each premium amount in policies with the overall average from a subquery.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should policies of all statuses be included when computing the overall average premium amount?",
+    "manager_reply": "Yes, use all policies for the overall average and return only those strictly above it."
+  },
+  {
+    "id": "INS_INT_011",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to review the sequence of activity. The team has records of customers, policies and claims.\n\nShow each claim number, date, type and claim amount, together with the status of the policy it belongs to. Use the policy's status, which may differ from the claim's status. Include every claim and arrange by claim number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join claims to policies using the parent key.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should the status shown beside each claim be the parent policy’s status?",
+    "manager_reply": "Yes. Display each claim’s details together with the status of its parent policy."
+  },
+  {
+    "id": "INS_INT_012",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to prepare a status report. The team has records of customers, policies and claims.\n\nFor every policy, show its number and two separate totals of claim amount: one for claims marked Completed and one for those marked Failed. Other statuses contribute to neither total. Show zero when no claims exist in a status. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join policies and claims and use CASE inside SUM for Completed and Failed event amounts.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "How should Pending claims or policies with no claims be reflected in the two totals?",
+    "manager_reply": "Pending claims add to neither total, and policies without matching claims should show zero."
+  },
+  {
+    "id": "INS_INT_013",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to compare results across groups. The team has records of customers, policies and claims.\n\nCount the claims recorded in each calendar month, including all types and statuses. Show each month and count in date order. Only months with recorded claims need to appear.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will derive the month from claim date, group claims and count each month.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should the monthly count include claims of every type and status?",
+    "manager_reply": "Yes. Count all claims in each calendar month and list the months in date order."
+  },
+  {
+    "id": "INS_INT_014",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to check the recorded history. The team has records of customers, policies and claims.\n\nShow the number and name of each registered customer who has no policies at all. If even one policy exists, exclude that customer, regardless of status. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join policies to customers on customer id and keep customers with no policies key.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a customer only has a Closed or Pending policy, should they still be excluded?",
+    "manager_reply": "Yes. Show only customers who have no linked policies at all."
+  },
+  {
+    "id": "INS_INT_015",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to review how activity is distributed. The team has records of customers, policies and claims.\n\nShow the number and name of entries in the insurance products directory that have no linked policies. A linked policy in any status means the entry has been used. Arrange by catalog number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join policies to insurance products on product id and keep insurance products with no matching policies.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Does a Closed or Pending policy count as using an insurance product entry?",
+    "manager_reply": "Yes. Show only insurance products entries that have zero linked policies across all statuses."
+  },
+  {
+    "id": "INS_INT_016",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to prepare a summary for each group. The team has records of customers, policies and claims.\n\nFor each customer with policies, find the earliest recorded policy start date among them. Show the customer number, name and earliest date, arranged by customer number. Include all statuses; omit customers without policies.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and policies, group by customer id and take the minimum start date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should policies of all statuses be considered when finding each customer’s earliest start date?",
+    "manager_reply": "Yes. Check all policy statuses for each customer, and omit customers who have no policies."
+  },
+  {
+    "id": "INS_INT_017",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to identify records needing a closer look. The team has records of customers, policies and claims.\n\nFor every policy, show its number and most recent recorded claim date. Include all claim statuses. Leave the date empty when no dated activity is available. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join claims to policies, group by policy id and take the maximum claim date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should policies with no recorded claims still be listed?",
+    "manager_reply": "Yes. Include every policy and leave its latest claim date empty when no claims exist."
+  },
+  {
+    "id": "INS_INT_018",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to review the people represented in the records. The team has records of customers, policies and claims.\n\nFind customers who have at least one claim marked Completed through any of their policies. Show each qualifying customer's number and name once, even if several claims qualify. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, policies and claims, keep Completed events and remove duplicate customers.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a customer has multiple Completed claims, should their name appear only once?",
+    "manager_reply": "Yes. Show each qualifying customer’s number and name only once."
+  },
+  {
+    "id": "INS_INT_019",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to compare activity across categories. The team has records of customers, policies and claims.\n\nFor each insurance products category with claims linked through its policies, show the average claim amount. Give every claim equal weight. Include all claim types and statuses and use the values as recorded. Omit categories without activity and arrange categories alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join insurance products, policies and claims through their keys. I will group by category and average event amount.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should categories without any recorded claims be omitted from the category averages?",
+    "manager_reply": "Yes. Include only categories that have claims, averaging across all claim statuses."
+  },
+  {
+    "id": "INS_INT_020",
+    "domain": "Insurance",
+    "level": "Intermediate",
+    "business_scenario": "An insurance service manager wants to prepare an up-to-date review. The team has records of customers, policies and claims.\n\nCount policies for each combination of customer group and policy status. Show the group, status and count, keeping different combinations separate. Include only combinations that occur. Arrange by group and then status alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and policies and group counts by segment and status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should combinations of customer segment and policy status with zero policies be left out?",
+    "manager_reply": "Yes. Show only segment and status combinations that actually occur in the records."
+  },
+  {
+    "id": "INS_EXP_001",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to see related records clearly. The team has records of customers, policies and claims.\n\nFor each customer with claims, add the claim amount across all their policies. Show the customer number, name, total and rank, largest total first. Equal totals share a rank and later ranks skip positions, for example 1, 2, 2, 4. Within a tied rank, show the smaller customer number first. Keep people with the same name separate and omit those without activity. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers, policies and claims and total event amounts per customers. I will rank the totals from highest to lowest.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If two customers tie on total claim amount, should the next rank skip a number?",
+    "manager_reply": "Yes, use standard competition ranking like 1, 2, 2, 4, and order tied customers by smaller customer number."
+  },
+  {
+    "id": "INS_EXP_002",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to check which records need attention. The team has records of customers, policies and claims.\n\nFind policies whose most recent claim date is before 1 January 2026, or that have no recorded claim date. Show the policy number and latest date, leaving it empty when unavailable. A latest date on 1 January does not qualify. Include all activity statuses. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join claims to policies using policy id so policies without activity remain. I will group each policies by policy id and use HAVING on its latest claim date.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a policy’s latest claim date is exactly 1 January 2026, does it qualify?",
+    "manager_reply": "No. Include only policies whose latest claim date is strictly before 1 January 2026 or missing altogether."
+  },
+  {
+    "id": "INS_EXP_003",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to compare recorded totals. The team has records of customers, policies and claims.\n\nAdd the premium amount across each customer's policies. Find the average of these person-level totals, giving each customer equal weight and excluding customers without policies. Show the customer number and total only when above this average, largest totals first. Exclude equal totals and include all policy statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a CTE to total premium amount by customer id in policies. I will keep customers totals above the average total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should customers without any policies be left out when calculating the average customer total?",
+    "manager_reply": "Yes. Average across customers who have policies, and return those strictly above that average."
+  },
+  {
+    "id": "INS_EXP_004",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to organize a review list. The team has records of customers, policies and claims.\n\nShow each policy number, premium amount and group. Use High for 100,000 or more, Medium for 50,000 up to but below 100,000, and Low for values below 50,000. Under the existing exercise rule, a missing value also falls into Low. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will classify policies using CASE with 100000 and 50000 premium amount boundaries.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "How should exact boundary values of ₹50,000 and ₹100,000 be classified into bands?",
+    "manager_reply": "Use High for ₹100,000 or above, Medium from ₹50,000 up to below ₹100,000, and Low for below ₹50,000."
+  },
+  {
+    "id": "INS_EXP_005",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to compare activity amounts. The team has records of customers, policies and claims.\n\nFor each policy and calendar month with claims, add the claim amount. Show the policy number, month, total and total for its previous month with recorded activity. Skip empty months: if February has none, compare March with January. Leave the previous total empty for the first available month. Arrange by policy number and then month. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will total event amounts in claims by policy id and month in a CTE. I will use LAG partitioned by policy id and ordered by event month.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a policy has no claims in a month, should the next active month compare with the last active month?",
+    "manager_reply": "Yes. Compare each active month with the most recent prior active month for that policy, leaving the first month’s prior total empty."
+  },
+  {
+    "id": "INS_EXP_006",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to prepare a progress summary. The team has records of customers, policies and claims.\n\nFor each policy, follow its claims in date order, using the smaller claim number first when dates match. Beside each claim, show the total claim amount accumulated so far, including that claim. Show the policy number, claim number, date, value and running total. Arrange by policy number and that activity sequence. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use a windowed SUM of amount in claims partitioned by policy id and ordered by claim date and claim id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "When two claims for the same policy share the same claim date, which one comes first in the running total?",
+    "manager_reply": "Order same-day claims by the smaller claim number first, and include the current claim in the running total."
+  },
+  {
+    "id": "INS_EXP_007",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to review the largest values. The team has records of customers, policies and claims.\n\nFor each policy with claims, select up to two with the largest claim amount. When values tie, choose the smaller claim number first. Show the claim number, policy number and value. If only one exists, show it. Arrange by policy number, then selected value highest first. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will assign row numbers within each policy id in claims by descending amount. I will keep row numbers 1 and 2 for every policy id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "What if a policy has only one claim, or a tie for the second-largest claim amount?",
+    "manager_reply": "Return the single claim if only one exists, and break any amount ties by choosing the smaller claim number first."
+  },
+  {
+    "id": "INS_EXP_008",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to understand the contribution of each record. The team has records of customers, policies and claims.\n\nFor every policy, total the claim amount from its claims, using zero if no value is available. Show the policy number, total and its percentage of the combined total across all policies. Round percentages to two decimal places; leave them empty if the combined total is zero. Include all claim types and statuses and use the values as recorded. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join policies and claims to total amounts for each policies in a CTE. I will divide each policies total by the windowed grand total.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should policies with zero claims be included, and how many decimal places should the share use?",
+    "manager_reply": "Yes, show zero for their total and round each policy’s percentage share of the grand total to two decimal places."
+  },
+  {
+    "id": "INS_EXP_009",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to compare values within related groups. The team has records of customers, policies and claims.\n\nWithin each customer's policies, rank the premium amount highest first. Equal values share a rank and the next different value gets the next number, for example 1, 2, 2, 3. Show the customer number, policy number, premium amount and rank. Arrange by customer number, rank and then policy number. Include all statuses.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will dense rank policies within each customer id by descending premium amount.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "When two policies for the same customer have equal premium amount, should the next rank continue without a gap?",
+    "manager_reply": "Yes. Use consecutive ranks like 1, 2, 2, 3 within each customer, and order ties by policy number."
+  },
+  {
+    "id": "INS_EXP_010",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to compare the recorded values. The team has records of customers, policies and claims.\n\nFor each policy, follow claims by date and then by claim number when dates match. Show its number, each claim number, date, claim amount, and the previous claim's value for that same policy. Leave the previous value empty for the first claim. Arrange by policy number and that sequence. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use LAG in claims partitioned by policy id ordered by claim date and claim id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "What should appear as the previous amount for the very first claim of a policy?",
+    "manager_reply": "Leave the previous amount empty for each policy’s first claim, ordering same-day activity by claim number."
+  },
+  {
+    "id": "INS_EXP_011",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to review the sequence of activity. The team has records of customers, policies and claims.\n\nFollow each policy's claims by date, using the smaller claim number first when dates match. At each step, average the current claim amount and the previous two recorded values in that sequence. For the first two steps, use only the activities available so far; missing values do not count toward the average. Show the policy number, claim number, date, value and average. Arrange by policy number and that sequence. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will average the current and two preceding amounts in claims partitioned by policy id ordered by claim date and claim id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "For the first two claims of a policy, should the moving average use only the claims recorded so far?",
+    "manager_reply": "Yes. Average the current claim with up to two immediately preceding claims available for that policy."
+  },
+  {
+    "id": "INS_EXP_012",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to prepare a status report. The team has records of customers, policies and claims.\n\nShow the number and name of each customer who has at least one policy and none marked with a status other than Active. Under the existing exercise rule, a missing status does not disqualify the customer. Exclude customers with no policies. Arrange by customer number.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will use EXISTS to require that each customers has at least one policies. I will use NOT EXISTS to exclude customers with a non-Active policies.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should customers with no policies at all be excluded even though they have no non-Active policies?",
+    "manager_reply": "Yes. A customer must have at least one policy, and every one of their policies must be Active."
+  },
+  {
+    "id": "INS_EXP_013",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to compare results across groups. The team has records of customers, policies and claims.\n\nFor each policy, compare its premium amount with the average premium amount of policies sharing its status. Show its number, status and premium amount only when above that average. Include the policy itself when calculating its group's average; exclude equal values. Arrange by status alphabetically and then premium amount, highest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each policies with the average premium amount for its own status.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should each policy be compared only against the average premium amount of policies with the same status?",
+    "manager_reply": "Yes. Compare each policy to the average premium amount of its own status group, excluding exact ties."
+  },
+  {
+    "id": "INS_EXP_014",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to check the recorded history. The team has records of customers, policies and claims.\n\nFor every policy with claims, show its number, earliest claim date, latest claim date and elapsed calendar days between them. The same first and last date gives zero days. Omit policies without claims. Include all activity statuses. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join policies and claims, group by policy id and take minimum and maximum claim date. I will subtract the first date from the last date to get active days.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a policy’s earliest and latest claim date are the same day, what should the elapsed days be?",
+    "manager_reply": "Show zero days when the first and last dates are identical, and omit policies that have no claims."
+  },
+  {
+    "id": "INS_EXP_015",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to review how activity is distributed. The team has records of customers, policies and claims.\n\nFor every claim, show its number, linked policy number, claim amount and percentage contribution to that policy's total claim amount. Round percentages to two decimal places; leave the percentage empty when the total is zero. Arrange by policy number and then claim number. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will divide each claims amount by the total amount within its policy id partition.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should each claim’s percentage be measured against its parent policy’s total rather than all policies?",
+    "manager_reply": "Yes. Divide each claim amount by that policy’s total claim amount and round to two decimal places."
+  },
+  {
+    "id": "INS_EXP_016",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to prepare a summary for each group. The team has records of customers, policies and claims.\n\nAdd the premium amount across each customer's policies, including all statuses. Within each customer group, select the one with the largest total. Break ties by choosing the smaller customer number. Show their number, name, group and total. Exclude customers without policies, and arrange the groups alphabetically.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join customers and policies to total premium amount for every customers and segment. I will row-number within each segment and keep rank 1.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If two customers in the same segment tie for the highest total premium amount, which one should I return?",
+    "manager_reply": "Select the tied customer with the smaller customer number, and exclude customers without policies."
+  },
+  {
+    "id": "INS_EXP_017",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to identify records needing a closer look. The team has records of customers, policies and claims.\n\nFind claims whose claim amount is above the average for all claims belonging to the same policy. Include the current claim when calculating that average. Show the claim number, policy number and value. Exclude values equal to the average. Arrange by policy number and then value highest first. Include all claim types and statuses and use the values as recorded.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will compare each claims amount with the average amount for its parent policy id.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should each claim be compared with the average amount for its own parent policy?",
+    "manager_reply": "Yes. Include only claims whose amount is strictly above the average for their parent policy."
+  },
+  {
+    "id": "INS_EXP_018",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to review the people represented in the records. The team has records of customers, policies and claims.\n\nCount the policies belonging to every registered customer, including zero for those with none. Average those counts, giving each customer equal weight. Show the number, name and count for customers above that average. Include all policy statuses. Sort by count highest first, using the smaller customer number first for ties.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will left join customers and policies and count policies for every customers in a CTE. I will keep customers counts above the average master count.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should customers with zero policies be included when calculating the overall average policy count?",
+    "manager_reply": "Yes. Include zero-count customers in the average calculation, then list customers strictly above that average."
+  },
+  {
+    "id": "INS_EXP_019",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to compare activity across categories. The team has records of customers, policies and claims.\n\nFor every policy, show its number and separate totals of claim amount for claims marked Completed, Pending and Failed. Other statuses contribute to none of these totals. Show zero for a status with no claims. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will join policies and claims to conditionally sum Completed, Pending and Failed event amounts per policies.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "Should every policy display Completed, Pending, and Failed totals even when some are zero?",
+    "manager_reply": "Yes. Show all three status totals for every policy, using zero whenever no matching claims exist."
+  },
+  {
+    "id": "INS_EXP_020",
+    "domain": "Insurance",
+    "level": "Expert",
+    "business_scenario": "An insurance service manager wants to prepare an up-to-date review. The team has records of customers, policies and claims.\n\nFor each policy with claims, select the one with the latest date. If several share that date, select the largest claim number. Show its claim number, policy number, date, type, claim amount and status. Include all activity statuses and omit policies without activity. Arrange the list by policy number, smallest first.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+    "solution_approach": "I will row number claims partitioned by policy id from newest to oldest by claim date and claim id. I will keep row number 1 as the latest event.",
+    "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); insurance_products(product_id PK, product_name, category, status, base_value); policies(policy_id PK, customer_id FK, product_id FK, start_date, status, premium_amount); claims(claim_id PK, policy_id FK, claim_date, claim_type, quantity, amount, status)",
+    "learner_question": "If a policy has multiple claims on its latest claim date, which one should be selected?",
+    "manager_reply": "Pick the claim with the largest claim number on that latest date, and omit policies without claims."
+  }
+]

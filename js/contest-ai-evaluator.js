@@ -30,7 +30,7 @@ export function evaluateContestSubmission({ scenario, response }) {
         logical_sequence: {
           score: 0,
           max: 25,
-          reason: 'No procedural sequence demonstrated.',
+          reason: 'No procedural sequence shown.',
           strengths: 'None',
           missing_concepts: 'Step-by-step logical workflow.'
         },
@@ -73,7 +73,7 @@ export function evaluateContestSubmission({ scenario, response }) {
   const tokenCoverage = scenarioTokens.length ? (matchedTokens.length / scenarioTokens.length) : 0;
   if (tokenCoverage > 0.3) {
     reqScore += 5;
-    reqStrengths.push('Demonstrates strong contextual grasp of domain-specific business terminology.');
+    reqStrengths.push('Shows strong contextual grasp of domain-specific business terminology.');
   } else {
     reqScore += 2;
     reqMissing.push('Incorporate more domain context and edge case handling.');
