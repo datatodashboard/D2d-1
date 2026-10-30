@@ -133,20 +133,13 @@ describe('Game-Style Domain Selection & Choose Level Dialog Verification Suite',
     assert.equal(nextQ.questionNo, 6);
   });
 
-  test('8. Demo Mode is available to all users (including signed-out visitors) across Home, Login Modal, and Practice Entry while Admin Portal stays protected', () => {
-    // Visitors see Try Demo on Home header, Home welcome card, and Login modal
-    assert.match(indexHtml, /id="homeTryDemoBtn"[^>]*onclick="startDemoMode\(\)"/);
-    assert.match(indexHtml, /id="startDemoModeBtn"[\s\S]*?style="display:flex;/);
-    assert.match(appJs, /id="exploreStartDemoBtn"[^>]*onclick="startDemoMode\(\)"/);
+  test('8. Google Sign-In is required to access practice and saved progress while Admin Portal stays protected for admins', () => {
+    // Practice requires Google sign-in
+    assert.match(indexHtml, /id="googleSignIn"/);
+    assert.match(indexHtml, /Continue with Google/);
 
-    // Demo mode buttons are accessible to everyone while admin portal remains admin-only
-    assert.match(appJs, /const showAdmin = Boolean\(user && isCurrentUserAdmin && !isDemoMode\);/);
-    assert.match(appJs, /const adminDemoBtn = \$\('adminDemoModeBtn'\);[\s\S]*?adminDemoBtn\.hidden = Boolean\(isDemoMode\);/);
-    assert.match(appJs, /const loginDemoBtn = \$\('startDemoModeBtn'\);[\s\S]*?loginDemoBtn\.style\.display = isDemoMode \? 'none' : 'inline-flex';/);
-
-    // Direct activation by signed-out visitors and non-admins is allowed
-    const startDemoFn = appJs.match(/async function startDemoMode\(\)\s*\{[\s\S]*?\n\}/);
-    assert.ok(startDemoFn, 'startDemoMode must exist');
-    assert.doesNotMatch(startDemoFn[0], /if \(!user \|\| !user\.id \|\| !isCurrentUserAdmin\)/);
+    // Admin portal requires authenticated admin
+    assert.match(appJs, /const showAdmin = Boolean\(user && isCurrentUserAdmin\);/);
+    assert.match(appJs, /function openAdminPortal\(\)/);
   });
 });

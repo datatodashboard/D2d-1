@@ -837,7 +837,9 @@ button, .pick, .level, .tab-btn, .sample-tab, .nav-item, .action, .thinking-retr
     gap: 8px;
   }
   .thinking-retry-btn, .thinking-next-btn {
-    height: 42px;
+    min-height: 44px;
+    height: auto;
+    padding: 10px 16px;
     font-size: 13.5px;
   }
 }
@@ -959,6 +961,13 @@ button, .pick, .level, .tab-btn, .sample-tab, .nav-item, .action, .thinking-retr
   .thinking-popup-actions {
     flex-direction: column;
     gap: 6px;
+  }
+  .thinking-popup-actions .thinking-retry-btn,
+  .thinking-popup-actions .thinking-next-btn {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 16px;
   }
   .progress-metrics-grid {
     grid-template-columns: 1fr;
@@ -1197,7 +1206,8 @@ button:disabled { opacity:.5; cursor:not-allowed; }
   font-size: 14px;
   font-weight: 700;
   border-radius: 12px;
-  height: 44px;
+  min-height: 44px;
+  padding: 10px 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1217,7 +1227,8 @@ button:disabled { opacity:.5; cursor:not-allowed; }
   font-size: 14px;
   font-weight: 700;
   border-radius: 12px;
-  height: 44px;
+  min-height: 44px;
+  padding: 10px 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -5548,8 +5559,8 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -2.5px;
-  height: 4px;
+  bottom: 0;
+  height: 2px;
   background-color: #0d1730;
   opacity: 0;
   pointer-events: none;
@@ -5974,254 +5985,6 @@ body {
   color: #cbd5e1 !important;
 }
 
-/* ============================================================================
-   DEMO MODE HOME SCREEN PRESENTATION (Scoped strictly to Demo Mode #home)
-   ============================================================================ */
-.demo-home-utility {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.demo-how-it-works-link {
-  appearance: none;
-  -webkit-appearance: none;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 6px !important;
-  padding: 2px 0 !important;
-  margin: 0 !important;
-  color: #22d3ee !important;
-  font-family: inherit;
-  font-size: 13.5px !important;
-  font-weight: 700 !important;
-  line-height: 1.2 !important;
-  letter-spacing: 0.1px !important;
-  cursor: pointer;
-  transition: color 0.15s ease, opacity 0.15s ease;
-}
-
-.demo-how-it-works-link:hover {
-  color: #67e8f9 !important;
-  transform: none !important;
-}
-
-.demo-how-it-works-link:focus-visible {
-  outline: 2px solid #22d3ee !important;
-  outline-offset: 3px !important;
-}
-
-.demo-utility-sep {
-  color: #64748b !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  user-select: none;
-}
-
-.demo-mode-status-label {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  color: #fbbf24 !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-  line-height: 1.2 !important;
-  letter-spacing: 0.15px !important;
-}
-
-/* Hide Demo-Home Clutter & Empty Wrappers when on Demo Mode Home */
-#appMain.demo-home-active #demoModeBanner,
-#appMain.demo-mode-active #home #contestCardWrapper,
-#appMain.demo-mode-active #home #installBanner,
-#appMain.demo-mode-active #home #iosHint,
-#appMain.demo-mode-active #home #authBox,
-#appMain.demo-mode-active #home #toggleMoreDomainsBtn,
-#appMain.demo-mode-active #home #extraDomainsWrapper {
-  display: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-}
-
-/* Header Utility & Icon Visibility on Demo Mode Home */
-#appMain.demo-mode-active #home .header-right-actions > *:not(#demoHomeHeaderUtility) {
-  display: none !important;
-}
-
-#appMain.demo-mode-active #home .header-right-actions > #profileContainer,
-#appMain.demo-mode-active #home #profileContainer {
-  display: inline-flex !important;
-  align-items: center !important;
-}
-
-#appMain.demo-mode-active #home #demoHomeHeaderUtility {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-}
-
-/* Remove Enclosing Card around Branding and Choose Domain Section on Demo Mode Home */
-#appMain.demo-mode-active #home .header {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-radius: 0 !important;
-  padding: 4px 0 0 0 !important;
-  margin: 0 0 22px 0 !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: space-between !important;
-  gap: 16px !important;
-}
-
-#appMain.demo-mode-active #home .header-right-actions {
-  margin-left: auto !important;
-  padding-top: 4px !important;
-  flex-shrink: 0 !important;
-}
-
-#appMain.demo-mode-active #home .domain-missions-section {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-#appMain.demo-mode-active #home .domain-missions-header {
-  margin-bottom: 14px !important;
-}
-
-/* Two-Column Domain Grid with Education Spanning Final Row */
-#appMain.demo-mode-active #home #allDomainsGrid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 14px !important;
-}
-
-#appMain.demo-mode-active #home #allDomainsGrid > .domain-mission-card:last-child:nth-child(odd) {
-  grid-column: 1 / -1 !important;
-}
-
-#appMain.demo-mode-active #home .domain-mission-card:focus-visible {
-  outline: 2px solid #22d3ee !important;
-  outline-offset: 2px !important;
-}
-
-/* Mobile Responsive Layout for Demo Mode Home (Fits Header + All 7 Domains in 390 x 844) */
-@media (max-width: 640px) {
-  body.demo-home-active .app#appMain {
-    padding-top: max(8px, env(safe-area-inset-top, 0px)) !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-
-  #appMain.demo-mode-active #home .header {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 6px !important;
-    padding: 0 !important;
-    margin: 0 0 12px 0 !important;
-  }
-
-  #appMain.demo-mode-active #home .header-right-actions {
-    order: -1 !important;
-    width: 100% !important;
-    margin-left: 0 !important;
-    padding-top: 0 !important;
-    justify-content: flex-end !important;
-  }
-
-  #appMain.demo-mode-active #home #demoHomeHeaderUtility {
-    gap: 6px !important;
-  }
-
-  #appMain.demo-mode-active #home .demo-how-it-works-link,
-  #appMain.demo-mode-active #home .demo-mode-status-label {
-    font-size: 12.5px !important;
-  }
-
-  #appMain.demo-mode-active #home .header > div:first-child {
-    gap: 10px !important;
-    align-items: center !important;
-  }
-
-  #appMain.demo-mode-active #home .sql-mascot-badge {
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 11px !important;
-  }
-
-  #appMain.demo-mode-active #home .header h1 {
-    font-size: 24px !important;
-    line-height: 1.1 !important;
-  }
-
-  #appMain.demo-mode-active #home .header .sub {
-    font-size: 12px !important;
-    line-height: 1.3 !important;
-    margin-top: 2px !important;
-  }
-
-  #appMain.demo-mode-active #home .domain-missions-header {
-    margin-bottom: 10px !important;
-  }
-
-  #appMain.demo-mode-active #home .domain-missions-title {
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-  }
-
-  #appMain.demo-mode-active #home .domain-missions-subtitle {
-    font-size: 12.5px !important;
-    line-height: 1.3 !important;
-    margin-top: 2px !important;
-  }
-
-  #appMain.demo-mode-active #home #allDomainsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 9px !important;
-  }
-
-  #appMain.demo-mode-active #home .domain-mission-card {
-    padding: 11px 11px !important;
-    gap: 9px !important;
-    border-radius: 14px !important;
-    min-width: 0 !important;
-  }
-
-  #appMain.demo-mode-active #home .mission-icon-box {
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 10px !important;
-    font-size: 18px !important;
-  }
-
-  #appMain.demo-mode-active #home .mission-name {
-    font-size: 13.5px !important;
-    line-height: 1.2 !important;
-  }
-
-  #appMain.demo-mode-active #home .mission-note {
-    font-size: 11px !important;
-    line-height: 1.25 !important;
-    margin-top: 2px !important;
-  }
-
-  #appMain.demo-mode-active #home .mission-arrow {
-    font-size: 14px !important;
-  }
-}
 
 #motivationFeedbackSection #feedbackTextInput {
   background: rgba(9, 14, 29, 0.9) !important;
@@ -8052,7 +7815,6 @@ html {
 .mission-map-progress-label,
 .map-node-badge,
 .review-card-label,
-.demo-mode-status-label,
 .premium-badge,
 .badge,
 .tag {
@@ -8093,7 +7855,6 @@ button,
 .practice-tab-btn,
 .nav-item,
 .feedback-emoji-btn,
-.demo-how-it-works-link,
 #emptyThinkingOkBtn,
 #chooseLevelBackBtn,
 #chooseLevelCloseBtn {
@@ -8115,13 +7876,14 @@ button,
 .practice-tab-btn,
 .nav-item,
 .feedback-emoji-btn,
-.demo-how-it-works-link,
 #emptyThinkingOkBtn,
 #chooseLevelBackBtn,
 #chooseLevelCloseBtn,
 .share-step-btn,
 .cert-share-social-btn,
 .cert-action-full-btn,
+.thinking-retry-btn,
+.thinking-next-btn,
 .google-login-btn {
   min-height: 44px !important;
   min-width: 44px !important;
@@ -8144,22 +7906,20 @@ button,
 
 .ghost-btn-sm,
 .linkbtn,
-.demo-how-it-works-link,
 #chooseLevelBackBtn,
 .cert-back-nav-btn,
 .track-pill {
+  width: auto !important;
+  height: auto !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
-  padding-left: 12px !important;
-  padding-right: 12px !important;
+  padding: 8px 16px !important;
+  white-space: nowrap !important;
 }
 
 /* Ensure >= 8px gap between interactive neighbours */
 .header-right-actions,
-.demo-home-utility,
 .practice-tabs-bar,
 .thinking-popup-actions,
 .level-completion-actions,
@@ -8643,8 +8403,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* 4. Domain Selection on Phones: Compact Single-Column Rows */
-  #appMain.demo-mode-active #home #allDomainsGrid,
-  #appMain.demo-mode-active #home #extraDomainsGrid,
   #home #allDomainsGrid,
   #home #extraDomainsGrid,
   .domain-missions-grid,
@@ -8656,7 +8414,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* Compact Horizontal Row (min-height 56px) */
-  #appMain.demo-mode-active #home .domain-mission-card,
   .domain-mission-card,
   #home .domain-mission-card {
     min-height: 56px !important;
@@ -8673,8 +8430,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
     width: 100% !important;
   }
 
-  #appMain.demo-mode-active #home .domain-mission-card:hover,
-  #appMain.demo-mode-active #home .domain-mission-card:active,
   .domain-mission-card:hover,
   .domain-mission-card:active,
   #home .domain-mission-card:hover,
@@ -8684,7 +8439,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* 40px Icon Box on the Left */
-  #appMain.demo-mode-active #home .mission-icon-box,
   .domain-mission-card .mission-icon-box {
     width: 40px !important;
     height: 40px !important;
@@ -8700,7 +8454,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* Center Info with clean vertical stack */
-  #appMain.demo-mode-active #home .mission-info,
   .domain-mission-card .mission-info {
     flex: 1 1 auto !important;
     min-width: 0 !important;
@@ -8713,7 +8466,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* Domain Name: 15px, weight 600 */
-  #appMain.demo-mode-active #home .mission-name,
   .domain-mission-card .mission-name {
     font-size: 15px !important;
     font-weight: 600 !important;
@@ -8727,7 +8479,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* One-line description: 12px muted text with ellipsis truncation */
-  #appMain.demo-mode-active #home .mission-note,
   .domain-mission-card .mission-note {
     font-size: 12px !important;
     font-weight: 400 !important;
@@ -8754,10 +8505,16 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   /* Neutralise 7th card spanning in 1-column phone grid */
-  #home #allDomainsGrid > .domain-mission-card:last-child:nth-child(odd),
-  #appMain.demo-mode-active #home #allDomainsGrid > .domain-mission-card:last-child:nth-child(odd) {
+  #home #allDomainsGrid > .domain-mission-card:last-child:nth-child(odd) {
     grid-column: auto !important;
     width: 100% !important;
+  }
+
+  #home #authBox .explore-login-card > div:last-child,
+  #home #authBox .explore-login-card button.action {
+    width: 100% !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
   }
 
   /* All Domains (7) Toggle Button: Compact 32-36px Pill with >=44px Tap Area */
@@ -8784,7 +8541,7 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   }
 
   .login-card .action,
-  .login-card button {
+  .login-card button:not(.modal-close-btn) {
     min-height: 48px !important;
     font-size: 14.5px !important;
     margin-bottom: 12px !important;

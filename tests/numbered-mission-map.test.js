@@ -121,7 +121,7 @@ describe('Numbered Game Progression Mission Map & Review Verification Suite', ()
     assert.match(exitMapFn[0], /showScreen\('home'\)/);
   });
 
-  test('8. Demo Mode and Normal Mode unlock rules: Scenario 1 initially unlocked, completions unlock next node', () => {
+  test('8. Normal Mode unlock rules: Scenario 1 initially unlocked, completions unlock next node', () => {
     const bankingBeginner = scenarios.filter(s => s.domain === 'Banking' && s.level === 'Beginner');
     assert.equal(bankingBeginner.length, 20);
 

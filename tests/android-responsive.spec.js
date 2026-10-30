@@ -108,12 +108,6 @@ for (const vp of VIEWPORTS) {
       }
     });
 
-    // 3. Demo Home
-    await page.evaluate(() => {
-      if (typeof window.startDemoMode === 'function') window.startDemoMode();
-    });
-    await assertNoHorizontalOverflowAndTouchTargets(page, `${vp.name} Demo Home`);
-
     // 4. Choose Level Modal
     await page.evaluate(() => {
       const card = document.querySelector('#allDomainsGrid .domain-mission-card');
@@ -199,11 +193,7 @@ for (const vp of VIEWPORTS) {
       if (typeof window.closeProfileModal === 'function') window.closeProfileModal();
     });
 
-    // 14. Admin Portal (Demo)
-    await page.goto('/admin.html?demo=1', { waitUntil: 'networkidle' });
-    await assertNoHorizontalOverflowAndTouchTargets(page, `${vp.name} Admin Portal`);
-
-    // 15. Verify Credential Page
+    // 14. Verify Credential Page
     await page.goto('/verify.html', { waitUntil: 'networkidle' });
     await assertNoHorizontalOverflowAndTouchTargets(page, `${vp.name} Verify Page`);
   });
@@ -211,16 +201,88 @@ for (const vp of VIEWPORTS) {
 
 test('full learner flow works end-to-end on Android phone viewport (360x800)', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
+  await page.route('**/supabase.min.js', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        window.supabase = {
+          createClient() {
+            const mockUser = {
+              id: 'e2e-learner-id',
+              email: 'learner@cracksql.com',
+              user_metadata: { full_name: 'Test Learner', name: 'Test Learner' }
+            };
+            const mockSession = { user: mockUser, access_token: 'mock-token' };
+            function makeQuery(table) {
+              const q = {
+                select() { return q; },
+                eq() { return q; },
+                in() { return q; },
+                order() { return q; },
+                limit() { return q; },
+                insert() { return q; },
+                update() { return q; },
+                upsert() { return q; },
+                maybeSingle() {
+                  if (table === 'profiles') {
+                    return Promise.resolve({
+                      data: {
+                        id: mockUser.id,
+                        email: mockUser.email,
+                        username: 'TestLearner',
+                        mobile_number: '+919876543210',
+                        whatsapp_consent: true,
+                        is_admin: false,
+                        paid_unlocked: true
+                      },
+                      error: null
+                    });
+                  }
+                  return Promise.resolve({ data: null, error: null });
+                },
+                single() { return q.maybeSingle(); },
+                then(resolve) {
+                  return Promise.resolve({ data: [], error: null }).then(resolve);
+                }
+              };
+              return q;
+            }
+            return {
+              auth: {
+                onAuthStateChange(cb) {
+                  setTimeout(() => cb('SIGNED_IN', mockSession), 0);
+                  return { data: { subscription: { unsubscribe() {} } } };
+                },
+                getSession() {
+                  return Promise.resolve({ data: { session: mockSession }, error: null });
+                },
+                getUser() {
+                  return Promise.resolve({ data: { user: mockUser }, error: null });
+                },
+                signOut() {
+                  return Promise.resolve({ error: null });
+                }
+              },
+              rpc(fn) {
+                if (fn === 'is_admin') return Promise.resolve({ data: false, error: null });
+                return Promise.resolve({ data: { completed_count: 1, paid_unlocked: true }, error: null });
+              },
+              from(table) {
+                return makeQuery(table);
+              }
+            };
+          }
+        };
+      `
+    });
+  });
   await page.goto('/index.html', { waitUntil: 'networkidle' });
   await page.evaluate(() => {
     const splash = document.getElementById('splashScreen');
     if (splash) splash.style.display = 'none';
     if (typeof window.closeOnboarding === 'function') window.closeOnboarding();
   });
-
-  // Start Demo Mode
-  await page.locator('#homeTryDemoBtn').click();
-  await expect(page.locator('#demoHomeHeaderUtility')).toBeVisible();
 
   // Select Banking domain
   await page.locator('#allDomainsGrid .domain-mission-card').first().click();

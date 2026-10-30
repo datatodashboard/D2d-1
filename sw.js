@@ -1,4 +1,4 @@
-const CACHE = 'crack-sql-verified-v29';
+const CACHE = 'crack-sql-v2-cssfix';
 const ROOT = new URL('./', self.location).href;
 const SHELL = [
   'index.html',

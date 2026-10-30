@@ -44,16 +44,12 @@ function loadConversationHarness(overrides = {}) {
       schemaText: 'accounts(account_id)'
     },
     user: overrides.user !== undefined ? overrides.user : null,
-    isDemoMode: Boolean(overrides.isDemoMode),
     currentUsername: overrides.currentUsername ?? null,
     getUserInfo: overrides.getUserInfo || (() => ({
       isLoggedIn: Boolean(context.user),
-      isDemo: Boolean(context.isDemoMode),
-      name: context.isDemoMode
-        ? 'Demo Learner'
-        : context.user
-          ? (context.currentUsername || context.user.user_metadata?.full_name || context.user.user_metadata?.name || 'Guest Learner')
-          : 'Guest Learner'
+      name: context.user
+        ? (context.currentUsername || context.user.user_metadata?.full_name || context.user.user_metadata?.name || 'Guest Learner')
+        : 'Guest Learner'
     })),
     state: { entries: {} },
     scenarios: overrides.scenarios || [
@@ -217,21 +213,19 @@ test('renderScenario renders 3-turn conversation and keeps trailing learner inst
   assert.equal(elements.get('managerReplyTurn').hidden, false);
 });
 
-test('learner name personalization handles Demo Mode, profile name, Tamil/Unicode names, email suppression, and label-only refresh', () => {
+test('learner name personalization handles profile name, Tamil/Unicode names, email suppression, and label-only refresh', () => {
   const { context, elements, getRenderSchemaCalls, getSetSchemaTabCalls } = loadConversationHarness({
-    isDemoMode: true,
     savedThinking: 'My draft plan in progress'
   });
 
   context.renderScenario();
-  assert.equal(elements.get('conversationLearnerName').textContent, 'Demo Learner');
+  assert.equal(elements.get('conversationLearnerName').textContent, 'Learner');
   assert.equal(getRenderSchemaCalls(), 1);
   assert.equal(getSetSchemaTabCalls(), 1);
 
   // User edits textarea and switches schema tab; label-only refresh must not reset them
   elements.get('thinking').value = 'Unsaved learner draft in textarea';
 
-  context.isDemoMode = false;
   context.user = { id: 'u-tamil', email: 'karthik@example.com' };
   context.currentUsername = 'கார்த்திக் சுப்பிரமணியன்';
   context.refreshConversationLearnerIdentity();

@@ -896,14 +896,6 @@
         </svg>
         <span>Continue with Google</span>
       </button>
-      <button type="button" id="startDemoModeBtn" class="action secondary" onclick="startDemoMode()" style="display:flex;width:100%;padding:11px 16px;font-size:13.5px;font-weight:800;border-radius:12px;border:1.5px solid #2dd4bf;background:rgba(20,184,166,0.16);color:#5eead4;align-items:center;justify-content:center;gap:8px;cursor:pointer;">
-        <span>🧪</span>
-        <span>Try Demo Mode</span>
-      </button>
-      <button type="button" id="loginExitDemoBtn" class="action secondary" onclick="exitDemoMode()" hidden style="display:none;width:100%;padding:11px 16px;font-size:13.5px;font-weight:800;border-radius:12px;border:1.5px solid rgba(248,113,113,0.55);background:rgba(239,68,68,0.14);color:#fca5a5;align-items:center;justify-content:center;gap:8px;cursor:pointer;">
-        <span>↩️</span>
-        <span id="loginExitDemoBtnLabel">Exit Demo Mode</span>
-      </button>
       <button type="button" id="cancelLoginBtn" class="ghost-btn-sm" onclick="cancelGoogleLoginPopup()" style="width:100%;padding:10px;font-size:13px;font-weight:700;color:var(--muted);">
         Cancel &amp; Return to Explore
       </button>
@@ -1031,23 +1023,6 @@
 
 <div class="app" id="appMain">
 
-<div id="demoModeBanner" hidden style="background:linear-gradient(135deg,rgba(30,27,75,0.95) 0%,rgba(15,23,42,0.98) 100%);border:1.5px solid #f59e0b;color:#fde68a;border-radius:16px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 10px 28px rgba(2,6,23,0.55),0 0 20px rgba(245,158,11,0.16);">
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;line-height:1.45;">
-      <span style="background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#ffffff;font-weight:900;font-size:12px;padding:3px 10px;border-radius:999px;letter-spacing:0.5px;">🧪 DEMO MODE</span>
-    <span style="color:#f8fafc;"><strong>Demo Mode Active:</strong> Temporary progress is stored locally in <code>sessionStorage</code> only and is not saved to an account.</span>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <button type="button" id="demoPreviewPaywallBtn" class="ghost-btn-sm" onclick="openPaywallModal()" style="font-size:12px;font-weight:700;padding:6px 11px;background:rgba(245,158,11,0.15);border:1px solid rgba(251,191,36,0.45);color:#fde68a;border-radius:10px;cursor:pointer;">
-      ⭐ Preview Premium
-    </button>
-    <button type="button" id="demoSignInGoogleBtn" class="action primary sm" onclick="signInFromDemo()" style="font-size:12.5px;font-weight:800;padding:7px 14px;border-radius:10px;background:linear-gradient(135deg,#06b6d4 0%,#2563eb 100%);border:none;color:#ffffff;cursor:pointer;">
-      Sign in to Save Progress
-    </button>
-    <button type="button" id="exitDemoBtn" class="action secondary sm" onclick="exitDemoMode()" style="font-size:12.5px;font-weight:800;padding:7px 14px;border-radius:10px;background:rgba(239,68,68,0.15);border:1px solid rgba(248,113,113,0.5);color:#fca5a5;cursor:pointer;">
-      Exit Demo
-    </button>
-  </div>
-</div>
 
 <section id="home" class="screen active">
   <div class="header">
@@ -1062,18 +1037,9 @@
       </div>
     </div>
     <div class="header-right-actions" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-left:auto;">
-      <div id="demoHomeHeaderUtility" class="demo-home-utility" hidden>
-        <button type="button" id="demoHowItWorksBtn" class="demo-how-it-works-link" onclick="openOnboarding()">How it works</button>
-        <span class="demo-utility-sep" aria-hidden="true">·</span>
-        <span id="demoHeaderStatusLabel" class="demo-mode-status-label">Demo Mode</span>
-      </div>
       <span id="headerPremiumBadge" class="premium-badge" style="display:none;">⭐ PREMIUM</span>
-      <button type="button" id="homeTryDemoBtn" class="ghost-btn-sm" onclick="startDemoMode()" style="border-color:#22d3ee !important;background:rgba(34,211,238,0.14) !important;color:#67e8f9 !important;display:inline-flex;align-items:center;gap:6px;font-weight:800 !important;white-space:nowrap;">
-        <span>🧪</span>
-        <span>Try Demo</span>
-      </button>
       <button class="ghost-btn-sm" onclick="openOnboarding()" style="white-space:nowrap;">How it works</button>
-      <button id="headerAdminPortalBtn" class="action secondary sm" onclick="openAdminPortal()" hidden style="font-weight:700;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">🛠️ Admin Portal</button>
+      <button id="headerAdminPortalBtn" class="action secondary sm" onclick="openAdminPortal()" hidden style="font-weight:700;display:none;align-items:center;gap:4px;white-space:nowrap;">🛠️ Admin Portal</button>
 
       <!-- Notification Badge & Dropdown -->
       <div class="notifications-container" id="notificationsContainer">
@@ -1104,10 +1070,6 @@
         </button>
 
         <div id="profileDropdown" class="profile-dropdown" hidden>
-          <div id="profileDemoIndicator" hidden style="display:none;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;margin-bottom:8px;border-radius:10px;background:rgba(245,158,11,0.16);border:1px solid rgba(251,191,36,0.45);color:#fde68a;font-size:12px;font-weight:800;letter-spacing:0.4px;">
-            <span>🧪 Demo Mode</span>
-            <span id="profileDemoSubStatus" style="font-size:12px;font-weight:700;color:#fcd34d;">Active</span>
-          </div>
           <div class="profile-dropdown-user-card">
             <div class="dropdown-user-avatar" id="dropdownAvatar">👤</div>
             <div class="dropdown-user-meta">
@@ -1132,18 +1094,6 @@
             <button type="button" class="profile-dropdown-btn" id="adminPortalBtn" onclick="openAdminPortal()" hidden>
               <span class="profile-btn-icon">🛠️</span>
               <span>Admin Portal</span>
-            </button>
-            <button type="button" class="profile-dropdown-btn" id="exploreAdminDemoLinkBtn" onclick="window.location.href='./admin.html?demo=1'">
-              <span class="profile-btn-icon">🎭</span>
-              <span>Admin Portal (Demo)</span>
-            </button>
-            <button type="button" class="profile-dropdown-btn" id="adminDemoModeBtn" onclick="startDemoMode()">
-              <span class="profile-btn-icon">🧪</span>
-              <span id="adminDemoModeBtnLabel">Try Demo Mode</span>
-            </button>
-            <button type="button" class="profile-dropdown-btn" id="profileExitDemoBtn" onclick="exitDemoMode()" hidden style="display:none;color:#fde68a;">
-              <span class="profile-btn-icon">↩️</span>
-              <span id="profileExitDemoLabel">Exit Demo Mode</span>
             </button>
             <button type="button" class="profile-dropdown-btn danger" id="profileSignOutBtn" onclick="handleProfileSignOut()">
               <span class="profile-btn-icon">🚪</span>
@@ -1306,7 +1256,6 @@
       <button class="linkbtn" onclick="backFromPractice()">← Change</button>
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span id="practiceDemoBadge" hidden style="display:none;align-items:center;gap:5px;background:rgba(245,158,11,0.18);border:1px solid rgba(251,191,36,0.5);color:#fde68a;font-size:12px;font-weight:900;padding:5px 11px;border-radius:999px;letter-spacing:0.4px;">🧪 DEMO MODE</span>
       <div class="meta" id="meta"></div>
       <div class="notifications-container" id="practiceNotificationsContainer">
         <button class="notification-avatar-btn" onclick="toggleNotificationsDropdown(event)" aria-haspopup="true" aria-expanded="false" title="Notifications">

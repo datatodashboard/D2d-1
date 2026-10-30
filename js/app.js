@@ -119,7 +119,7 @@ const cloud=createCloudSync({
   client: () => client,
   getContext:()=>({userId:user?.id,state:structuredClone(state)}),
   onMerged(remote,owner) {
-    if(isDemoMode || !user || owner!==user.id) return;
+    if(!user || owner!==user.id) return;
     const before=current?JSON.stringify(state.entries[current.id]):null;
     state=mergeProgress(state,remote,ids);
     saveProgress(storage, user.id, state);
@@ -136,11 +136,6 @@ const cloud=createCloudSync({
   }
 });
 function persist(sync=true, immediateSync=true) {
-  if (isDemoMode) {
-    saveDemoProgress();
-    updateProgress();
-    return;
-  }
   if (!user || !user.id) {
     updateProgress();
     return;
@@ -175,11 +170,6 @@ function persist(sync=true, immediateSync=true) {
 }
 function entry() { return current ? state.entries[current.id] || {} : {}; }
 function changeEntry(patch, immediateSync=true) {
-  if (isDemoMode && current) {
-    state.entries[current.id]={...entry(),...patch,updatedAt:nextTimestamp(state)};
-    persist(false, false);
-    return;
-  }
   if(!current || !user || !user.id) return;
   state.entries[current.id]={...entry(),...patch,updatedAt:nextTimestamp(state)};
   persist(true, immediateSync);
@@ -191,290 +181,17 @@ const CORE_DOMAINS = ['Banking', 'Healthcare', 'Insurance', 'Retail'];
 let currentDomainTrack = 'all'; // 'core' (240 scenarios) or 'all' (420 scenarios)
 
 const PENDING_AUTH_INTENT_KEY = 'crack_sql_pending_auth_intent_v1';
-const DEMO_STORAGE_KEY = 'crack_sql_demo_progress_v1';
-const DEMO_SESSION_ACTIVE_KEY = 'crack_sql_demo_active_v1';
-let isDemoMode = false;
-let demoPremiumPreviewActive = false;
-let sessionStore;
-try { sessionStore = window.sessionStorage; } catch { sessionStore = { getItem(){return null;}, setItem(){}, removeItem(){} }; }
 let pendingAuthIntent = null;
 let loginPopupOpen = false;
 
-function isDemoModeActive() {
-  return Boolean(isDemoMode);
-}
-
-function saveDemoProgress() {
-  if (!isDemoMode) return false;
-  try {
-    sessionStore.setItem(DEMO_SESSION_ACTIVE_KEY, '1');
-    sessionStore.setItem(DEMO_STORAGE_KEY, JSON.stringify(state));
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-function readDemoProgress() {
-  try {
-    const raw = sessionStore.getItem(DEMO_STORAGE_KEY);
-    if (!raw) return EMPTY();
-    return sanitize(JSON.parse(raw), ids);
-  } catch (_) {
-    return EMPTY();
-  }
-}
-
-function clearDemoStorage() {
-  try {
-    sessionStore.removeItem(DEMO_STORAGE_KEY);
-    sessionStore.removeItem(DEMO_SESSION_ACTIVE_KEY);
-  } catch (_) {}
-}
-
-function updateDemoModeUI() {
-  const show = Boolean(isDemoMode);
-  const homeEl = $('home');
-  const isHomeActive = homeEl ? homeEl.classList.contains('active') : (!currentActiveScreen || currentActiveScreen === 'home');
-  const isDemoHome = show && isHomeActive;
-
-  const appMain = $('appMain');
-  if (appMain) {
-    appMain.classList.toggle('demo-mode-active', show);
-    appMain.classList.toggle('demo-home-active', isDemoHome);
-  }
-  if (typeof document !== 'undefined' && document.body) {
-    document.body.classList.toggle('demo-mode-active', show);
-    document.body.classList.toggle('demo-home-active', isDemoHome);
-  }
-
-  const demoHomeUtility = $('demoHomeHeaderUtility');
-  if (demoHomeUtility) {
-    demoHomeUtility.hidden = !show;
-    demoHomeUtility.style.display = show ? 'inline-flex' : 'none';
-  }
-
-  const banner = $('demoModeBanner');
-  if (banner) {
-    const showBanner = show && !isHomeActive;
-    banner.hidden = !showBanner;
-    banner.style.display = showBanner ? 'flex' : 'none';
-  }
-  const homeTryBtn = $('homeTryDemoBtn');
-  if (homeTryBtn) {
-    homeTryBtn.hidden = show;
-    homeTryBtn.style.display = show ? 'none' : 'inline-flex';
-  }
-  const practiceBadge = $('practiceDemoBadge');
-  if (practiceBadge) {
-    practiceBadge.hidden = !show;
-    practiceBadge.style.display = show ? 'inline-flex' : 'none';
-  }
-  const certBanner = $('certDemoPreviewBanner');
-  if (certBanner && !isDemoMode) {
-    certBanner.hidden = true;
-    certBanner.style.display = 'none';
-  }
-}
-
-function renderDemoContestPreviewCard() {
-  const wrapper = $('contestCardWrapper');
-  if (!wrapper) return;
-  if (!isDemoMode) {
-    return;
-  }
-  const completedCount = getCompletedCount();
-  wrapper.style.display = 'block';
-  wrapper.innerHTML = `
-    <div class="card" id="demoContestPreviewCard" style="background:linear-gradient(135deg,#1e1b4b 0%,#0f172a 100%);border:1.5px solid #f59e0b;padding:14px 16px;border-radius:14px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:900;color:#fde68a;background:rgba(245,158,11,0.2);border:1px solid rgba(251,191,36,0.4);padding:2px 8px;border-radius:999px;margin-bottom:4px;">
-            <span>🧪 DEMO PREVIEW</span>
-            <span>•</span>
-            <span>WEEKLY SQL CONTEST</span>
-          </div>
-          <div style="font-size:15px;font-weight:800;color:#f8fafc;">Weekly SQL Thinking Contest (Preview Only)</div>
-          <div style="font-size:12.5px;color:#cbd5e1;margin-top:2px;">
-            Demo Session Completions: <strong>${completedCount} / 18</strong> for contest eligibility preview. Real contest registration &amp; leaderboard require Google Sign-In.
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <button type="button" class="action secondary sm" onclick="openDemoContestPreviewModal()" style="background:rgba(245,158,11,0.16);border:1px solid #f59e0b;color:#fde68a;font-weight:800;padding:6px 12px;font-size:12px;">
-            🏆 Preview Contest Format
-          </button>
-          <button type="button" class="action primary sm" onclick="signInFromDemo()" style="font-weight:800;padding:6px 12px;font-size:12px;">
-            Sign In with Google
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function openDemoContestPreviewModal() {
-  showProgressionNoticeModal({
-    title: '🧪 Demo Preview: SQL Thinking Contest',
-    message: 'In authenticated mode, learners who complete 18+ scenarios unlock live timed SQL Thinking Contests with verified leaderboards and prizes. No real contest registration or payment is created in Demo Mode.',
-    actionLabel: 'Sign In with Google →',
-    onAction: () => signInFromDemo()
-  });
-}
-
-function simulateDemoPaymentPreview() {
-  if (!isDemoMode) return;
-  demoPremiumPreviewActive = true;
-  openPaywallModal();
-  renderScenarioCatalog();
-}
-
-async function startDemoMode() {
-  const chosenDomain = selectedDomain;
-  const chosenLevel = selectedLevel;
-  closeChooseLevelModal();
-  selectedDomain = chosenDomain;
-  selectedLevel = chosenLevel;
-
-  isDemoMode = true;
-  demoPremiumPreviewActive = false;
-  isPaidUnlocked = false;
-  userPendingPayment = null;
-  authNotice = '';
-  if ($('loginErrorMessage')) $('loginErrorMessage').textContent = '';
-  clearDomainSelectionWarning(false);
-  hideAccessError();
-  updateAdminPortalVisibility();
-
-  state = readDemoProgress();
-  saveDemoProgress();
-
-  const intent = readPendingAuthIntent();
-  if (intent) {
-    if (intent.domain && !selectedDomain) selectedDomain = intent.domain;
-    if (intent.level && !selectedLevel) selectedLevel = intent.level;
-  }
-  clearPendingAuthIntent();
-  closeLoginModal();
-
-  const dest = intent?.destination || (selectedDomain && selectedLevel ? 'practice' : 'home');
-  if (dest === 'home' && !intent?.scenarioId) {
-    selectedDomain = null;
-    selectedLevel = null;
-  }
-
-  updateDemoModeUI();
-  renderAuth();
-  updateProgress();
-  renderDomainAndLevelPickers();
-  renderScenarioCatalog();
-  updateStartPracticeUI();
-  renderDemoContestPreviewCard();
-
-  if (dest === 'progress' || dest === 'progressScreen') {
-    await showScreen('progressScreen');
-  } else if (dest === 'certificates') {
-    await openAllCertificatesModal();
-  } else if (dest === 'certificate') {
-    openCertificateModal(intent?.certData || null);
-  } else if (dest === 'profile') {
-    openProfileModal();
-  } else if (dest === 'paywall') {
-    openPaywallModal();
-  } else if (intent?.scenarioId) {
-    await openScenario(intent.scenarioId);
-  } else if (selectedDomain && selectedLevel) {
-    await loadDomainScenarios(selectedDomain, { includeSql: true });
-    if ($('missionMap')) {
-      openMissionMap(selectedDomain, selectedLevel);
-      return;
-    }
-    await loadScenario();
-    await showScreen('practice');
-  } else {
-    await showScreen('home');
-  }
-}
-
-function exitDemoMode() {
-  isDemoMode = false;
-  demoPremiumPreviewActive = false;
-  clearDemoStorage();
-  clearPendingAuthIntent();
-  state = EMPTY();
-  if (user && user.id) state = readProgress(storage, user.id, ids);
-  current = null;
-  selectedDomain = null;
-  selectedLevel = null;
-  closeLoginModal();
-  closeChooseLevelModal();
-  closePaywallModal();
-  closeCertificateModal();
-  closeAllCertificatesModal();
-  closeProfileModal();
-  closeProfileDropdown();
-  closeMotivationModal();
-  closeLevelCompletionModal();
-  closeContestModal();
-  const contestWrapper = $('contestCardWrapper');
-  if (contestWrapper) {
-    contestWrapper.style.display = 'none';
-    contestWrapper.innerHTML = '';
-  }
-  if ($('home')) $('home').classList.add('active');
-  if ($('practice')) $('practice').classList.remove('active');
-  if ($('progressScreen')) $('progressScreen').classList.remove('active');
-  if ($('navHome')) $('navHome').classList.add('active');
-  if ($('navPractice')) $('navPractice').classList.remove('active');
-  if ($('navProgress')) $('navProgress').classList.remove('active');
-  currentActiveScreen = 'home';
-  authNotice = '';
-  if ($('loginErrorMessage')) $('loginErrorMessage').textContent = '';
-  clearDomainSelectionWarning(false);
-  hideAccessError();
-  updateDemoModeUI();
-  updateAdminPortalVisibility();
-  renderAuth();
-  updateProgress();
-  renderDomainAndLevelPickers();
-  renderScenarioCatalog();
-  updateStartPracticeUI();
-  if (user && client) {
-    void initContest(client, user, getCompletedCount(), isCurrentUserAdmin);
-  }
-}
-
-function signInFromDemo() {
-  closeProfileDropdown();
-  closeProfileModal();
-  const savedDomain = current?.domain || selectedDomain || null;
-  const savedLevel = current?.level || selectedLevel || null;
-  const savedScenarioId = current?.id || null;
-  const targetDest = currentActiveScreen === 'progress' ? 'progressScreen' : 'practice';
-  selectedDomain = savedDomain;
-  selectedLevel = savedLevel;
-  renderDomainAndLevelPickers();
-  renderScenarioCatalog();
-  updateStartPracticeUI();
-  requestGoogleLogin({
-    destination: targetDest,
-    domain: savedDomain,
-    level: savedLevel,
-    scenarioId: savedScenarioId
-  });
-}
-
 function handleProfileGoogleSignIn() {
   closeProfileDropdown();
-  if (isDemoMode) {
-    signInFromDemo();
-  } else {
-    requestGoogleLogin({
-      destination: currentActiveScreen === 'progress' ? 'progressScreen' : 'practice',
-      domain: current?.domain || selectedDomain,
-      level: current?.level || selectedLevel,
-      scenarioId: current?.id || null
-    });
-  }
+  requestGoogleLogin({
+    destination: currentActiveScreen === 'progress' ? 'progressScreen' : 'practice',
+    domain: current?.domain || selectedDomain,
+    level: current?.level || selectedLevel,
+    scenarioId: current?.id || null
+  });
 }
 
 function savePendingAuthIntent(intent) {
@@ -556,16 +273,6 @@ function openLoginModal(options = {}) {
       badgeEl.style.display = 'none';
     }
   }
-  const loginDemoBtn = $('startDemoModeBtn');
-  if (loginDemoBtn) {
-    loginDemoBtn.hidden = Boolean(isDemoMode);
-    loginDemoBtn.style.display = isDemoMode ? 'none' : 'inline-flex';
-  }
-  const loginExitBtn = $('loginExitDemoBtn');
-  if (loginExitBtn) {
-    loginExitBtn.hidden = !isDemoMode;
-    loginExitBtn.style.display = isDemoMode ? 'inline-flex' : 'none';
-  }
   if ($('appMain')) $('appMain').hidden = false;
   if ($('bottomNav')) $('bottomNav').hidden = false;
   const loginScreen = $('loginScreen');
@@ -595,23 +302,13 @@ function cancelGoogleLoginPopup() {
   if ($('loginErrorMessage')) $('loginErrorMessage').textContent = '';
   if ($('appMain')) $('appMain').hidden = false;
   if ($('bottomNav')) $('bottomNav').hidden = false;
-  if (isDemoMode && current && currentActiveScreen === 'practice') {
-    if ($('practice')) $('practice').classList.add('active');
-    if ($('home')) $('home').classList.remove('active');
-    if ($('progressScreen')) $('progressScreen').classList.remove('active');
-    if ($('navPractice')) $('navPractice').classList.add('active');
-    if ($('navHome')) $('navHome').classList.remove('active');
-    if ($('navProgress')) $('navProgress').classList.remove('active');
-  } else {
-    if ($('home')) $('home').classList.add('active');
-    if ($('practice')) $('practice').classList.remove('active');
-    if ($('progressScreen')) $('progressScreen').classList.remove('active');
-    if ($('navHome')) $('navHome').classList.add('active');
-    if ($('navPractice')) $('navPractice').classList.remove('active');
-    if ($('navProgress')) $('navProgress').classList.remove('active');
-    currentActiveScreen = 'home';
-  }
-  updateDemoModeUI();
+  if ($('home')) $('home').classList.add('active');
+  if ($('practice')) $('practice').classList.remove('active');
+  if ($('progressScreen')) $('progressScreen').classList.remove('active');
+  if ($('navHome')) $('navHome').classList.add('active');
+  if ($('navPractice')) $('navPractice').classList.remove('active');
+  if ($('navProgress')) $('navProgress').classList.remove('active');
+  currentActiveScreen = 'home';
   renderDomainAndLevelPickers();
   renderScenarioCatalog();
   updateStartPracticeUI();
@@ -664,9 +361,7 @@ function updateStartPracticeUI() {
     if (hint) {
       hint.textContent = user
         ? `Ready to practice ${selectedDomain} (${selectedLevel}). Click Go to Practice to open your next question.`
-        : (isDemoMode
-          ? `Demo Mode: Ready to practice ${selectedDomain} (${selectedLevel}). Click Go to Practice to begin.`
-          : `Selected ${selectedDomain} (${selectedLevel}). Click Go to Practice to sign in with Google.`);
+        : `Selected ${selectedDomain} (${selectedLevel}). Click Go to Practice to sign in with Google.`;
       hint.style.color = '#38bdf8';
     }
   } else {
@@ -842,15 +537,6 @@ async function startPracticeSession() {
       showAccessCheckError('Exercises could not be loaded. Please check your connection and try again.');
       return;
     }
-    if (isDemoMode) {
-      if ($('missionMap')) {
-        openMissionMap(selectedDomain, selectedLevel);
-        return;
-      }
-      await loadScenario();
-      await showScreen('practice');
-      return;
-    }
     if (!user) {
       requestGoogleLogin({
         destination: 'practice',
@@ -886,9 +572,6 @@ function setDomainTrack(track) {
 }
 
 function updateProgress() {
-  if (isDemoMode) {
-    saveDemoProgress();
-  }
   const activeScenarios = (currentDomainTrack === 'core' && !scenarioSearchQuery)
     ? scenarios.filter(s => CORE_DOMAINS.includes(s.domain))
     : scenarios;
@@ -1810,8 +1493,6 @@ function isUsableConversationName(value) {
     lower === 'u' ||
     lower === 'guest' ||
     lower === 'guest learner' ||
-    lower === 'demo' ||
-    lower === 'demo_preview' ||
     lower === 'learner'
   ) {
     return false;
@@ -1820,9 +1501,6 @@ function isUsableConversationName(value) {
 }
 
 function getConversationLearnerName() {
-  if (typeof isDemoMode !== 'undefined' && isDemoMode) {
-    return 'Demo Learner';
-  }
   const activeUser = typeof user !== 'undefined' ? user : null;
   if (activeUser) {
     if (typeof currentUsername === 'string' && isUsableConversationName(currentUsername)) {
@@ -2049,9 +1727,6 @@ function getCompletedCount() {
   const localCount = (scenarios && scenarios.length && state && state.entries)
     ? scenarios.filter(s => isCompleted(s, state.entries[s.id])).length
     : 0;
-  if (isDemoMode) {
-    return localCount;
-  }
   if (!user) {
     return Math.max(localCount, getGuestLifetimeCompletedCount());
   }
@@ -2336,21 +2011,6 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
   };
   persist(true, true);
 
-  if (isDemoMode) {
-    if (state.entries[scenarioId]) {
-      Object.assign(state.entries[scenarioId], {
-        syncPending: false,
-        syncStatus: 'demo_session'
-      });
-    }
-    saveDemoProgress();
-    if ($('syncStatus')) $('syncStatus').textContent = 'Demo Mode: Saved in sessionStorage only';
-    updateProgress();
-    renderScenarioCatalog();
-    renderDemoContestPreviewCard();
-    return;
-  }
-
   if (user && client) {
     try {
       // 1. Authoritative recording via record_scenario_completion RPC
@@ -2485,38 +2145,6 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
 }
 
 function openPaywallModal() {
-  if (isDemoMode) {
-    const modal = $('paywallModal');
-    if (!modal) return;
-    modal.hidden = false;
-    const notice = $('paywallNotice');
-    const payBtn = $('paywallPayBtn');
-    if (notice) {
-      notice.style.display = 'block';
-      notice.style.background = '#fffbeb';
-      notice.style.border = '1.5px solid #f59e0b';
-      notice.style.color = '#92400e';
-      notice.innerHTML = demoPremiumPreviewActive
-        ? '<strong>🧪 DEMO PREVIEW — Simulated Payment Verified (Session Only)</strong><br><span style="font-size:0.85rem;">This is a simulated preview of the ₹49 Course Unlock &amp; Razorpay verification flow. No real payment transaction or authenticated entitlement was created. Sign in with Google to purchase real lifetime access.</span>'
-        : '<strong>🧪 DEMO PREVIEW — Premium Features &amp; Payment Verification</strong><br><span style="font-size:0.85rem;">You are in Demo Mode. Click below to preview how simulated payment verification works in this session without any real Razorpay order or charge.</span>';
-    }
-    if (payBtn) {
-      payBtn.style.display = 'inline-flex';
-      payBtn.disabled = false;
-      if (demoPremiumPreviewActive) {
-        payBtn.innerHTML = '<span>Continue Demo Practice (Preview) →</span>';
-        payBtn.onclick = () => {
-          closePaywallModal();
-          if (current) renderScenario();
-          renderScenarioCatalog();
-        };
-      } else {
-        payBtn.innerHTML = '<span>🧪 Simulate Payment Verification Preview (Demo Only)</span>';
-        payBtn.onclick = simulateDemoPaymentPreview;
-      }
-    }
-    return;
-  }
   if (!user) {
     requestGoogleLogin({
       destination: 'paywall',
@@ -2607,11 +2235,6 @@ function loadRazorpaySdk() {
 async function payCourseUnlockWithRazorpay() {
   const notice = $('paywallNotice');
   const payBtn = $('paywallPayBtn');
-
-  if (isDemoMode) {
-    simulateDemoPaymentPreview();
-    return;
-  }
 
   if (!user) {
     closePaywallModal();
@@ -2921,8 +2544,6 @@ function closeChooseLevelModal() {
   if (current && current.domain && current.level) {
     selectedDomain = current.domain;
     selectedLevel = current.level;
-  } else if (isDemoMode && (!currentActiveScreen || currentActiveScreen === 'home')) {
-    selectedDomain = null;
   }
   renderDomainAndLevelPickers();
   renderScenarioCatalog();
@@ -2972,7 +2593,7 @@ function renderChooseLevelScenarios() {
     const completed = isCompleted(s, e);
     const attempted = isAttempted(s, e);
     const isCurrent = Boolean(current && current.id === s.id);
-    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode;
+    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin;
     let statusBadge = `<span style="font-size:10.5px;font-weight:700;color:#94a3b8;background:rgba(148,163,184,0.12);padding:2px 7px;border-radius:999px;">Q${idx + 1}</span>`;
     if (isLocked) {
       statusBadge = `<span style="font-size:10.5px;font-weight:800;color:#fbbf24;background:rgba(245,158,11,0.15);padding:2px 7px;border-radius:999px;">🔒 Premium</span>`;
@@ -3021,7 +2642,7 @@ function toggleAdditionalDomains() {
 }
 window.toggleAdditionalDomains = toggleAdditionalDomains;
 
-const DEMO_HOME_DOMAIN_ORDER = [
+const HOME_DOMAIN_ORDER = [
   'Banking',
   'Healthcare',
   'Insurance',
@@ -3067,7 +2688,7 @@ function renderDomainAndLevelPickers() {
   const extraWrapper = $('extraDomainsWrapper');
   const toggleBtn = $('toggleMoreDomainsBtn');
 
-  const orderedHomeDomains = DEMO_HOME_DOMAIN_ORDER.filter(d => domains.includes(d));
+  const orderedHomeDomains = HOME_DOMAIN_ORDER.filter(d => domains.includes(d));
   for (const d of domains) {
     if (!orderedHomeDomains.includes(d)) orderedHomeDomains.push(d);
   }
@@ -3362,9 +2983,7 @@ async function loadFullScenariosInBackground(forceRetry = false) {
       fullScenariosLoaded = true;
       scenarioCatalogError = null;
 
-      if (isDemoMode) {
-        state = readDemoProgress();
-      } else if (user && user.id) {
+      if (user && user.id) {
         state = mergeProgress(state, readProgress(storage, user.id, ids), ids);
       }
 
@@ -3439,7 +3058,7 @@ async function loadScenario() {
   if (next) {
     const isTargetCompleted = isCompleted(next, state.entries[next.id]);
     const completedCount = getCompletedCount();
-    if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode) {
+    if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
       const completedCandidate = pool.find(s => isCompleted(s, state.entries[s.id])) || scenarios.find(s => isCompleted(s, state.entries[s.id]));
       if (completedCandidate) {
         current = await ensureFullScenario(completedCandidate);
@@ -3594,16 +3213,14 @@ function evaluatePlan() {
     openEmptyThinkingModal();
     return;
   }
-  if (!isDemoMode) {
-    if (!user || !user.id) {
-      requestGoogleLogin({
-        destination: 'practice',
-        domain: current?.domain || selectedDomain,
-        level: current?.level || selectedLevel,
-        scenarioId: current?.id || null
-      });
-      return;
-    }
+  if (!user || !user.id) {
+    requestGoogleLogin({
+      destination: 'practice',
+      domain: current?.domain || selectedDomain,
+      level: current?.level || selectedLevel,
+      scenarioId: current?.id || null
+    });
+    return;
   }
   if(!current) return;
   const effective = getEffectiveScenario(current, user?.id || 'guest_user', state);
@@ -4210,19 +3827,6 @@ async function submitMandatoryLevelFeedback() {
     emoji: emoji
   };
 
-  // 2. In Demo Mode, store feedback ONLY in sessionStorage (never Supabase or localStorage)
-  if (isDemoMode) {
-    saveDemoProgress(state);
-    if (btn) btn.disabled = false;
-    const modal = $('mandatoryFeedbackModal');
-    if (modal) modal.hidden = true;
-    renderDomainAndLevelPickers();
-    renderScenarioCatalog();
-    updateProgress();
-    openLevelCompletionModal(domain, level);
-    return;
-  }
-
   // 2. Save locally
   saveProgress(storage, user?.id, state);
 
@@ -4285,7 +3889,7 @@ async function submitMandatoryLevelFeedback() {
 
 // Supabase = Single Source of Truth for feedback
 async function fetchUserFeedbackFromSupabase(userId, force = false) {
-  if (isDemoMode || !client) return window.userFeedbackList || [];
+  if (!client) return window.userFeedbackList || [];
   const targetUid = userId || user?.id;
   if (!force && Array.isArray(window.userFeedbackList) && window.userFeedbackList.length > 0) {
     if (!targetUid || window.userFeedbackList.every(f => !targetUid || f.user_id === targetUid)) {
@@ -4321,11 +3925,6 @@ function updateFeedbackUI() {
 async function saveSubmittedFeedback() {
   const emoji = window.currentSelectedFeedbackEmoji;
   if (!emoji || !current) return;
-
-  if (isDemoMode) {
-    window.currentSelectedFeedbackEmoji = null;
-    return;
-  }
 
   const learnerName = getLearnerDisplayName(user, currentUsername);
   const feedbackText = ($('feedbackTextInput')?.value || '').trim();
@@ -4419,9 +4018,9 @@ function nextScenario() {
     return;
   }
 
-  // Paywall check: After Question 5 completed, do not unlock Question 6 for unpaid learner (Admins and Demo Mode exempt)
+  // Paywall check: After Question 5 completed, do not unlock Question 6 for unpaid learner (Admins exempt)
   const completedCount = getCompletedCount();
-  if (completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode) {
+  if (completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
     openPaywallModal();
     return;
   }
@@ -4679,7 +4278,7 @@ function handlePracticeAgain() {
 }
 
 function openCertificateModal(certData) {
-  if (!user && !isDemoMode) {
+  if (!user) {
     requestGoogleLogin({
       destination: 'certificate',
       domain: certData?.domain || selectedDomain,
@@ -4690,30 +4289,6 @@ function openCertificateModal(certData) {
   }
   const targetDomain = certData?.domain || selectedDomain || 'Banking';
   const targetLevel = certData?.level || selectedLevel || 'Beginner';
-
-  if (isDemoMode) {
-    // In Demo Mode, provide a clearly labeled certificate preview and NEVER write to Supabase certificates
-    certData = {
-      domain: targetDomain,
-      level: targetLevel,
-      userName: 'Demo Learner (Preview Only)',
-      completionDate: `${formatCompletionDate(Date.now())} • DEMO PREVIEW`
-    };
-    currentCertificateTarget = certData;
-    const modal = $('certificateModal');
-    if (!modal) return;
-    if ($('certModalHeading')) {
-      $('certModalHeading').textContent = `🧪 DEMO PREVIEW — Certificate of Completion (${certData.domain} • ${certData.level})`;
-    }
-    const demoCertBanner = $('certDemoPreviewBanner');
-    if (demoCertBanner) demoCertBanner.hidden = false;
-    const previewCard = $('certPreviewCard');
-    if (previewCard) {
-      previewCard.innerHTML = generateCertificateSvg(certData);
-    }
-    modal.hidden = false;
-    return;
-  }
 
   const status = checkLevelCompletion(targetDomain, targetLevel, scenarios, state);
 
@@ -4736,9 +4311,6 @@ function openCertificateModal(certData) {
 
   const modal = $('certificateModal');
   if (!modal) return;
-
-  const demoCertBanner = $('certDemoPreviewBanner');
-  if (demoCertBanner) demoCertBanner.hidden = true;
 
   if ($('certModalHeading')) {
     $('certModalHeading').textContent = `Certificate of Completion — ${certData.domain} (${certData.level})`;
@@ -5219,7 +4791,7 @@ async function showScreen(name) {
   const isProgress = name === 'progress' || name === 'progressScreen';
   const targetScreen = isProgress ? 'progress' : name;
 
-  if (!user && !isDemoMode && (name === 'practice' || isProgress)) {
+  if (!user && (name === 'practice' || isProgress)) {
     if ($('appMain')) $('appMain').hidden = false;
     if ($('bottomNav')) $('bottomNav').hidden = false;
     requestGoogleLogin({
@@ -5250,7 +4822,6 @@ async function showScreen(name) {
   if ($('navPractice')) $('navPractice').classList.toggle('active', name === 'practice');
   if ($('navProgress')) $('navProgress').classList.toggle('active', isProgress);
   currentActiveScreen = targetScreen;
-  updateDemoModeUI();
 
   if (isProgress) {
     renderProgressScreen();
@@ -5278,9 +4849,7 @@ async function showScreen(name) {
     renderDomainAndLevelPickers();
     renderScenarioCatalog();
     updateStartPracticeUI();
-    if (isDemoMode) {
-      renderDemoContestPreviewCard();
-    } else if (user && client) {
+    if (user && client) {
       void initContest(client, user, getCompletedCount(), isCurrentUserAdmin);
     }
   }
@@ -5318,7 +4887,7 @@ async function openScenario(id) {
   renderDomainAndLevelPickers();
   renderScenario();
 
-  if (!user && !isDemoMode) {
+  if (!user) {
     state = EMPTY();
     requestGoogleLogin({
       destination: 'practice',
@@ -5331,7 +4900,7 @@ async function openScenario(id) {
 
   const isTargetCompleted = isCompleted(target, state.entries[target.id]);
   const completedCount = getCompletedCount();
-  if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode) {
+  if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
     openPaywallModal();
     return;
   }
@@ -5339,7 +4908,7 @@ async function openScenario(id) {
   showScreen('practice');
 }
 function showSampleThinking() {
-  if (!isDemoMode && (!user || !user.id)) {
+  if (!user || !user.id) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -5354,7 +4923,7 @@ function showSampleThinking() {
   evaluatePlan();
 }
 function improveLogic() {
-  if (!isDemoMode && (!user || !user.id)) {
+  if (!user || !user.id) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -5415,7 +4984,7 @@ function compareExpert() {
 function closeCompare() { $('compareModal').hidden = true; }
 
 function generateSql() {
-  if (!isDemoMode && (!user || !user.id)) {
+  if (!user || !user.id) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -5477,7 +5046,7 @@ function toggleSchemaSampleCard(btn) {
 }
 
 function useStarterSql() {
-  if (!isDemoMode && (!user || !user.id)) {
+  if (!user || !user.id) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -5706,7 +5275,7 @@ function renderScenarioCatalog() {
     const attempted = isAttempted(s, e);
     const isCurrent = current && current.id === s.id;
     const totalCompleted = getCompletedCount();
-    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin && !isDemoMode;
+    const isLocked = !completed && totalCompleted >= 5 && !isPaidUnlocked && !isCurrentUserAdmin;
     let badgeClass = 'status-pill not-started';
     let badgeText = 'Not started';
     if (isLocked) {
@@ -5966,7 +5535,7 @@ async function refreshAuthoritativeProgress() {
 }
 
 async function openAllCertificatesModal() {
-  if (!user && !isDemoMode) {
+  if (!user) {
     requestGoogleLogin({
       destination: 'certificates',
       domain: selectedDomain,
@@ -5995,7 +5564,7 @@ function renderCertificatesSection() {
   const allCerts = getAllCertificatesStatus(scenarios, state, user, currentUsername);
   const earnedCerts = allCerts.filter(c => c.isCompleted);
 
-  const badgeText = isDemoMode ? `${earnedCerts.length} / 21 (Demo Preview)` : `${earnedCerts.length} / 21 Earned`;
+  const badgeText = `${earnedCerts.length} / 21 Earned`;
   if ($('earnedCertificatesBadge')) {
     $('earnedCertificatesBadge').textContent = badgeText;
   }
@@ -6009,21 +5578,6 @@ function renderCertificatesSection() {
   const grid = $('certificatesGrid');
   if (!grid) return;
 
-  let demoBannerHtml = '';
-  if (isDemoMode) {
-    demoBannerHtml = `
-      <div id="demoCertsPreviewNotice" style="grid-column: 1 / -1; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 14px; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px;">
-        <div>
-          <div style="font-size: 13px; font-weight: 800; color: #92400e;">🧪 DEMO PREVIEW — Certificates Are Simulated</div>
-          <div style="font-size: 12px; color: #b45309;">Preview sample certificates in Demo Mode. Sign in with Google to earn verified, permanent certificates.</div>
-        </div>
-        <button type="button" class="action primary" onclick="openCertificateModal({ domain: 'Banking', level: 'Beginner', isDemoPreview: true })" style="padding: 8px 14px; font-size: 12px; font-weight: 800; background: #d97706; border: none;">
-          🎓 Preview Sample Certificate
-        </button>
-      </div>
-    `;
-  }
-
   let filtered = allCerts;
   if (currentCertFilter === 'earned') {
     filtered = allCerts.filter(c => c.isCompleted);
@@ -6032,7 +5586,7 @@ function renderCertificatesSection() {
   }
 
   if (filtered.length === 0) {
-    grid.innerHTML = demoBannerHtml + `
+    grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; color: var(--muted); background: rgba(9, 17, 34, 0.78); border: 1px dashed rgba(148, 163, 184, 0.28); border-radius: 16px;">
         <div style="font-size: 28px; margin-bottom: 8px;">${currentCertFilter === 'earned' ? '🏆' : '🔒'}</div>
         <div style="font-weight: 700; font-size: 14px; color: var(--ink);">
@@ -6046,7 +5600,7 @@ function renderCertificatesSection() {
     return;
   }
 
-  grid.innerHTML = demoBannerHtml + filtered.map(c => {
+  grid.innerHTML = filtered.map(c => {
     const isEarned = c.isCompleted;
     const isUnlocked = c.isUnlocked;
     const isLocked = !isEarned && !isUnlocked;
@@ -6236,7 +5790,7 @@ function copySqlAndOpenFiddle() {
 }
 
 async function evaluateSql() {
-  if (!isDemoMode && (!user || !user.id)) {
+  if (!user || !user.id) {
     requestGoogleLogin({
       destination: 'practice',
       domain: current?.domain || selectedDomain,
@@ -6291,25 +5845,16 @@ async function evaluateSql() {
   }
 }
 function resetProgress() {
-  if (isDemoMode) {
-    state = EMPTY();
-    saveDemoProgress(state);
-    updateProgress();
-    if (current) renderScenario();
-    return;
-  }
   if(!confirm('Reset progress for '+(user?'this signed-in account':'this guest profile')+'? Other accounts will not be changed.'))return;
   const resetAt=nextTimestamp(state);state={...EMPTY(),resetAt};persist();updateProgress();
   if(current)renderScenario();
 }
 function importOldHistory() {
-  if (isDemoMode) return;
   if(!confirm('Earlier device history may belong to someone else. Import it into this profile only as “answer viewed”, without awarding thinking or SQL completion?'))return;
   let old;try{old=JSON.parse(storage.getItem('crackSqlProgress'));}catch{old=[];}
   state=importLegacy(old,state,data.aliases,ids);persist();updateProgress();if(current)renderScenario();
 }
 function importGuestProgress() {
-  if (isDemoMode) return;
   if(!user||!confirm('Import this device’s guest practice into your signed-in account?'))return;
   const guest=readProgress(storage,null,ids);
   // Explicit imports re-date entries so an intentional import works after a reset.
@@ -6318,7 +5863,6 @@ function importGuestProgress() {
   state=mergeProgress(state,imported,ids);persist();updateProgress();if(current)renderScenario();
 }
 async function importCloudHistory() {
-  if (isDemoMode) return;
   if(!user||!client||!confirm('Import your earlier account completions as answer-viewed history? This will not award thinking or SQL completion.'))return;
   const owner=user.id;
   try {
@@ -6345,34 +5889,17 @@ function renderAuth() {
   const displayHandle = currentUsername ? `@${currentUsername}` : (user?.email || 'learner');
   const emailSub = currentUsername && user?.email ? ` <span style="font-size:0.85em;color:var(--muted);">(${escapeHtml(user.email)})</span>` : '';
   const premiumBadge = (user && isPaidUnlocked) ? ' <span class="premium-badge">⭐ PREMIUM</span>' : '';
-  if (isDemoMode) {
-    $('authBox').innerHTML = `
-      <div class="auth-row" style="background: linear-gradient(135deg, rgba(30, 27, 75, 0.94) 0%, rgba(15, 23, 42, 0.96) 100%); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 16px; padding: 14px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 10px 28px rgba(2, 6, 23, 0.5), 0 0 20px rgba(245, 158, 11, 0.14);">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <span style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; font-size: 11.5px; font-weight: 900; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.5px;">🧪 DEMO MODE</span>
-          <span style="font-size: 13.5px; color: #fde68a; font-weight: 700;">Temporary Demo Session: Progress is stored locally in this tab only and is not saved to an account.</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <button type="button" class="action primary" onclick="signInFromDemo()" style="padding: 8px 14px; font-size: 12.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); border: none; color: #ffffff;">Sign in to Save Progress</button>
-          <button type="button" class="action secondary" onclick="exitDemoMode()" style="padding: 8px 14px; font-size: 12.5px; font-weight: 800; background: rgba(239, 68, 68, 0.14); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.45);">Exit Demo</button>
-        </div>
-      </div>
-    `;
-  } else if (user) {
-    $('authBox').innerHTML = '<div class="auth-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;"><span>Signed in as <strong>'+escapeHtml(displayHandle)+'</strong>'+emailSub+premiumBadge+'</span><div style="display:flex;align-items:center;gap:8px;"><button type="button" id="exploreStartDemoBtn" class="ghost-btn-sm" onclick="startDemoMode()" style="font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:10px;border:1px solid rgba(34,211,238,0.4);background:rgba(34,211,238,0.12);color:#67e8f9;cursor:pointer;">🧪 Try Demo</button><button class="linkbtn" onclick="signOut()">Sign out</button></div></div>';
+  if (user) {
+    $('authBox').innerHTML = '<div class="auth-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;"><span>Signed in as <strong>'+escapeHtml(displayHandle)+'</strong>'+emailSub+premiumBadge+'</span><div style="display:flex;align-items:center;gap:8px;"><button class="linkbtn" onclick="signOut()">Sign out</button></div></div>';
   } else {
     $('authBox').innerHTML = `
       <div class="explore-login-card" style="background: linear-gradient(135deg, rgba(16, 29, 66, 0.92) 0%, rgba(10, 19, 44, 0.95) 100%); border: 1.5px solid rgba(56, 189, 248, 0.32); border-radius: 16px; padding: 16px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(2, 6, 23, 0.45);">
         <div>
-          <div style="font-size: 15px; font-weight: 800; color: #f8fafc;">Try Crack SQL Instantly or Sign In to Save Progress</div>
-          <div style="font-size: 13px; color: #94a3b8; margin-top: 2px;">Launch an interactive Demo Session right away, or sign in with Google to save your Thinking Scores and earn SQL Certificates.</div>
+          <div style="font-size: 15px; font-weight: 800; color: #f8fafc;">Sign In to Save Progress &amp; Earn Certificates</div>
+          <div style="font-size: 13px; color: #94a3b8; margin-top: 2px;">Sign in with Google to save your Thinking Scores and earn SQL Certificates.</div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <button type="button" id="exploreStartDemoBtn" class="action secondary" onclick="startDemoMode()" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; border: 1.5px solid #22d3ee; background: rgba(34, 211, 238, 0.14); color: #67e8f9; border-radius: 12px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; box-shadow: 0 0 18px rgba(34, 211, 238, 0.2);">
-            <span>🧪</span>
-            <span>Try Demo</span>
-          </button>
-          <button type="button" class="action primary" onclick="requestGoogleLogin({ destination: 'practice', domain: selectedDomain, level: selectedLevel })" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 55%, #8b5cf6 100%); border: none; color: #ffffff; border-radius: 12px;">
+          <button type="button" class="action primary" onclick="requestGoogleLogin({ destination: 'practice', domain: selectedDomain, level: selectedLevel })" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 55%, #8b5cf6 100%); border: none; color: #ffffff; border-radius: 12px; white-space: nowrap;">
             Continue with Google
           </button>
         </div>
@@ -6388,7 +5915,6 @@ function renderAuth() {
     headerBadge.style.display = (user && isPaidUnlocked) ? 'inline-flex' : 'none';
   }
 
-  updateDemoModeUI();
   renderProfileAvatar();
 }
 
@@ -6679,12 +6205,6 @@ async function setSession(session) {
   user = next;
 
   if (user) {
-    if (isDemoMode) {
-      isDemoMode = false;
-      demoPremiumPreviewActive = false;
-      clearDemoStorage();
-      updateDemoModeUI();
-    }
     if (previousUserId !== user.id) {
       stopPaymentPolling();
       isCurrentUserAdmin = false;
@@ -7381,17 +6901,6 @@ async function saveProfileModalContactChanges() {
 }
 
 function getUserInfo() {
-  if (isDemoMode) {
-    return {
-      isLoggedIn: false,
-      isDemo: true,
-      name: 'Demo Learner',
-      username: 'demo_preview',
-      email: 'Demo Mode (sessionStorage only)',
-      initial: 'D',
-      avatarUrl: null
-    };
-  }
   if (!user) {
     return {
       isLoggedIn: false,
@@ -7426,8 +6935,6 @@ function renderProfileAvatar() {
       avatarContent.innerHTML = `<img src="${escapeHtml(info.avatarUrl)}" alt="${escapeHtml(info.name)}" class="profile-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\\'profile-avatar-initial\\'>${escapeHtml(info.initial)}</span>';">`;
     } else if (info.isLoggedIn) {
       avatarContent.innerHTML = `<span class="profile-avatar-initial">${escapeHtml(info.initial)}</span>`;
-    } else if (info.isDemo) {
-      avatarContent.innerHTML = `<span class="profile-avatar-initial" style="background:#f59e0b;color:#fff;">🧪</span>`;
     } else {
       avatarContent.innerHTML = `<span style="font-size:18px;">👤</span>`;
     }
@@ -7439,8 +6946,6 @@ function renderProfileAvatar() {
       ddAvatar.innerHTML = `<img src="${escapeHtml(info.avatarUrl)}" alt="${escapeHtml(info.name)}" class="profile-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='${escapeHtml(info.initial)}';">`;
     } else if (info.isLoggedIn) {
       ddAvatar.textContent = info.initial;
-    } else if (info.isDemo) {
-      ddAvatar.innerHTML = '🧪';
     } else {
       ddAvatar.innerHTML = '👤';
     }
@@ -7450,8 +6955,6 @@ function renderProfileAvatar() {
   if (ddName) {
     if (user && isPaidUnlocked) {
       ddName.innerHTML = `${escapeHtml(info.name)} <span class="premium-badge" style="font-size:0.7rem;padding:1px 6px;">⭐ PREMIUM</span>`;
-    } else if (info.isDemo) {
-      ddName.innerHTML = `Demo Learner <span style="background:rgba(245,158,11,0.18);color:#fde68a;border:1px solid rgba(251,191,36,0.45);font-size:0.65rem;padding:1px 6px;border-radius:999px;font-weight:800;vertical-align:middle;margin-left:3px;">DEMO</span>`;
     } else {
       ddName.textContent = info.name;
     }
@@ -7461,11 +6964,6 @@ function renderProfileAvatar() {
   if (ddEmail) ddEmail.textContent = info.email;
 
   const hasUser = Boolean(user && user.id);
-  const demoIndicator = $('profileDemoIndicator');
-  if (demoIndicator) {
-    demoIndicator.hidden = !isDemoMode;
-    demoIndicator.style.display = isDemoMode ? 'flex' : 'none';
-  }
 
   const googleSignInBtn = $('profileGoogleSignInBtn');
   if (googleSignInBtn) {
@@ -7485,20 +6983,10 @@ function renderProfileAvatar() {
     progressBtn.style.display = 'flex';
   }
 
-  const exitDemoBtn = $('profileExitDemoBtn');
-  const exitDemoLabel = $('profileExitDemoLabel');
-  if (exitDemoBtn) {
-    exitDemoBtn.hidden = !isDemoMode;
-    exitDemoBtn.style.display = isDemoMode ? 'flex' : 'none';
-  }
-  if (exitDemoLabel) {
-    exitDemoLabel.textContent = hasUser ? 'Exit Demo Mode' : 'Exit Demo Mode';
-  }
-
   const signOutBtn = $('profileSignOutBtn');
   const signOutLabel = $('profileSignOutLabel');
   if (signOutLabel) {
-    signOutLabel.textContent = hasUser ? 'Sign Out' : (info.isDemo ? 'Exit Demo Mode' : 'Sign in with Google');
+    signOutLabel.textContent = hasUser ? 'Sign Out' : 'Sign in with Google';
   }
   if (signOutBtn) {
     signOutBtn.hidden = !hasUser;
@@ -7537,7 +7025,7 @@ function closeProfileDropdown() {
 
 function openProfileModal() {
   closeProfileDropdown();
-  if (!user && !isDemoMode) {
+  if (!user) {
     requestGoogleLogin({
       destination: 'profile',
       domain: selectedDomain,
@@ -7555,8 +7043,6 @@ function openProfileModal() {
       mAvatar.innerHTML = `<img src="${escapeHtml(info.avatarUrl)}" alt="${escapeHtml(info.name)}" class="profile-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='${escapeHtml(info.initial)}';">`;
     } else if (info.isLoggedIn) {
       mAvatar.textContent = info.initial;
-    } else if (info.isDemo) {
-      mAvatar.innerHTML = '🧪';
     } else {
       mAvatar.innerHTML = '👤';
     }
@@ -7569,9 +7055,6 @@ function openProfileModal() {
     if (currentUsername) {
       uBadge.style.display = 'inline-block';
       uBadge.textContent = `@${currentUsername}`;
-    } else if (isDemoMode) {
-      uBadge.style.display = 'inline-block';
-      uBadge.textContent = '🧪 DEMO PREVIEW';
     } else {
       uBadge.style.display = 'none';
     }
@@ -7579,17 +7062,17 @@ function openProfileModal() {
   if ($('modalProfileStatus')) {
     $('modalProfileStatus').textContent = info.isLoggedIn
       ? '✓ Google Account Connected'
-      : (isDemoMode ? '🧪 Demo Mode (Temporary Session Only)' : 'Guest Mode (Local Practice)');
-    $('modalProfileStatus').style.background = info.isLoggedIn ? '#dcfce7' : (isDemoMode ? '#fef3c7' : '#eff6ff');
-    $('modalProfileStatus').style.color = info.isLoggedIn ? '#166534' : (isDemoMode ? '#92400e' : '#1e40af');
+      : 'Guest Mode (Local Practice)';
+    $('modalProfileStatus').style.background = info.isLoggedIn ? '#dcfce7' : '#eff6ff';
+    $('modalProfileStatus').style.color = info.isLoggedIn ? '#166534' : '#1e40af';
   }
 
   if ($('modalProfileMobileVal')) {
-    $('modalProfileMobileVal').textContent = isDemoMode ? 'Demo Preview (Not stored)' : (currentMobileNumber || 'Not provided');
+    $('modalProfileMobileVal').textContent = currentMobileNumber || 'Not provided';
   }
   if ($('modalProfileWhatsappVal')) {
     const isConsented = currentWhatsappConsent === true;
-    $('modalProfileWhatsappVal').textContent = isDemoMode ? 'Demo Preview' : (isConsented ? '✓ Subscribed' : 'Not subscribed');
+    $('modalProfileWhatsappVal').textContent = isConsented ? '✓ Subscribed' : 'Not subscribed';
     $('modalProfileWhatsappVal').style.color = isConsented ? '#166534' : '#64748b';
   }
   toggleEditProfileContactForm(false);
@@ -7598,18 +7081,18 @@ function openProfileModal() {
   const verifiedCount = scenarios.filter(s => isCompleted(s, state.entries[s.id])).length;
   if ($('modalProfileSolved')) $('modalProfileSolved').textContent = `${verifiedCount} / ${totalExercises}`;
   if ($('modalProfileSync')) {
-    $('modalProfileSync').textContent = info.isLoggedIn ? 'Cloud Sync Active' : (isDemoMode ? 'sessionStorage (Resets on Exit)' : 'Saved on Device');
-    $('modalProfileSync').style.color = info.isLoggedIn ? '#166534' : (isDemoMode ? '#b45309' : '#64748b');
+    $('modalProfileSync').textContent = info.isLoggedIn ? 'Cloud Sync Active' : 'Saved on Device';
+    $('modalProfileSync').style.color = info.isLoggedIn ? '#166534' : '#64748b';
   }
 
   const earnedCerts = getEarnedCertificates(scenarios, state, user, currentUsername);
   if ($('modalProfileCertificates')) {
-    $('modalProfileCertificates').textContent = isDemoMode ? `${earnedCerts.length} / 21 (Demo Preview)` : `${earnedCerts.length} / 21 Earned`;
+    $('modalProfileCertificates').textContent = `${earnedCerts.length} / 21 Earned`;
   }
 
   const authBtn = $('modalAuthActionBtn');
   if (authBtn) {
-    authBtn.textContent = info.isLoggedIn ? 'Sign Out' : (isDemoMode ? 'Exit Demo & Sign In with Google' : 'Sign in with Google');
+    authBtn.textContent = info.isLoggedIn ? 'Sign Out' : 'Sign in with Google';
     authBtn.className = info.isLoggedIn ? 'action danger-btn' : 'action primary';
     authBtn.style.background = info.isLoggedIn ? '#dc2626' : 'var(--primary)';
     authBtn.style.color = '#ffffff';
@@ -7626,9 +7109,7 @@ function closeProfileModal() {
 
 function handleModalAuthAction() {
   closeProfileModal();
-  if (isDemoMode) {
-    signInFromDemo();
-  } else if (user) {
+  if (user) {
     signOut();
   } else {
     requestGoogleLogin({
@@ -7647,15 +7128,7 @@ function openMyProgress() {
 function handleProfileSignOut() {
   closeProfileDropdown();
   if (user && user.id) {
-    if (isDemoMode) {
-      isDemoMode = false;
-      demoPremiumPreviewActive = false;
-      clearDemoStorage();
-      updateDemoModeUI();
-    }
     signOut();
-  } else if (isDemoMode) {
-    exitDemoMode();
   } else {
     requestGoogleLogin({
       destination: 'practice',
@@ -7668,7 +7141,7 @@ function handleProfileSignOut() {
 let isCurrentUserAdmin = false;
 
 async function checkAdminStatus() {
-  if (isDemoMode || !user || !client) {
+  if (!user || !client) {
     isCurrentUserAdmin = false;
     updateAdminPortalVisibility();
     return { isAdmin: false, error: null };
@@ -7741,36 +7214,22 @@ async function checkAdminStatus() {
 }
 
 function updateAdminPortalVisibility() {
-  const showAdmin = Boolean(user && isCurrentUserAdmin && !isDemoMode);
+  const showAdmin = Boolean(user && isCurrentUserAdmin);
   const adminBtn = $('adminPortalBtn');
   if (adminBtn) {
     adminBtn.hidden = !showAdmin;
+    adminBtn.style.display = showAdmin ? 'flex' : 'none';
   }
   const headerAdminBtn = $('headerAdminPortalBtn');
   if (headerAdminBtn) {
     headerAdminBtn.hidden = !showAdmin;
-  }
-  const adminDemoBtn = $('adminDemoModeBtn');
-  if (adminDemoBtn) {
-    adminDemoBtn.hidden = Boolean(isDemoMode);
-    adminDemoBtn.style.display = isDemoMode ? 'none' : 'flex';
-  }
-  const loginDemoBtn = $('startDemoModeBtn');
-  if (loginDemoBtn) {
-    loginDemoBtn.hidden = Boolean(isDemoMode);
-    loginDemoBtn.style.display = isDemoMode ? 'none' : 'inline-flex';
-  }
-  const homeTryBtn = $('homeTryDemoBtn');
-  if (homeTryBtn) {
-    homeTryBtn.hidden = Boolean(isDemoMode);
-    homeTryBtn.style.display = isDemoMode ? 'none' : 'inline-flex';
+    headerAdminBtn.style.display = showAdmin ? 'inline-flex' : 'none';
   }
 }
 
 function openAdminPortal() {
   closeProfileDropdown();
-  // Strictly block access to admin screens in Demo Mode or when not an authenticated admin
-  if (isDemoMode || !user || !isCurrentUserAdmin) {
+  if (!user || !isCurrentUserAdmin) {
     console.warn('[Security] Admin portal access blocked: requires authenticated admin session.');
     return false;
   }
@@ -8291,7 +7750,7 @@ Object.assign(window,{
   startPracticeSession,cancelGoogleLoginPopup,requestGoogleLogin,
   openChooseLevelModal,closeChooseLevelModal,showChooseLevelNotice,getAvailableDomains,toggleAdditionalDomains,
   openLoginModal,closeLoginModal,updateStartPracticeUI,
-  startDemoMode,exitDemoMode,signInFromDemo,handleProfileGoogleSignIn,simulateDemoPaymentPreview,openDemoContestPreviewModal,isDemoModeActive,
+  handleProfileGoogleSignIn,
   openPaywallModal,closePaywallModal,payCourseUnlockWithRazorpay,
   savePendingAuthIntent,readPendingAuthIntent,clearPendingAuthIntent,resumePendingAuthIntent,
   evaluatePlan,evaluateSql,nextScenario,goHome,
@@ -8363,7 +7822,7 @@ try {
   const thinkingEl = $('thinking');
   if (thinkingEl) {
     thinkingEl.addEventListener('input',()=>{
-      if (!isDemoMode && (!user || !user.id)) return;
+      if (!user || !user.id) return;
       changeEntry({
         thinking: readThinking(),
         assessment: null,
@@ -8391,7 +7850,7 @@ try {
   const sqlInput = $('learnerSql');
   if (sqlInput) {
     sqlInput.addEventListener('input', () => {
-      if (!isDemoMode && (!user || !user.id)) return;
+      if (!user || !user.id) return;
       changeEntry({ sql: sqlInput.value, fiddleFingerprint: null, evaluationFingerprint: null, evaluationResult: null });
       renderSqlEvaluation(null);
       updateSqlEditorView();
