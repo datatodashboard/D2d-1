@@ -5141,11 +5141,18 @@ function closeStepSql() { $('stepSqlModal').hidden = true; }
 
 let currentSampleTable = null;
 function setSchemaTab(tab) {
-  $('tabSchema').classList.toggle('active', tab === 'schema');
-  $('tabSample').classList.toggle('active', tab === 'sample');
-  $('schemaOverview').hidden = tab !== 'schema';
-  $('sampleDataView').hidden = tab !== 'sample';
-  if (tab === 'sample') renderSampleDataView();
+  const isSchema = tab !== 'sample';
+  if ($('tabSchema')) {
+    $('tabSchema').classList.toggle('active', isSchema);
+    $('tabSchema').setAttribute('aria-selected', String(isSchema));
+  }
+  if ($('tabSample')) {
+    $('tabSample').classList.toggle('active', !isSchema);
+    $('tabSample').setAttribute('aria-selected', String(!isSchema));
+  }
+  if ($('schemaOverview')) $('schemaOverview').hidden = !isSchema;
+  if ($('sampleDataView')) $('sampleDataView').hidden = isSchema;
+  if (!isSchema) renderSampleDataView();
 }
 
 function renderSampleDataView() {
@@ -5153,22 +5160,27 @@ function renderSampleDataView() {
   if (!container || !current) return;
   const sampleSql = data?.assets?.[current.domain]?.sample || DOMAIN_SCHEMA_ASSETS[current.domain]?.sample || '';
   const parsed = parseSampleRecords(sampleSql);
-  const tableNames = Object.keys(parsed).sort();
+  const allTableNames = Object.keys(parsed).sort();
+  const scenarioTables = Array.isArray(current.tables) && current.tables.length > 0
+    ? current.tables.filter(t => allTableNames.includes(t))
+    : [];
+  const tableNames = scenarioTables.length > 0
+    ? [...scenarioTables, ...allTableNames.filter(t => !scenarioTables.includes(t))]
+    : allTableNames;
   if (tableNames.length === 0) {
     container.innerHTML = '<p class="small muted">No sample data available for this scenario.</p>';
     return;
   }
-  if (currentSampleTable && !tableNames.includes(currentSampleTable)) {
-    currentSampleTable = null;
+  if (!currentSampleTable || !tableNames.includes(currentSampleTable)) {
+    currentSampleTable = tableNames[0] || null;
   }
   const tData = currentSampleTable ? parsed[currentSampleTable] : null;
 
   container.innerHTML = `
-    <div style="font-weight: 800; font-size: 15px; margin-bottom: 10px; color: var(--ink);">Sample Data</div>
     <div class="sample-table-tabs">
       ${tableNames.map(t => `
         <button type="button" class="sample-tab ${t === currentSampleTable ? 'active' : ''}" onclick="selectSampleTable('${t}')">
-          [ ${escapeHtml(t)} ]
+          ${escapeHtml(t)}
         </button>
       `).join('')}
     </div>
@@ -5187,7 +5199,7 @@ function renderSampleDataView() {
       </div>
       ${tData.rows.length > 10 ? `<div class="small muted" style="margin-top:6px;">Showing first 10 of ${tData.rows.length} rows</div>` : ''}
     ` : `
-      <div class="small muted" style="padding:14px; background:#f8fafc; border:1px dashed var(--line); border-radius:10px; text-align:center;">
+      <div class="small muted" style="padding:14px; background:rgba(15, 23, 42, 0.55); border:1px dashed rgba(148, 163, 184, 0.25); border-radius:10px; text-align:center;">
         Click any table name above to view its sample data.
       </div>
     `}
@@ -5899,7 +5911,7 @@ function renderAuth() {
           <div style="font-size: 13px; color: #94a3b8; margin-top: 2px;">Sign in with Google to save your Thinking Scores and earn SQL Certificates.</div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <button type="button" class="action primary" onclick="requestGoogleLogin({ destination: 'practice', domain: selectedDomain, level: selectedLevel })" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 55%, #8b5cf6 100%); border: none; color: #ffffff; border-radius: 12px; white-space: nowrap;">
+          <button type="button" class="action primary" onclick="requestGoogleLogin({ destination: 'practice' })" style="padding: 10px 18px; font-size: 13.5px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #2563eb 55%, #8b5cf6 100%); border: none; color: #ffffff; border-radius: 12px; white-space: nowrap;">
             Continue with Google
           </button>
         </div>

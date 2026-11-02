@@ -569,4 +569,53 @@ test('Check My Thinking shows empty-answer warning pop-up for empty or whitespac
   assert.equal(els.howToThinkBox.hidden, false, 'Valid text must reveal How to Think card after scoring');
 });
 
+test('Practice Schema & Sample Data tabs default to Schema Overview, switch smoothly, and reset on scenario change', () => {
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const css = fs.readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
+  const appJs = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+
+  // 1. Markup shows both Schema Overview and Sample Data tabs with Schema Overview active by default
+  assert.ok(
+    html.includes('id="tabSchema" onclick="setSchemaTab(\'schema\')">Schema Overview</button>'),
+    'tabSchema button must be labeled Schema Overview'
+  );
+  assert.ok(
+    html.includes('id="tabSample" onclick="setSchemaTab(\'sample\')">Sample Data</button>'),
+    'tabSample button must be visible and labeled Sample Data'
+  );
+  assert.ok(
+    html.includes('<div id="schemaOverview">') &&
+      html.includes('<div id="sampleDataView" hidden></div>'),
+    'schemaOverview must be visible by default and sampleDataView hidden by default'
+  );
+
+  // 2. CSS hides inline sample records inside #schemaOverview and keeps both #tabSchema and #tabSample visible
+  assert.ok(
+    css.includes('#practice #schemaOverview .schema-sample-section') &&
+      css.includes('display: none !important;'),
+    'Schema Overview must not display sample records in the default view'
+  );
+  assert.ok(
+    !css.includes('#practice #tabSample {\n  display: none !important;\n}'),
+    '#tabSample must not be hidden via display: none in CSS'
+  );
+
+  // 3. renderAuth Continue with Google button does not reference module-scoped selectedDomain in inline onclick
+  assert.ok(
+    !appJs.includes('onclick="requestGoogleLogin({ destination: \'practice\', domain: selectedDomain'),
+    'Continue with Google inline onclick must not reference module-scoped selectedDomain directly'
+  );
+
+  // 4. Verify setSchemaTab + renderSampleDataView behavior on tab switch and scenario navigation
+  assert.ok(
+    appJs.includes("currentSampleTable = null;\n  setSchemaTab('schema');"),
+    'renderScenario must reset currentSampleTable and default to Schema Overview when opening or changing scenarios'
+  );
+  assert.ok(
+    appJs.includes('if (!currentSampleTable || !tableNames.includes(currentSampleTable)) {\n    currentSampleTable = tableNames[0] || null;\n  }'),
+    'renderSampleDataView must auto-select the first scenario table so clicking Sample Data immediately shows sample records'
+  );
+});
+
+
 

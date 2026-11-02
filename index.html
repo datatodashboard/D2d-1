@@ -55,7 +55,7 @@
 <div id="splashScreen" class="splash-screen">
   <div class="splash-content">
     <div class="splash-logo"><img src="public/logo.png" width="76" height="76" decoding="async" alt="Crack SQL" class="splash-logo-img" /></div>
-    <div class="splash-watermark">Data To Dashboard</div>
+    <div class="splash-watermark">Data2Dashboard</div>
     <div class="splash-title">Crack SQL</div>
     <div class="splash-tagline">Think Like a Data Engineer, Not Just a SQL Developer</div>
     <div class="splash-spinner"></div>
@@ -877,7 +877,7 @@
   <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="loginPopupTitle">
     <button type="button" class="modal-close-btn" id="closeLoginPopupBtn" onclick="cancelGoogleLoginPopup()" aria-label="Close" style="position:absolute;top:16px;right:16px;">✕</button>
     <div class="login-logo-badge"><img src="public/logo.png" width="58" height="58" loading="lazy" decoding="async" alt="Crack SQL" class="login-logo-img" /></div>
-    <div class="login-kicker">Data To Dashboard</div>
+    <div class="login-kicker">Data2Dashboard</div>
     <h1 class="login-title" id="loginPopupTitle">Crack SQL</h1>
     <p class="login-tagline">Think like a Data Engineer • Plan in English • Crack the SQL</p>
     <div id="loginSelectedTargetBadge" hidden style="display:none;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding:4px 12px;border-radius:999px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:12px;font-weight:800;"></div>
@@ -1031,7 +1031,7 @@
         <img src="public/logo.png" width="52" height="52" decoding="async" alt="Crack SQL Logo" class="header-vault-logo" />
       </div>
       <div>
-        <div class="d2d-company-kicker">Data To Dashboard</div>
+        <div class="d2d-company-kicker">Data2Dashboard</div>
         <h1>Crack SQL</h1>
         <div class="sub">Think like a Data Engineer • Plan in English • Crack the SQL</div>
       </div>
@@ -1384,9 +1384,9 @@
               inert
               hidden
             >
-              <div class="tab-header" hidden>
-                <button class="tab-btn active" id="tabSchema" onclick="setSchemaTab('schema')">Schema Cards &amp; Sample Records</button>
-                <button class="tab-btn" id="tabSample" onclick="setSchemaTab('sample')" hidden>Sample Data</button>
+              <div class="tab-header">
+                <button class="tab-btn active" id="tabSchema" onclick="setSchemaTab('schema')">Schema Overview</button>
+                <button class="tab-btn" id="tabSample" onclick="setSchemaTab('sample')">Sample Data</button>
               </div>
               <div id="schemaOverview">
                 <div class="schema-cards" id="schema"></div>
@@ -1716,11 +1716,13 @@
       </script>
     </div>
 
-    <div class="card">
-      <label for="thinking">How would you prepare this information?</label>
-      <p class="small thinking-helper-copy" id="thinkingHelperText">Explain in your own words. No SQL needed yet.</p>
+    <div class="card thinking-workspace-card">
+      <div class="thinking-workspace-header">
+        <label for="thinking">Your Thinking<span class="sr-only"> — How would you prepare this information?</span></label>
+        <p class="small thinking-helper-copy" id="thinkingHelperText">Explain your approach in your own words. You do not need to write SQL.<span class="sr-only"> Explain in your own words. No SQL needed yet.</span></p>
+      </div>
       <textarea id="thinking" aria-describedby="thinkingHelperText" maxlength="8000" placeholder="Explain in your own words which table(s) and conditions you would use..."></textarea>
-      <div class="actions" style="grid-template-columns: 1fr; margin-top: 10px;">
+      <div class="actions thinking-workspace-actions" style="grid-template-columns: 1fr; margin-top: 8px;">
         <button class="action primary" id="checkThinkingBtn" onclick="evaluatePlan()">Check my thinking</button>
       </div>
       <div id="feedback" class="feedback" role="status" aria-live="polite" data-has-result="false">
