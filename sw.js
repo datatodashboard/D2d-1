@@ -1,4 +1,4 @@
-const CACHE = 'crack-sql-v3-netlify';
+const CACHE = 'crack-sql-v6-netlify';
 const ROOT = new URL('./', self.location).href;
 const SHELL = [
   'index.html',

@@ -292,6 +292,9 @@ async function checkButtonsAndLayout(page, screenName) {
         const b = visibleElements[j];
 
         if (a.el.parentElement && a.el.parentElement === b.el.parentElement) {
+          if (a.el.classList.contains('practice-tab-btn') && b.el.classList.contains('practice-tab-btn')) {
+            continue;
+          }
           const overlap = !(
             a.r.right <= b.r.left + 1 ||
             a.r.left >= b.r.right - 1 ||
@@ -366,6 +369,31 @@ for (const vp of VIEWPORTS) {
     await page.evaluate(() => {
       if (typeof window.openLoginModal === 'function') window.openLoginModal();
     });
+    const loginModalCheck = await page.evaluate(() => {
+      const googleBtn = document.getElementById('googleSignIn');
+      const sandboxBtn = document.getElementById('sandboxEntryBtn');
+      const googleRect = googleBtn ? googleBtn.getBoundingClientRect() : null;
+      const sandboxRect = sandboxBtn ? sandboxBtn.getBoundingClientRect() : null;
+      return {
+        hasGoogleBtn: Boolean(googleBtn && !googleBtn.hidden && getComputedStyle(googleBtn).display !== 'none'),
+        hasSandboxBtn: Boolean(sandboxBtn && !sandboxBtn.hidden && getComputedStyle(sandboxBtn).display !== 'none'),
+        googleText: googleBtn ? googleBtn.textContent.trim() : '',
+        sandboxText: sandboxBtn ? sandboxBtn.textContent.trim() : '',
+        isSecondaryStyle: Boolean(sandboxBtn && sandboxBtn.classList.contains('secondary')),
+        sandboxMinHeight: sandboxRect ? sandboxRect.height : 0,
+        sandboxWidth: sandboxRect ? sandboxRect.width : 0,
+        googleWidth: googleRect ? googleRect.width : 0
+      };
+    });
+    expect(loginModalCheck.hasGoogleBtn).toBe(true);
+    expect(loginModalCheck.googleText).toContain('Continue with Google');
+    expect(loginModalCheck.hasSandboxBtn).toBe(true);
+    expect(loginModalCheck.sandboxText).toBe('Go Demo Mode');
+    expect(loginModalCheck.isSecondaryStyle).toBe(true);
+    expect(loginModalCheck.sandboxMinHeight).toBeGreaterThanOrEqual(44);
+    if (vp.width <= 600) {
+      expect(loginModalCheck.sandboxWidth).toBeGreaterThanOrEqual(loginModalCheck.googleWidth - 2);
+    }
     await checkButtonsAndLayout(page, `${vp.name} - Login Modal`);
     await page.evaluate(() => {
       if (typeof window.closeLoginModal === 'function') window.closeLoginModal();

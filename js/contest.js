@@ -92,8 +92,15 @@ export async function initContest(client, user, completedCount = 0, isAdmin = fa
 
   activeInitContestPromise = (async () => {
     // 1. Enforce Qualification: Learners must have completed >= 18 questions.
-    // Admins are exempt from the 18-completion requirement for testing.
-    if (currentCompletedCount < 18 && !activeIsAdmin) {
+  try {
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('sandbox:active') === 'true') {
+      hideContestCard();
+      return;
+    }
+  } catch (_) {}
+
+  // Admins are exempt from the 18-completion requirement for testing.
+  if (currentCompletedCount < 18 && !activeIsAdmin) {
       currentContest = null;
       hideContestCard();
       return;
@@ -427,6 +434,12 @@ function handleContestAction() {
 
 // Modal View Switcher: 'details' | 'payment' | 'ready' | 'active' | 'submitted'
 export function openContestModal(stage = 'details') {
+  try {
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('sandbox:active') === 'true') {
+      if (typeof window.openSandboxAuthModal === 'function') window.openSandboxAuthModal();
+      return;
+    }
+  } catch (_) {}
   let modal = $('contestModalContainer');
   if (!modal) {
     modal = document.createElement('div');

@@ -896,6 +896,7 @@
         </svg>
         <span>Continue with Google</span>
       </button>
+      <button type="button" id="sandboxEntryBtn" class="action secondary sandbox-entry-btn" onclick="startSandboxSession()">Go Demo Mode</button>
       <button type="button" id="cancelLoginBtn" class="ghost-btn-sm" onclick="cancelGoogleLoginPopup()" style="width:100%;padding:10px;font-size:13px;font-weight:700;color:var(--muted);">
         Cancel &amp; Return to Explore
       </button>
@@ -908,6 +909,33 @@
     </div>
   </div>
 </section>
+
+<!-- Sandbox Auth Required Modal (Plain Panel - Restricted Action / Free Limit Reached) -->
+<div id="sandboxAuthRequiredModal" class="choose-level-backdrop" hidden onclick="if(event.target===this)closeSandboxAuthModal()">
+  <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="sandboxAuthTitle" style="max-width:440px;text-align:center;">
+    <button type="button" class="modal-close-btn" onclick="closeSandboxAuthModal()" aria-label="Close" style="position:absolute;top:16px;right:16px;">✕</button>
+    <div class="login-logo-badge"><img src="public/logo.png" width="58" height="58" loading="lazy" decoding="async" alt="Crack SQL" class="login-logo-img" /></div>
+    <div class="login-kicker">Data2Dashboard</div>
+    <h2 class="login-title" id="sandboxAuthTitle" style="font-size:22px;margin-top:8px;">Sign In to Continue</h2>
+    <p class="login-desc" id="sandboxAuthDesc" style="margin-top:8px;font-size:14px;color:var(--muted);line-height:1.5;">
+      Sign in with Google to save your thinking progress, track your scores, and access full features.
+    </p>
+    <div class="login-action-box" style="flex-direction:column;gap:10px;margin-top:20px;">
+      <button type="button" id="sandboxAuthSignInBtn" class="google-login-btn" onclick="handleSandboxSignInClick()">
+        <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Sign in with Google</span>
+      </button>
+      <button type="button" id="sandboxAuthCancelBtn" class="ghost-btn-sm" onclick="closeSandboxAuthModal()" style="width:100%;padding:10px;font-size:13px;font-weight:700;color:var(--muted);">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Choose Level Dialog (Game-Style Midnight Navy Centered Modal) -->
 <div id="chooseLevelModal" class="choose-level-backdrop" hidden onclick="if(event.target===this)closeChooseLevelModal()">
@@ -1040,6 +1068,7 @@
       <span id="headerPremiumBadge" class="premium-badge" style="display:none;">⭐ PREMIUM</span>
       <button class="ghost-btn-sm" onclick="openOnboarding()" style="white-space:nowrap;">How it works</button>
       <button id="headerAdminPortalBtn" class="action secondary sm" onclick="openAdminPortal()" hidden style="font-weight:700;display:none;align-items:center;gap:4px;white-space:nowrap;">🛠️ Admin Portal</button>
+      <button type="button" id="sandboxHeaderSignInBtn" class="action primary sm sandbox-header-signin-btn" onclick="handleSandboxSignInClick()" style="display:none;font-weight:700;white-space:nowrap;min-height:36px;">Sign in with Google</button>
 
       <!-- Notification Badge & Dropdown -->
       <div class="notifications-container" id="notificationsContainer">
@@ -1148,53 +1177,53 @@
     </div>
 
     <div class="domain-missions-grid" id="allDomainsGrid">
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Banking',this)" role="button" tabindex="0">
+      <div class="domain-mission-card pick domain" data-domain="Banking" onclick="selectDomain('Banking',this)" role="button" tabindex="0">
         <div class="mission-icon-box"><span>🏦</span></div>
         <div class="mission-info">
           <div class="mission-title-row"><span class="mission-name">Banking</span></div>
           <div class="mission-note">Accounts &amp; transactions (60)</div>
         </div>
       </div>
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Healthcare',this)" role="button" tabindex="0">
+      <div class="domain-mission-card pick domain" data-domain="Healthcare" onclick="selectDomain('Healthcare',this)" role="button" tabindex="0">
         <div class="mission-icon-box"><span>🏥</span></div>
         <div class="mission-info">
           <div class="mission-title-row"><span class="mission-name">Healthcare</span></div>
           <div class="mission-note">Patients &amp; visits (60)</div>
         </div>
       </div>
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Insurance',this)" role="button" tabindex="0">
+      <div class="domain-mission-card pick domain" data-domain="Insurance" onclick="selectDomain('Insurance',this)" role="button" tabindex="0">
         <div class="mission-icon-box"><span>🛡️</span></div>
         <div class="mission-info">
           <div class="mission-title-row"><span class="mission-name">Insurance</span></div>
           <div class="mission-note">Policies &amp; claims (60)</div>
         </div>
       </div>
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Retail',this)" role="button" tabindex="0">
+      <div class="domain-mission-card pick domain" data-domain="Retail" onclick="selectDomain('Retail',this)" role="button" tabindex="0">
         <div class="mission-icon-box"><span>🛒</span></div>
         <div class="mission-info">
           <div class="mission-title-row"><span class="mission-name">Retail</span></div>
           <div class="mission-note">Orders &amp; products (60)</div>
         </div>
       </div>
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Capital Markets',this)" role="button" tabindex="0">
-        <div class="mission-icon-box"><span>📈</span></div>
+      <div class="domain-mission-card pick domain" data-domain="Education" onclick="selectDomain('Education',this)" role="button" tabindex="0">
+        <div class="mission-icon-box"><span>🎓</span></div>
         <div class="mission-info">
-          <div class="mission-title-row"><span class="mission-name">Capital Markets</span></div>
-          <div class="mission-note">Investors &amp; trades (60)</div>
+          <div class="mission-title-row"><span class="mission-name">Education</span></div>
+          <div class="mission-note">Students &amp; assessments (60)</div>
         </div>
       </div>
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Semiconductor',this)" role="button" tabindex="0">
+      <div class="domain-mission-card pick domain" data-domain="Semiconductor" onclick="selectDomain('Semiconductor',this)" role="button" tabindex="0">
         <div class="mission-icon-box"><span>🔬</span></div>
         <div class="mission-info">
           <div class="mission-title-row"><span class="mission-name">Semiconductor</span></div>
           <div class="mission-note">Batches &amp; chip tests (60)</div>
         </div>
       </div>
-      <div class="domain-mission-card pick domain" onclick="selectDomain('Education',this)" role="button" tabindex="0">
-        <div class="mission-icon-box"><span>🎓</span></div>
+      <div class="domain-mission-card pick domain" data-domain="Capital Markets" onclick="selectDomain('Capital Markets',this)" role="button" tabindex="0">
+        <div class="mission-icon-box"><span>📈</span></div>
         <div class="mission-info">
-          <div class="mission-title-row"><span class="mission-name">Education</span></div>
-          <div class="mission-note">Students &amp; assessments (60)</div>
+          <div class="mission-title-row"><span class="mission-name">Capital Markets</span></div>
+          <div class="mission-note">Investors &amp; trades (60)</div>
         </div>
       </div>
     </div>
@@ -1257,6 +1286,7 @@
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <div class="meta" id="meta"></div>
+      <button type="button" id="practiceSandboxSignInBtn" class="action primary sm sandbox-header-signin-btn" onclick="handleSandboxSignInClick()" style="display:none;font-weight:700;white-space:nowrap;min-height:36px;">Sign in with Google</button>
       <div class="notifications-container" id="practiceNotificationsContainer">
         <button class="notification-avatar-btn" onclick="toggleNotificationsDropdown(event)" aria-haspopup="true" aria-expanded="false" title="Notifications">
           <span class="notification-icon">🔔</span>
@@ -1338,32 +1368,81 @@
             >
               <section class="question-panel" aria-labelledby="businessScenarioLabel">
                 <h3 id="businessScenarioLabel" class="sr-only">Business Scenario</h3>
-                <div class="scenario-conversation-layout" id="scenarioConversation">
-                  <aside class="conversation-manager-card" aria-label="Domain Manager">
-                    <div class="conversation-manager-avatar" id="conversationManagerAvatar" aria-hidden="true">🏦</div>
-                    <div class="conversation-manager-meta">
-                      <div class="conversation-manager-name" id="conversationManagerName">Arun</div>
-                      <div class="conversation-manager-role" id="conversationManagerRole">Bank Manager</div>
-                    </div>
-                  </aside>
-                  <div class="conversation-thread">
-                    <div class="conversation-turn manager-turn" id="managerRequestTurn">
-                      <div class="conversation-bubble">
-                        <div class="conversation-speaker" id="conversationRequestSpeaker">Arun</div>
-                        <div class="problem conversation-text" id="question"></div>
+                <div class="business-scenario-split-grid" id="businessScenarioSplitGrid" data-has-video="false">
+                  <div class="visual-challenge-column" id="visualChallengeColumn" hidden aria-label="Visual Business Challenge">
+                    <div class="visual-challenge-card">
+                      <div class="visual-challenge-header">
+                        <span class="visual-challenge-badge">🎬 Visual Business Challenge</span>
+                        <span class="visual-challenge-meta" id="visualChallengeScenarioBadge">BAN_BEG_001</span>
+                      </div>
+                      <div class="visual-challenge-frame" id="visualChallengeFrame">
+                        <div class="visual-challenge-placeholder" id="visualChallengePlaceholder">
+                          <div class="visual-challenge-placeholder-bg" aria-hidden="true"></div>
+                          <div class="visual-challenge-placeholder-content">
+                            <button type="button" class="visual-challenge-play-btn" id="visualChallengePlayBtn" onclick="playScenarioVideo()" aria-label="Play animated business challenge video">
+                              <span class="visual-challenge-play-icon" aria-hidden="true">▶</span>
+                              <span class="visual-challenge-play-label">Watch Business Problem</span>
+                            </button>
+                            <p class="visual-challenge-caption">Animated scenario briefing • Click Play to load</p>
+                          </div>
+                        </div>
+                        <video
+                          id="scenarioChallengeVideo"
+                          class="scenario-challenge-video"
+                          preload="none"
+                          controls
+                          playsinline
+                          hidden
+                          aria-label="Animated business scenario video"
+                        ></video>
+                        <div class="visual-challenge-error" id="visualChallengeError" hidden role="status" aria-live="polite">
+                          <div class="visual-challenge-error-icon" aria-hidden="true">🎬</div>
+                          <div class="visual-challenge-error-copy">
+                            <strong>Visual briefing preview</strong>
+                            <p id="visualChallengeErrorText">Video stream is currently a placeholder or unavailable. Read the written scenario on the right to continue.</p>
+                          </div>
+                          <button type="button" class="action secondary sm visual-challenge-retry-btn" id="visualChallengeReplayBtn" onclick="replayScenarioVideo()">Replay / Retry</button>
+                        </div>
+                      </div>
+                      <div class="visual-challenge-controls-bar" id="visualChallengeControlsBar" hidden>
+                        <span class="visual-challenge-status-text" id="visualChallengeStatusText">Playing animated business challenge</span>
+                        <button type="button" class="linkbtn visual-challenge-inline-replay" id="visualChallengeInlineReplayBtn" onclick="replayScenarioVideo()" aria-label="Replay video">↻ Replay</button>
                       </div>
                     </div>
-                    <div class="conversation-turn learner-turn" id="learnerClarificationTurn" hidden>
-                      <div class="conversation-bubble">
-                        <div class="conversation-speaker" id="conversationLearnerName">Learner</div>
-                        <div class="conversation-text" id="learnerQuestion"></div>
+                  </div>
+
+                   <div class="written-scenario-column" id="writtenScenarioColumn">
+                    <div class="scenario-conversation-layout" id="scenarioConversation">
+                      <div id="conversationManagerAvatar" hidden style="display:none;"></div>
+                      <div class="conversation-thread">
+                        <div class="conversation-turn manager-turn" id="managerRequestTurn">
+                          <div class="conversation-bubble">
+                            <div class="conversation-speaker" id="conversationRequestSpeaker">Manager</div>
+                            <div class="problem conversation-text" id="question"></div>
+                          </div>
+                        </div>
+                        <div class="conversation-turn learner-turn" id="learnerClarificationTurn">
+                          <div class="conversation-bubble">
+                            <div class="conversation-speaker" id="conversationLearnerName">You</div>
+                            <div class="conversation-text" id="learnerQuestion"></div>
+                          </div>
+                        </div>
+                        <div class="conversation-turn manager-turn" id="managerReplyTurn">
+                          <div class="conversation-bubble">
+                            <div class="conversation-speaker" id="conversationReplySpeaker">Manager</div>
+                            <div class="conversation-text" id="managerReply"></div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div class="conversation-turn manager-turn" id="managerReplyTurn" hidden>
-                      <div class="conversation-bubble">
-                        <div class="conversation-speaker" id="conversationReplySpeaker">Arun</div>
-                        <div class="conversation-text" id="managerReply"></div>
+
+                    <div class="scenario-thinking-inline" id="scenarioThinkingInline">
+                      <div class="thinking-workspace-header">
+                        <label for="thinking">Your Thinking<span class="sr-only"> — How would you prepare this information?</span></label>
+                        <p class="small thinking-helper-copy" id="thinkingHelperText">Explain your approach in your own words. You do not need to write SQL.<span class="sr-only"> Explain in your own words. No SQL needed yet.</span></p>
                       </div>
+                      <div class="thinking-textarea-Slot" id="thinkingBusinessSlot"></div>
+                      <div class="thinking-inline-actions" id="thinkingInlineActionsSlot"></div>
                     </div>
                   </div>
                 </div>
@@ -1384,12 +1463,19 @@
               inert
               hidden
             >
-              <div class="tab-header">
-                <button class="tab-btn active" id="tabSchema" onclick="setSchemaTab('schema')">Schema Overview</button>
-                <button class="tab-btn" id="tabSample" onclick="setSchemaTab('sample')">Sample Data</button>
+              <div class="tab-header schema-subtabs-bar" hidden style="display:none;">
+                <div class="schema-subtabs-left">
+                  <button class="tab-btn active" id="tabSchema" onclick="setSchemaTab('schema')">Schema Overview</button>
+                  <button class="tab-btn" id="tabSample" onclick="setSchemaTab('sample')">Sample Data</button>
+                </div>
+                <div class="schema-subtabs-hint" id="schemaSubtabsHint">
+                  <span class="schema-subtabs-hint-icon" aria-hidden="true">ⓘ</span>
+                  <span id="schemaSubtabsHintText">Select a table to inspect columns or view sample records.</span>
+                </div>
               </div>
               <div id="schemaOverview">
-                <div class="schema-cards" id="schema"></div>
+                <div class="schema-cards schema-table-list-pane" id="schema"></div>
+                <div class="schema-table-detail-pane" id="schemaTableDetailPane"></div>
               </div>
               <div id="sampleDataView" hidden></div>
             </div>
@@ -1468,7 +1554,39 @@
             }
           }
 
+          function formatScenarioConditionHighlights(rawText) {
+            const safe = String(rawText ?? '')
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
+            if (!safe.trim()) return safe;
+            return safe.replace(
+              /\b(Active|Inactive|Pending|Closed|Completed|Failed|Approved|Rejected|Cancelled|Suspended|Overdue|Paid|Unpaid|Credit|Debit|Transfer|Premium|Standard|Enterprise|High|Medium|Low|Pass|Fail|Passed|greater than|less than|more than|at least|at most|exceeds|above|below|between|before|after|on or after|on or before|excluding|exclude|only|highest|lowest|total|average|count|sum|\d+(?:,\d{3})*(?:\.\d+)?)\b/gi,
+              '<span class="scenario-condition-highlight">$1</span>'
+            );
+          }
+
+          function mountThinkingIntoBusinessSlot() {
+            if (typeof document === 'undefined') return;
+            const slotEl = document.getElementById('thinkingBusinessSlot');
+            const thinkingEl = document.getElementById('thinking');
+            if (slotEl && thinkingEl && thinkingEl.parentElement !== slotEl && typeof slotEl.appendChild === 'function') {
+              slotEl.appendChild(thinkingEl);
+            }
+            const btnSlotEl = document.getElementById('thinkingInlineActionsSlot');
+            const checkBtnEl = document.getElementById('checkThinkingBtn');
+            if (btnSlotEl && checkBtnEl && checkBtnEl.parentElement !== btnSlotEl && typeof btnSlotEl.appendChild === 'function') {
+              btnSlotEl.appendChild(checkBtnEl);
+            }
+            const metaEl = document.getElementById('meta');
+            const qnoEl = document.getElementById('qno');
+            if (metaEl && qnoEl && metaEl.parentElement && qnoEl.parentElement !== metaEl.parentElement && typeof metaEl.parentElement.insertBefore === 'function') {
+              metaEl.parentElement.insertBefore(qnoEl, metaEl.nextSibling);
+            }
+          }
+
           function setPracticeWorkspaceTab(tab, focusTab, options) {
+            mountThinkingIntoBusinessSlot();
             const normalized = tab === 'schema' ? 'schema' : 'business';
             const previousTab = activePracticeTab;
             const isInstant = Boolean(options && options.instant);
@@ -1598,17 +1716,9 @@
               schemaContainer.innerHTML = '<div class="schema-sample-empty" role="status">No schema or sample records available for this scenario.</div>';
               return;
             }
-            schemaContainer.querySelectorAll('.schema-sample-toggle[aria-expanded="false"]').forEach(function (btn) {
-              const panelId = btn.getAttribute('aria-controls');
-              const card = btn.closest('.schema-card');
-              const panel = (panelId && document.getElementById(panelId)) || (card && card.querySelector('.schema-sample-panel'));
-              if (!panel) return;
-              panel.hidden = false;
-              btn.setAttribute('aria-expanded', 'true');
-              if (card) card.classList.add('sample-expanded');
-              const labelEl = btn.querySelector('.schema-sample-toggle-label');
-              if (labelEl) labelEl.textContent = 'Hide sample records';
-            });
+            if (typeof window.syncInteractiveSchemaSelection === 'function') {
+              window.syncInteractiveSchemaSelection(schemaContainer);
+            }
           }
 
           window.setPracticeWorkspaceTab = setPracticeWorkspaceTab;
@@ -1650,6 +1760,27 @@
             }
           }
 
+          const questionEl = document.getElementById('question');
+          if (questionEl) {
+            const qTextDesc = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+            const qHtmlDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+            if (qTextDesc && qTextDesc.get && qTextDesc.set && qHtmlDesc && qHtmlDesc.set) {
+              Object.defineProperty(questionEl, 'textContent', {
+                configurable: true,
+                get: function () {
+                  return qTextDesc.get.call(this);
+                },
+                set: function (val) {
+                  qTextDesc.set.call(this, val);
+                  const raw = String(val ?? '');
+                  if (raw.trim()) {
+                    qHtmlDesc.set.call(this, formatScenarioConditionHighlights(raw));
+                  }
+                }
+              });
+            }
+          }
+
           const schemaEl = document.getElementById('schema');
           if (schemaEl) {
             const htmlDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
@@ -1676,6 +1807,9 @@
           }
 
           if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
+            mountThinkingIntoBusinessSlot();
+            document.addEventListener('DOMContentLoaded', mountThinkingIntoBusinessSlot);
+
             document.addEventListener('focusin', function (ev) {
               const target = ev && ev.target;
               if (!target || !target.tagName) return;
@@ -1716,13 +1850,10 @@
       </script>
     </div>
 
-    <div class="card thinking-workspace-card">
-      <div class="thinking-workspace-header">
-        <label for="thinking">Your Thinking<span class="sr-only"> — How would you prepare this information?</span></label>
-        <p class="small thinking-helper-copy" id="thinkingHelperText">Explain your approach in your own words. You do not need to write SQL.<span class="sr-only"> Explain in your own words. No SQL needed yet.</span></p>
-      </div>
-      <textarea id="thinking" aria-describedby="thinkingHelperText" maxlength="8000" placeholder="Explain in your own words which table(s) and conditions you would use..."></textarea>
-      <div class="actions thinking-workspace-actions" style="grid-template-columns: 1fr; margin-top: 8px;">
+    <div class="card thinking-workspace-card" id="thinkingBottomBarCard">
+      <textarea id="thinking" aria-describedby="thinkingHelperText" maxlength="8000" placeholder="Explain your approach in your own words..."></textarea>
+      <script>(function(){if(typeof document!=='undefined'){var s=document.getElementById('thinkingBusinessSlot'),t=document.getElementById('thinking');if(s&&t&&typeof s.appendChild==='function')s.appendChild(t);}})();</script>
+      <div class="actions thinking-workspace-actions" style="grid-template-columns: 1fr; margin-top: 0;">
         <button class="action primary" id="checkThinkingBtn" onclick="evaluatePlan()">Check my thinking</button>
       </div>
       <div id="feedback" class="feedback" role="status" aria-live="polite" data-has-result="false">

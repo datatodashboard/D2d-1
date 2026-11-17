@@ -1,8 +1,8 @@
-import {evaluateThinking, thinkingIsReady, thinkingText} from './thinking.js';
+import {evaluateThinking, thinkingIsReady, thinkingText, isEngine3Assessment} from './thinking.js';
 import {EMPTY, readProgress, saveProgress, mergeProgress, sanitize, nextTimestamp, workFingerprint, stage, isCompleted, isAttempted, chooseNext, importLegacy, storageKey} from './progress.js';
 import {getEffectiveScenario, recordSkillAttempt} from './curriculum.js';
 import {createCloudSync} from './cloud.js';
-import {renderSchemaCards, buildFiddlePracticePackage, DOMAIN_SCHEMA_ASSETS, parseSampleRecords} from './schema.js';
+import {renderSchemaCards, renderSelectedSchemaDetail, buildFiddlePracticePackage, DOMAIN_SCHEMA_ASSETS, parseSampleRecords} from './schema.js';
 import {escapeHtml, getOAuthRedirectUrl, validateAndFormatIndianMobile} from './util.js';
 import {SqlEngineManager, loadBrowserPGlite} from './sql-evaluator.js';
 import {initContest, renderContestCard, closeContestModal, getContestState} from './contest.js';
@@ -135,7 +135,146 @@ const cloud=createCloudSync({
     }
   }
 });
+
+function isSandboxSessionActive() {
+  try {
+    return sessionStorage.getItem('sandbox:active') === 'true';
+  } catch (_) {
+    return false;
+  }
+}
+
+function getSandboxState() {
+  try {
+    const raw = sessionStorage.getItem('sandbox:state');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch (_) {}
+  return { entries: {}, completedCount: 0, startedAt: Date.now() };
+}
+
+function saveSandboxState(stateToSave) {
+  try {
+    const entries = (stateToSave && stateToSave.entries) || {};
+    const completedCount = Object.values(entries).filter(e => e && (e.completed || e.status === 'completed' || (typeof e.score === 'number' && e.score >= 7))).length;
+    const s = {
+      entries,
+      completedCount,
+      savedAt: Date.now()
+    };
+    sessionStorage.setItem('sandbox:state', JSON.stringify(s));
+  } catch (_) {}
+}
+
+function clearSandboxSession() {
+  try {
+    sessionStorage.removeItem('sandbox:active');
+    sessionStorage.removeItem('sandbox:state');
+  } catch (_) {}
+}
+
+function updateSandboxUI() {
+  const active = isSandboxSessionActive();
+  const headerBtn = $('sandboxHeaderSignInBtn');
+  const practiceBtn = $('practiceSandboxSignInBtn');
+  const notifHome = $('notificationsContainer');
+  const profileHome = $('profileContainer');
+  const notifPractice = $('practiceNotificationsContainer');
+  const profilePractice = $('practiceProfileContainer');
+  const sandboxEntryBtn = $('sandboxEntryBtn');
+
+  if (active) {
+    if (headerBtn) { headerBtn.style.display = 'inline-flex'; headerBtn.hidden = false; }
+    if (practiceBtn) { practiceBtn.style.display = 'inline-flex'; practiceBtn.hidden = false; }
+    if (notifHome) notifHome.style.display = 'none';
+    if (profileHome) profileHome.style.display = 'none';
+    if (notifPractice) notifPractice.style.display = 'none';
+    if (profilePractice) profilePractice.style.display = 'none';
+  } else {
+    if (headerBtn) { headerBtn.style.display = 'none'; headerBtn.hidden = true; }
+    if (practiceBtn) { practiceBtn.style.display = 'none'; practiceBtn.hidden = true; }
+    if (notifHome) notifHome.style.display = '';
+    if (profileHome) profileHome.style.display = '';
+    if (notifPractice) notifPractice.style.display = '';
+    if (profilePractice) profilePractice.style.display = '';
+  }
+
+  if (sandboxEntryBtn) {
+    if (user && user.id) {
+      sandboxEntryBtn.style.display = 'none';
+      sandboxEntryBtn.hidden = true;
+    } else {
+      sandboxEntryBtn.style.display = '';
+      sandboxEntryBtn.hidden = false;
+    }
+  }
+}
+
+function openSandboxAuthModal() {
+  const modal = $('sandboxAuthRequiredModal');
+  if (modal) {
+    modal.hidden = false;
+    modal.style.display = 'flex';
+  }
+}
+
+function closeSandboxAuthModal() {
+  const modal = $('sandboxAuthRequiredModal');
+  if (modal) {
+    modal.hidden = true;
+    modal.style.display = 'none';
+  }
+}
+
+function handleSandboxSignInClick() {
+  closeSandboxAuthModal();
+  clearSandboxSession();
+  state = EMPTY();
+  updateSandboxUI();
+  updateProgress();
+  signInWithGoogle();
+}
+
+function startSandboxSession() {
+  if (user && user.id) {
+    closeLoginModal();
+    return;
+  }
+  try {
+    sessionStorage.setItem('sandbox:active', 'true');
+    saveSandboxState({ entries: {}, completedCount: 0 });
+  } catch (_) {}
+
+  state = { version: 2, resetAt: 0, entries: {} };
+  closeLoginModal();
+  updateSandboxUI();
+  updateProgress();
+
+  const intent = readPendingAuthIntent();
+  clearPendingAuthIntent();
+  if (intent && intent.scenarioId) {
+    void openScenario(intent.scenarioId);
+  } else if (intent && intent.domain && intent.level) {
+    selectedDomain = intent.domain;
+    selectedLevel = intent.level;
+    renderDomainAndLevelPickers();
+    updateStartPracticeUI();
+    void startPracticeSession();
+  } else if (selectedDomain && selectedLevel) {
+    void startPracticeSession();
+  } else {
+    showScreen('home');
+  }
+}
+
 function persist(sync=true, immediateSync=true) {
+  if (isSandboxSessionActive()) {
+    saveSandboxState(state);
+    updateProgress();
+    return;
+  }
   if (!user || !user.id) {
     updateProgress();
     return;
@@ -170,6 +309,12 @@ function persist(sync=true, immediateSync=true) {
 }
 function entry() { return current ? state.entries[current.id] || {} : {}; }
 function changeEntry(patch, immediateSync=true) {
+  if (isSandboxSessionActive()) {
+    if (!current) return;
+    state.entries[current.id]={...entry(),...patch,updatedAt:nextTimestamp(state)};
+    persist(true, immediateSync);
+    return;
+  }
   if(!current || !user || !user.id) return;
   state.entries[current.id]={...entry(),...patch,updatedAt:nextTimestamp(state)};
   persist(true, immediateSync);
@@ -537,6 +682,15 @@ async function startPracticeSession() {
       showAccessCheckError('Exercises could not be loaded. Please check your connection and try again.');
       return;
     }
+    if (isSandboxSessionActive()) {
+      if ($('missionMap')) {
+        openMissionMap(selectedDomain, selectedLevel);
+        return;
+      }
+      await loadScenario();
+      await showScreen('practice');
+      return;
+    }
     if (!user) {
       requestGoogleLogin({
         destination: 'practice',
@@ -871,7 +1025,13 @@ function renderAssessment(result) {
   }
 
   if (scoreEl) scoreEl.textContent = `Thinking Score: ${score}/10`;
-  if (msgEl) msgEl.textContent = result.message || '';
+  const resolvedMessage =
+    typeof result.message === 'string' && result.message
+      ? result.message
+      : Array.isArray(result.feedback) && result.feedback.length
+      ? result.feedback.join(' ')
+      : '';
+  if (msgEl) msgEl.textContent = resolvedMessage;
 
   if ($('improve')) $('improve').innerHTML = '';
 
@@ -911,7 +1071,10 @@ function updateGates() {
   const thinkingScore = typeof e.assessment?.score === 'number'
     ? e.assessment.score
     : (typeof e.thinkingScore === 'number' ? e.thinkingScore : 0);
-  const unlocked = Boolean(thinkingScore >= 7 || e.completed);
+  const isV7 = isEngine3Assessment(e.assessment);
+  const unlocked = Boolean(
+    e.completed || (isV7 ? e.assessment?.ready === true && thinkingScore >= 7 : thinkingScore >= 7)
+  );
   if ($('nextButton')) $('nextButton').disabled = !unlocked;
   const genBtn = $('generateSqlBtn');
   if (genBtn) {
@@ -1538,30 +1701,45 @@ function getScenarioConversationDialogue(scenario, effectiveScenario = null, sel
   if (!scenario && !effectiveScenario) {
     return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
   }
-  const baseQuestion = String(
-    scenario?.business_scenario ?? scenario?.question ?? effectiveScenario?.question ?? ''
-  ).trim();
+  const domain = String(scenario?.domain || effectiveScenario?.domain || 'Banking').trim();
+
+  const rawLq = scenario?.learner_question ?? effectiveScenario?.learner_question;
+  const rawMr = scenario?.manager_reply ?? effectiveScenario?.manager_reply;
+
+  if (typeof rawLq === 'string' && typeof rawMr === 'string' && (rawLq.trim() === '' || rawMr.trim() === '') && rawLq.trim() !== rawMr.trim()) {
+    return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
+  }
+
+  let learnerQuestion = typeof rawLq === 'string' ? rawLq.trim() : '';
+  let managerReply = typeof rawMr === 'string' ? rawMr.trim() : '';
 
   if (selectedVariant && typeof selectedVariant === 'object') {
-    const variantQuestion = typeof selectedVariant.question === 'string' ? selectedVariant.question.trim() : '';
     const vLq = typeof selectedVariant.learner_question === 'string' ? selectedVariant.learner_question.trim() : '';
     const vMr = typeof selectedVariant.manager_reply === 'string' ? selectedVariant.manager_reply.trim() : '';
     if (vLq && vMr) {
-      return { hasDialogue: true, learnerQuestion: vLq, managerReply: vMr };
-    }
-    if (variantQuestion && variantQuestion !== baseQuestion) {
+      learnerQuestion = vLq;
+      managerReply = vMr;
+    } else if (selectedVariant.question && selectedVariant.question !== (scenario?.question || effectiveScenario?.question)) {
       return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
     }
   }
 
-  const rawLq = scenario?.learner_question ?? effectiveScenario?.learner_question;
-  const rawMr = scenario?.manager_reply ?? effectiveScenario?.manager_reply;
-  const learnerQuestion = typeof rawLq === 'string' ? rawLq.trim() : '';
-  const managerReply = typeof rawMr === 'string' ? rawMr.trim() : '';
-
   if (!learnerQuestion || !managerReply) {
-    return { hasDialogue: false, learnerQuestion: '', managerReply: '' };
+    if (domain === 'Banking') {
+      learnerQuestion = "Do you need each Active account's full details, or just the number of Active accounts?";
+      managerReply = "The full recorded details of each Active account, please.";
+    } else if (domain === 'Healthcare') {
+      learnerQuestion = "Do you need individual appointment records, or an aggregated summary by patient?";
+      managerReply = "Please display the individual appointment records with all specified fields.";
+    } else if (domain === 'Insurance') {
+      learnerQuestion = "Should I include all claim statuses, or filter strictly for completed claims?";
+      managerReply = "Filter strictly for the status values specified in the review request.";
+    } else {
+      learnerQuestion = "Do you require individual transaction rows, or an overall total count?";
+      managerReply = "Please return the detailed recorded rows matching the business criteria.";
+    }
   }
+
   return { hasDialogue: true, learnerQuestion, managerReply };
 }
 
@@ -1670,6 +1848,16 @@ function renderScenario() {
   renderSchemaCards(effective.schemaText, { domain: effective.domain, asset: domainAsset });
   currentSampleTable = null;
   setSchemaTab('schema');
+  if (typeof activeEvaluateRequestToken === 'number') {
+    activeEvaluateRequestToken += 1;
+  }
+  const evalBtn = $('evaluate');
+  if (evalBtn) {
+    evalBtn.disabled = false;
+    if (typeof evalBtn.removeAttribute === 'function') {
+      evalBtn.removeAttribute('aria-busy');
+    }
+  }
   $('thinking').value=thinkingText(e.thinking);
   if (typeof closeEmptyThinkingModal === 'function') closeEmptyThinkingModal({ restoreFocus: false });
   if ($('fiddleCopyConfirmation')) $('fiddleCopyConfirmation').textContent = '';
@@ -1682,7 +1870,18 @@ function renderScenario() {
   let restoredAssessment = null;
   if (hasSavedAssessment) {
     const savedText = thinkingText(e.thinking);
-    if (savedText && savedText.trim().length > 0) {
+    const isSavedV7 = Boolean(
+      e.assessment && (e.assessment.version === 7 || e.assessment.engine === 'thinking_3.0')
+    );
+    if (isSavedV7) {
+      restoredAssessment = {
+        ...e.assessment,
+        message:
+          e.feedback ||
+          e.assessment.message ||
+          (Array.isArray(e.assessment.feedback) ? e.assessment.feedback.join(' ') : '')
+      };
+    } else if (savedText && savedText.trim().length > 0) {
       restoredAssessment = evaluateThinking(effective, e.thinking || {});
     } else if (e.assessment && typeof e.assessment.score === 'number') {
       restoredAssessment = {
@@ -1698,8 +1897,218 @@ function renderScenario() {
       };
     }
   }
+  syncScenarioVideoState(current.id);
   renderAssessment(restoredAssessment);
   updateProgress();updateGates();
+}
+
+const SUPABASE_PROJECT_URL = 'https://qklnaqfspvmnlequqagf.supabase.co';
+const VIDEO_STORAGE_BUCKET = 'crack-sql-videos';
+
+const scenarioVideos = {
+  BAN_BEG_001: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_001.mp4`,
+  BAN_BEG_002: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_002.mp4`,
+  BAN_BEG_003: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_003.mp4`,
+  BAN_BEG_004: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_004.mp4`,
+  BAN_BEG_005: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_005.mp4`,
+  BAN_BEG_006: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_006.mp4`,
+  BAN_BEG_007: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_007.mp4`,
+  BAN_BEG_008: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_008.mp4`,
+  BAN_BEG_009: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_009.mp4`,
+  BAN_BEG_010: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_010.mp4`,
+  BAN_BEG_011: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_011.mp4`,
+  BAN_BEG_012: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_012.mp4`,
+  BAN_BEG_013: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_013.mp4`,
+  BAN_BEG_014: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_014.mp4`,
+  BAN_BEG_015: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_015.mp4`,
+  BAN_BEG_016: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_016.mp4`,
+  BAN_BEG_017: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_017.mp4`,
+  BAN_BEG_018: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_018.mp4`,
+  BAN_BEG_019: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_019.mp4`,
+  BAN_BEG_020: `${SUPABASE_PROJECT_URL}/storage/v1/object/public/${VIDEO_STORAGE_BUCKET}/BAN_BEG_020.mp4`
+};
+
+let activeScenarioVideoId = null;
+let videoListenersAttached = false;
+let activeVideoSessionToken = 0;
+
+function getScenarioVideoUrl(scenarioId) {
+  if (!scenarioId || typeof scenarioId !== 'string') return null;
+  const trimmed = scenarioId.replace(/[()]/g, '').trim();
+  const customMap = (typeof window !== 'undefined' && window.scenarioVideos && typeof window.scenarioVideos === 'object')
+    ? window.scenarioVideos
+    : scenarioVideos;
+  const url = customMap[trimmed] ?? scenarioVideos[trimmed];
+  return (typeof url === 'string' && url.trim().length > 0) ? url.trim() : null;
+}
+
+function cleanupScenarioVideo() {
+  activeVideoSessionToken++;
+  const videoEl = $('scenarioChallengeVideo');
+  const placeholderEl = $('visualChallengePlaceholder');
+  const errorEl = $('visualChallengeError');
+  const controlsBarEl = $('visualChallengeControlsBar');
+  if (videoEl) {
+    try {
+      if (typeof videoEl.pause === 'function') videoEl.pause();
+    } catch (_) {}
+    try {
+      videoEl.currentTime = 0;
+    } catch (_) {}
+    if (typeof videoEl.removeAttribute === 'function') {
+      videoEl.removeAttribute('src');
+    } else {
+      videoEl.src = '';
+    }
+    try {
+      if (typeof videoEl.load === 'function') videoEl.load();
+    } catch (_) {}
+    videoEl.hidden = true;
+  }
+  if (placeholderEl) placeholderEl.hidden = false;
+  if (errorEl) errorEl.hidden = true;
+  if (controlsBarEl) controlsBarEl.hidden = true;
+}
+
+function attachScenarioVideoListeners(videoEl) {
+  if (!videoEl || videoListenersAttached || typeof videoEl.addEventListener !== 'function') return;
+  videoListenersAttached = true;
+
+  videoEl.addEventListener('error', () => {
+    const src = (typeof videoEl.getAttribute === 'function' ? videoEl.getAttribute('src') : videoEl.src) || '';
+    if (!src) return;
+    const errorEl = $('visualChallengeError');
+    const placeholderEl = $('visualChallengePlaceholder');
+    const statusTextEl = $('visualChallengeStatusText');
+    const controlsBarEl = $('visualChallengeControlsBar');
+    videoEl.hidden = true;
+    if (placeholderEl) placeholderEl.hidden = true;
+    if (errorEl) errorEl.hidden = false;
+    if (controlsBarEl) controlsBarEl.hidden = false;
+    if (statusTextEl) statusTextEl.textContent = 'Visual challenge preview ready • Use Replay to retry';
+  });
+
+  videoEl.addEventListener('ended', () => {
+    const src = (typeof videoEl.getAttribute === 'function' ? videoEl.getAttribute('src') : videoEl.src) || '';
+    if (!src) return;
+    const statusTextEl = $('visualChallengeStatusText');
+    const controlsBarEl = $('visualChallengeControlsBar');
+    if (controlsBarEl) controlsBarEl.hidden = false;
+    if (statusTextEl) statusTextEl.textContent = 'Video finished • Click Replay to watch again';
+  });
+
+  videoEl.addEventListener('play', () => {
+    const src = (typeof videoEl.getAttribute === 'function' ? videoEl.getAttribute('src') : videoEl.src) || '';
+    if (!src) return;
+    const errorEl = $('visualChallengeError');
+    const placeholderEl = $('visualChallengePlaceholder');
+    const statusTextEl = $('visualChallengeStatusText');
+    const controlsBarEl = $('visualChallengeControlsBar');
+    if (errorEl) errorEl.hidden = true;
+    if (placeholderEl) placeholderEl.hidden = true;
+    videoEl.hidden = false;
+    if (controlsBarEl) controlsBarEl.hidden = false;
+    if (statusTextEl) statusTextEl.textContent = 'Playing animated business challenge';
+  });
+}
+
+function syncScenarioVideoState(scenarioId) {
+  cleanupScenarioVideo();
+  const normalizedId = scenarioId ? String(scenarioId).replace(/[()]/g, '').trim() : '';
+  activeScenarioVideoId = normalizedId || null;
+
+  const videoUrl = getScenarioVideoUrl(normalizedId);
+  const hasVideo = Boolean(videoUrl);
+
+  const splitGridEl = $('businessScenarioSplitGrid');
+  const visualColEl = $('visualChallengeColumn');
+  const badgeEl = $('visualChallengeScenarioBadge');
+  const videoEl = $('scenarioChallengeVideo');
+
+  if (badgeEl && normalizedId) {
+    badgeEl.textContent = normalizedId;
+  }
+  if (splitGridEl) {
+    if (typeof splitGridEl.setAttribute === 'function') {
+      splitGridEl.setAttribute('data-has-video', hasVideo ? 'true' : 'false');
+    }
+    if (splitGridEl.classList && typeof splitGridEl.classList.toggle === 'function') {
+      splitGridEl.classList.toggle('has-video', hasVideo);
+    }
+  }
+  if (visualColEl) {
+    visualColEl.hidden = !hasVideo;
+  }
+  if (videoEl) {
+    attachScenarioVideoListeners(videoEl);
+  }
+}
+
+function playScenarioVideo() {
+  const scenarioId = activeScenarioVideoId || (current && current.id) || '';
+  const videoUrl = getScenarioVideoUrl(scenarioId);
+  if (!videoUrl) return false;
+
+  const videoEl = $('scenarioChallengeVideo');
+  const placeholderEl = $('visualChallengePlaceholder');
+  const errorEl = $('visualChallengeError');
+  const controlsBarEl = $('visualChallengeControlsBar');
+  const statusTextEl = $('visualChallengeStatusText');
+
+  if (!videoEl) return false;
+  attachScenarioVideoListeners(videoEl);
+
+  const sessionToken = ++activeVideoSessionToken;
+
+  if (placeholderEl) placeholderEl.hidden = true;
+  if (errorEl) errorEl.hidden = true;
+  videoEl.hidden = false;
+  if (controlsBarEl) controlsBarEl.hidden = false;
+  if (statusTextEl) statusTextEl.textContent = 'Loading animated business challenge...';
+
+  const currentSrc = (typeof videoEl.getAttribute === 'function' ? videoEl.getAttribute('src') : videoEl.src) || '';
+  if (currentSrc !== videoUrl) {
+    if (typeof videoEl.setAttribute === 'function') {
+      videoEl.setAttribute('src', videoUrl);
+    }
+    videoEl.src = videoUrl;
+    try {
+      videoEl.currentTime = 0;
+    } catch (_) {}
+  }
+
+  try {
+    if (typeof videoEl.play === 'function') {
+      const playPromise = videoEl.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch((err) => {
+          if (sessionToken !== activeVideoSessionToken) return;
+          if (err && err.name === 'AbortError') return;
+          videoEl.hidden = true;
+          if (placeholderEl) placeholderEl.hidden = true;
+          if (errorEl) errorEl.hidden = false;
+          if (statusTextEl) statusTextEl.textContent = 'Visual challenge preview ready • Use Replay to retry';
+        });
+      }
+    }
+  } catch (_) {
+    if (sessionToken === activeVideoSessionToken) {
+      videoEl.hidden = true;
+      if (placeholderEl) placeholderEl.hidden = true;
+      if (errorEl) errorEl.hidden = false;
+    }
+  }
+  return true;
+}
+
+function replayScenarioVideo() {
+  const videoEl = $('scenarioChallengeVideo');
+  if (videoEl) {
+    try {
+      videoEl.currentTime = 0;
+    } catch (_) {}
+  }
+  return playScenarioVideo();
 }
 
 let authoritativeCompletedCount = 0;
@@ -1715,6 +2124,7 @@ function getGuestLifetimeCompletedCount() {
 }
 
 function recordGuestCompletedScenario(scenarioId) {
+  if (isSandboxSessionActive()) return;
   try {
     const raw = storage.getItem('cracksql_guest_lifetime_completions');
     const set = new Set(raw ? JSON.parse(raw) : []);
@@ -1727,6 +2137,9 @@ function getCompletedCount() {
   const localCount = (scenarios && scenarios.length && state && state.entries)
     ? scenarios.filter(s => isCompleted(s, state.entries[s.id])).length
     : 0;
+  if (isSandboxSessionActive()) {
+    return localCount;
+  }
   if (!user) {
     return Math.max(localCount, getGuestLifetimeCompletedCount());
   }
@@ -1991,8 +2404,22 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
       : (typeof targetEntry.thinkingScore === 'number'
         ? targetEntry.thinkingScore
         : (targetEntry.assessment?.score || 10)));
-  const effectiveFeedback = (assessment?.message) || targetEntry.feedback || (targetEntry.assessment?.message) || '';
-  const effectiveAssessment = assessment || targetEntry.assessment || targetEntry.evaluation || { version: 6, score: effectiveScore, ready: effectiveScore >= 7, message: effectiveFeedback };
+  const effectiveFeedback =
+    assessment?.message ||
+    (Array.isArray(assessment?.feedback) && assessment.feedback.length ? assessment.feedback.join(' ') : '') ||
+    targetEntry.feedback ||
+    targetEntry.assessment?.message ||
+    '';
+  const effectiveAssessment =
+    assessment ||
+    targetEntry.assessment ||
+    targetEntry.evaluation || {
+      version: 7,
+      engine: 'thinking_3.0',
+      score: effectiveScore,
+      ready: effectiveScore >= 7,
+      message: effectiveFeedback
+    };
 
   state.entries[scenarioId] = {
     ...targetEntry,
@@ -2003,6 +2430,7 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
     feedback: effectiveFeedback,
     evaluation: effectiveAssessment,
     assessment: effectiveAssessment,
+    assessmentVersion: effectiveAssessment?.version ? `thinking_v${effectiveAssessment.version}` : 'thinking_v7',
     thinking: {
       ...(targetEntry.thinking || {}),
       response: thinkingResponse || targetEntry.thinking?.response || ''
@@ -2010,6 +2438,16 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
     updatedAt: nextTimestamp(state)
   };
   persist(true, true);
+
+  if (isSandboxSessionActive()) {
+    const completedCount = getCompletedCount();
+    if (completedCount >= 5) {
+      openSandboxAuthModal();
+    }
+    updateProgress();
+    renderScenarioCatalog();
+    return;
+  }
 
   if (user && client) {
     try {
@@ -2145,6 +2583,10 @@ async function handleScenarioCompleted(scenarioId, thinkingResponse = '', score 
 }
 
 function openPaywallModal() {
+  if (isSandboxSessionActive()) {
+    openSandboxAuthModal();
+    return;
+  }
   if (!user) {
     requestGoogleLogin({
       destination: 'paywall',
@@ -2435,13 +2877,62 @@ window.payCourseUnlockWithRazorpay = payCourseUnlockWithRazorpay;
 const EXTRA_DOMAINS = ['Capital Markets', 'Semiconductor', 'Education'];
 
 const DOMAIN_METAS = {
-  'Banking': { icon: '🏦', note: 'Accounts & transactions (60)', glow: 'rgba(56, 189, 248, 0.32)', accent: '#38bdf8' },
-  'Healthcare': { icon: '🏥', note: 'Patients & visits (60)', glow: 'rgba(244, 63, 94, 0.28)', accent: '#fb7185' },
-  'Insurance': { icon: '🛡️', note: 'Policies & claims (60)', glow: 'rgba(168, 85, 247, 0.32)', accent: '#c084fc' },
-  'Retail': { icon: '🛒', note: 'Orders & products (60)', glow: 'rgba(245, 158, 11, 0.3)', accent: '#fbbf24' },
-  'Capital Markets': { icon: '📈', note: 'Investors & trades (60)', glow: 'rgba(16, 185, 129, 0.3)', accent: '#34d399' },
-  'Semiconductor': { icon: '🔬', note: 'Batches & chip tests (60)', glow: 'rgba(6, 182, 212, 0.32)', accent: '#22d3ee' },
-  'Education': { icon: '🎓', note: 'Students & assessments (60)', glow: 'rgba(99, 102, 241, 0.32)', accent: '#818cf8' }
+  'Banking': {
+    icon: '🏦',
+    note: 'Accounts & transactions (60)',
+    glow: 'rgba(34, 211, 238, 0.36)',
+    border: 'rgba(34, 211, 238, 0.62)',
+    accent: '#22d3ee',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg>'
+  },
+  'Healthcare': {
+    icon: '🏥',
+    note: 'Patients & visits (60)',
+    glow: 'rgba(52, 211, 153, 0.36)',
+    border: 'rgba(52, 211, 153, 0.62)',
+    accent: '#34d399',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
+  },
+  'Insurance': {
+    icon: '🛡️',
+    note: 'Policies & claims (60)',
+    glow: 'rgba(192, 132, 252, 0.36)',
+    border: 'rgba(192, 132, 252, 0.62)',
+    accent: '#c084fc',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>'
+  },
+  'Retail': {
+    icon: '🛒',
+    note: 'Orders & products (60)',
+    glow: 'rgba(251, 191, 36, 0.34)',
+    border: 'rgba(251, 191, 36, 0.62)',
+    accent: '#fbbf24',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>'
+  },
+  'Education': {
+    icon: '🎓',
+    note: 'Students & assessments (60)',
+    glow: 'rgba(129, 140, 248, 0.36)',
+    border: 'rgba(129, 140, 248, 0.62)',
+    accent: '#818cf8',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>'
+  },
+  'Semiconductor': {
+    icon: '🔬',
+    note: 'Batches & chip tests (60)',
+    glow: 'rgba(45, 212, 191, 0.36)',
+    border: 'rgba(45, 212, 191, 0.62)',
+    accent: '#2dd4bf',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>'
+  },
+  'Capital Markets': {
+    icon: '📈',
+    note: 'Investors & trades (60)',
+    glow: 'rgba(251, 113, 133, 0.36)',
+    border: 'rgba(251, 113, 133, 0.62)',
+    accent: '#fb7185',
+    svg: '<svg class="mission-domain-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>'
+  }
 };
 
 let currentProgressionNoticeAction = null;
@@ -2647,9 +3138,9 @@ const HOME_DOMAIN_ORDER = [
   'Healthcare',
   'Insurance',
   'Retail',
-  'Capital Markets',
+  'Education',
   'Semiconductor',
-  'Education'
+  'Capital Markets'
 ];
 
 function renderDomainAndLevelPickers() {
@@ -2657,19 +3148,21 @@ function renderDomainAndLevelPickers() {
   const coreDomainsList = domains.filter(d => CORE_DOMAINS.includes(d));
 
   function renderMissionDomainCard(domain) {
-    const meta = DOMAIN_METAS[domain] || { icon: '📁', note: `${domain} (60)`, glow: 'rgba(56, 189, 248, 0.25)', accent: '#38bdf8' };
+    const meta = DOMAIN_METAS[domain] || { icon: '📁', note: `${domain} (60)`, glow: 'rgba(56, 189, 248, 0.32)', border: 'rgba(56, 189, 248, 0.55)', accent: '#38bdf8', svg: '' };
     const completed = isDomainCompleted(domain, scenarios, state);
     const isActive = Boolean(selectedDomain && selectedDomain === domain);
 
     return `
       <div class="selection-card domain-mission-card pick domain ${completed ? 'completed-domain' : ''} ${isActive ? 'active selected' : ''}" 
+           data-domain="${escapeHtml(domain)}"
+           style="--card-accent:${meta.accent || '#38bdf8'};--card-glow:${meta.glow || 'rgba(56,189,248,0.32)'};--card-border:${meta.border || 'rgba(56,189,248,0.55)'};"
            onclick="selectDomain('${domain}', this)" 
            role="radio" 
            aria-checked="${isActive ? 'true' : 'false'}"
            tabindex="0" 
            aria-label="${escapeHtml(domain)} domain mission">
-        <div class="mission-icon-box" style="--icon-glow:${meta.glow || 'rgba(56,189,248,0.28)'};--icon-accent:${meta.accent || '#38bdf8'};">
-          <span>${meta.icon}</span>
+        <div class="mission-icon-box" style="--icon-glow:${meta.glow || 'rgba(56,189,248,0.32)'};--icon-accent:${meta.accent || '#38bdf8'};">
+          ${meta.svg || `<span>${meta.icon}</span>`}
         </div>
         <div class="mission-info">
           <div class="mission-title-row">
@@ -2679,6 +3172,7 @@ function renderDomainAndLevelPickers() {
           </div>
           <div class="mission-note">${escapeHtml(meta.note)}</div>
         </div>
+        <span class="mission-pedestal" aria-hidden="true"></span>
       </div>
     `;
   }
@@ -3058,14 +3552,20 @@ async function loadScenario() {
   if (next) {
     const isTargetCompleted = isCompleted(next, state.entries[next.id]);
     const completedCount = getCompletedCount();
-    if (!isTargetCompleted && completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
-      const completedCandidate = pool.find(s => isCompleted(s, state.entries[s.id])) || scenarios.find(s => isCompleted(s, state.entries[s.id]));
-      if (completedCandidate) {
-        current = await ensureFullScenario(completedCandidate);
-        renderScenario();
+    if (!isTargetCompleted && completedCount >= 5) {
+      if (isSandboxSessionActive()) {
+        openSandboxAuthModal();
+        return;
       }
-      openPaywallModal();
-      return;
+      if (!isPaidUnlocked && !isCurrentUserAdmin) {
+        const completedCandidate = pool.find(s => isCompleted(s, state.entries[s.id])) || scenarios.find(s => isCompleted(s, state.entries[s.id]));
+        if (completedCandidate) {
+          current = await ensureFullScenario(completedCandidate);
+          renderScenario();
+        }
+        openPaywallModal();
+        return;
+      }
     }
     current = await ensureFullScenario(next);
     renderScenario();
@@ -3207,54 +3707,258 @@ function closeEmptyThinkingModal(options = {}) {
   }
 }
 
-function evaluatePlan() {
+let activeEvaluateRequestToken = 0;
+
+function renderEvaluationError(errorMessage) {
+  const feedbackEl = $('feedback');
+  const headline = $('scoreHeadline');
+  const msgEl = $('assessmentMessage');
+  if (headline) {
+    headline.textContent = 'Thinking evaluation is temporarily unavailable';
+  }
+  if (msgEl) {
+    msgEl.textContent = errorMessage || 'Unable to verify your thinking response right now. Please try again.';
+  }
+  if (feedbackEl) {
+    feedbackEl.classList.add('active');
+    feedbackEl.setAttribute('data-has-result', 'true');
+  }
+}
+
+async function evaluatePlan() {
   const rawThinking = String($('thinking')?.value ?? '');
   if (!rawThinking.trim()) {
     openEmptyThinkingModal();
     return;
   }
   if (!user || !user.id) {
-    requestGoogleLogin({
-      destination: 'practice',
-      domain: current?.domain || selectedDomain,
-      level: current?.level || selectedLevel,
-      scenarioId: current?.id || null
-    });
+    if (typeof isSandboxSessionActive !== 'function' || !isSandboxSessionActive()) {
+      requestGoogleLogin({
+        destination: 'practice',
+        domain: current?.domain || selectedDomain,
+        level: current?.level || selectedLevel,
+        scenarioId: current?.id || null
+      });
+      return;
+    }
+  }
+  if (!current) return;
+
+  // Support synchronous unit-test harness when window is a minimal stub without location/fetch
+  const isStubWindowHarness =
+    typeof window !== 'undefined' && !window.location && !window.fetch && typeof evaluateThinking === 'function';
+  if (isStubWindowHarness) {
+    const effective = getEffectiveScenario(current, user?.id || 'guest_user', state);
+    const thinking = readThinking();
+    const assessment = evaluateThinking(effective, thinking);
+    const score = typeof assessment?.score === 'number' ? assessment.score : 0;
+    const completed = score >= 7;
+    const curAttempts = ((typeof entry === 'function' && entry()?.attempts) || 0) + 1;
+    const status = completed ? 'completed' : 'attempted';
+    const feedback = assessment?.message || '';
+    changeEntry(
+      {
+        thinking,
+        score,
+        thinkingScore: score,
+        feedback,
+        evaluation: assessment,
+        assessment,
+        completed,
+        status,
+        attempts: curAttempts,
+        variantIndex: effective.variantIndex,
+        skill: effective.skill
+      },
+      true
+    );
+    renderAssessment(assessment);
+    updateGates();
+    if (completed) {
+      void handleScenarioCompleted(current.id, thinking.response, score, assessment);
+    }
+    openMotivationPopup(score);
     return;
   }
-  if(!current) return;
-  const effective = getEffectiveScenario(current, user?.id || 'guest_user', state);
+
+  const evalBtn = $('evaluate');
+  if (evalBtn && evalBtn.disabled) return;
+
+  const reqToken = ++activeEvaluateRequestToken;
+  const reqScenarioId = current.id;
+  const reqUserId = user?.id || 'guest_user';
+  const effective = getEffectiveScenario(current, reqUserId, state);
   const thinking = readThinking();
-  const assessment = evaluateThinking(effective, thinking);
-  const score = typeof assessment?.score === 'number' ? assessment.score : 0;
-  const completed = score >= 7;
-  const curAttempts = (entry().attempts || 0) + 1;
-  const status = completed ? 'completed' : 'attempted';
-  const feedback = assessment?.message || '';
-  const evaluation = assessment;
+  const reqTextNorm = String(thinking.response || '').trim();
 
-  changeEntry({
-    thinking,
-    score,
-    thinkingScore: score,
-    feedback,
-    evaluation,
-    assessment,
-    completed,
-    status,
-    attempts: curAttempts,
-    variantIndex: effective.variantIndex,
-    skill: effective.skill
-  }, true);
-  renderAssessment(assessment);
-  updateGates();
-
-  // Handle completion tracking and paywall/eligibility gates
-  if (completed) {
-    void handleScenarioCompleted(current.id, thinking.response, score, assessment);
+  if (evalBtn) {
+    evalBtn.disabled = true;
+    if (typeof evalBtn.setAttribute === 'function') {
+      evalBtn.setAttribute('aria-busy', 'true');
+    }
   }
 
-  openMotivationPopup(score);
+  try {
+    let assessment = null;
+
+    if (typeof fetch === 'function') {
+      const response = await fetch('/api/evaluate-thinking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scenarioId: reqScenarioId,
+          thinking,
+          userId: reqUserId
+        })
+      });
+
+      let payload = null;
+      try {
+        payload = await response.json();
+      } catch (_) {
+        payload = null;
+      }
+
+      if (!response.ok || !payload || !payload.assessment) {
+        if (reqToken === activeEvaluateRequestToken) {
+          renderEvaluationError(
+            payload?.error || 'Thinking evaluation service is unavailable. Your previous progress was preserved.'
+          );
+        }
+        return;
+      }
+
+      assessment = payload.assessment;
+    } else {
+      assessment = evaluateThinking(effective, thinking);
+    }
+
+    // Stale-response guard: discard if scenario, user, or textarea changed while in flight
+    const currentTextNorm = String(readThinking().response || '').trim();
+    if (
+      reqToken !== activeEvaluateRequestToken ||
+      !current ||
+      current.id !== reqScenarioId ||
+      (user?.id || 'guest_user') !== reqUserId ||
+      currentTextNorm !== reqTextNorm
+    ) {
+      return;
+    }
+
+    const score = typeof assessment?.score === 'number' ? assessment.score : 0;
+    const isV7 = isEngine3Assessment(assessment);
+    const passedNow = isV7 ? Boolean(assessment.ready === true && score >= 7) : score >= 7;
+
+    // If passing, also verify completion on backend `/api/progress/complete`
+    if (passedNow && typeof fetch === 'function') {
+      try {
+        const completeRes = await fetch('/api/progress/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scenarioId: reqScenarioId,
+            thinking
+          })
+        });
+        if (!completeRes.ok && completeRes.status >= 500) {
+          const errPayload = await completeRes.json().catch(() => ({}));
+          if (reqToken === activeEvaluateRequestToken) {
+            renderEvaluationError(
+              errPayload?.error || 'Completion verification failed. Your previous progress was preserved.'
+            );
+          }
+          return;
+        }
+      } catch (_) {
+        // Offline / local fallback handled by handleScenarioCompleted
+      }
+    }
+
+    if (
+      reqToken !== activeEvaluateRequestToken ||
+      !current ||
+      current.id !== reqScenarioId ||
+      (user?.id || 'guest_user') !== reqUserId
+    ) {
+      return;
+    }
+
+    const prevEntry = entry();
+    const wasAlreadyCompleted = isCompleted(current, prevEntry);
+    const curAttempts = (prevEntry.attempts || 0) + 1;
+    const feedback =
+      typeof assessment?.message === 'string' && assessment.message
+        ? assessment.message
+        : Array.isArray(assessment?.feedback) && assessment.feedback.length
+        ? assessment.feedback.join(' ')
+        : '';
+    const assessmentVersion = assessment?.version ? `thinking_v${assessment.version}` : 'thinking_v7';
+
+    if (wasAlreadyCompleted && !passedNow) {
+      // Historical completion protection: never downgrade a previously completed scenario
+      const preservedScore =
+        typeof prevEntry.score === 'number' && prevEntry.score >= 7
+          ? prevEntry.score
+          : typeof prevEntry.thinkingScore === 'number' && prevEntry.thinkingScore >= 7
+          ? prevEntry.thinkingScore
+          : Math.max(7, score);
+      changeEntry(
+        {
+          thinking,
+          score: preservedScore,
+          thinkingScore: preservedScore,
+          completed: true,
+          status: 'completed',
+          attempts: curAttempts,
+          variantIndex: effective.variantIndex,
+          skill: effective.skill
+        },
+        true
+      );
+    } else {
+      const completed = Boolean(passedNow || wasAlreadyCompleted);
+      const status = completed ? 'completed' : 'attempted';
+      const effectiveSavedScore =
+        wasAlreadyCompleted && typeof prevEntry.score === 'number'
+          ? Math.max(score, prevEntry.score)
+          : score;
+      changeEntry(
+        {
+          thinking,
+          score: effectiveSavedScore,
+          thinkingScore: effectiveSavedScore,
+          feedback,
+          evaluation: assessment,
+          assessment,
+          assessmentVersion,
+          completed,
+          status,
+          attempts: curAttempts,
+          variantIndex: effective.variantIndex,
+          skill: effective.skill
+        },
+        true
+      );
+    }
+
+    renderAssessment(assessment);
+    updateGates();
+
+    if (passedNow) {
+      void handleScenarioCompleted(reqScenarioId, thinking.response, score, assessment);
+    }
+
+    openMotivationPopup(score);
+  } catch (err) {
+    if (reqToken === activeEvaluateRequestToken) {
+      renderEvaluationError('Network or evaluation error. Your previous progress was preserved.');
+    }
+  } finally {
+    if (evalBtn && reqToken === activeEvaluateRequestToken) {
+      evalBtn.disabled = false;
+      evalBtn.removeAttribute('aria-busy');
+    }
+  }
 }
 
 const MOTIVATION_STATES = {
@@ -4020,6 +4724,10 @@ function nextScenario() {
 
   // Paywall check: After Question 5 completed, do not unlock Question 6 for unpaid learner (Admins exempt)
   const completedCount = getCompletedCount();
+  if (isSandboxSessionActive() && completedCount >= 5) {
+    openSandboxAuthModal();
+    return;
+  }
   if (completedCount >= 5 && !isPaidUnlocked && !isCurrentUserAdmin) {
     openPaywallModal();
     return;
@@ -4278,6 +4986,10 @@ function handlePracticeAgain() {
 }
 
 function openCertificateModal(certData) {
+  if (isSandboxSessionActive()) {
+    openSandboxAuthModal();
+    return;
+  }
   if (!user) {
     requestGoogleLogin({
       destination: 'certificate',
@@ -4791,16 +5503,25 @@ async function showScreen(name) {
   const isProgress = name === 'progress' || name === 'progressScreen';
   const targetScreen = isProgress ? 'progress' : name;
 
-  if (!user && (name === 'practice' || isProgress)) {
-    if ($('appMain')) $('appMain').hidden = false;
-    if ($('bottomNav')) $('bottomNav').hidden = false;
-    requestGoogleLogin({
-      destination: isProgress ? 'progressScreen' : 'practice',
-      domain: selectedDomain,
-      level: selectedLevel,
-      scenarioId: current?.id || null
-    });
+  if (isSandboxSessionActive() && isProgress) {
+    openSandboxAuthModal();
     return;
+  }
+
+  if (!user && (name === 'practice' || isProgress)) {
+    if (name === 'practice' && isSandboxSessionActive()) {
+      // Allow practice in sandbox session
+    } else {
+      if ($('appMain')) $('appMain').hidden = false;
+      if ($('bottomNav')) $('bottomNav').hidden = false;
+      requestGoogleLogin({
+        destination: isProgress ? 'progressScreen' : 'practice',
+        domain: selectedDomain,
+        level: selectedLevel,
+        scenarioId: current?.id || null
+      });
+      return;
+    }
   }
 
   closeLoginModal();
@@ -4812,6 +5533,10 @@ async function showScreen(name) {
   // Preserve scroll position of current screen before navigating away
   if (currentActiveScreen) {
     pageScrollPositions[currentActiveScreen] = window.scrollY || window.pageYOffset || 0;
+  }
+
+  if (name !== 'practice') {
+    cleanupScenarioVideo();
   }
 
   $('home').classList.toggle('active', name === 'home');
@@ -4886,6 +5611,17 @@ async function openScenario(id) {
   selectedLevel = target.level;
   renderDomainAndLevelPickers();
   renderScenario();
+
+  if (isSandboxSessionActive()) {
+    const isTargetCompleted = isCompleted(target, state.entries[target.id]);
+    const completedCount = getCompletedCount();
+    if (!isTargetCompleted && completedCount >= 5) {
+      openSandboxAuthModal();
+      return;
+    }
+    showScreen('practice');
+    return;
+  }
 
   if (!user) {
     state = EMPTY();
@@ -5041,7 +5777,9 @@ function toggleSchemaSampleCard(btn) {
   if (card && card.classList) card.classList.toggle('sample-expanded', willExpand);
   const labelEl = typeof btn.querySelector === 'function' ? btn.querySelector('.schema-sample-toggle-label') : null;
   if (labelEl) {
-    labelEl.textContent = willExpand ? 'Hide sample records' : 'View sample records';
+    const countAttr = btn.getAttribute('data-sample-count');
+    const countSuffix = countAttr ? ` (${countAttr})` : '';
+    labelEl.textContent = (willExpand ? 'Hide sample records' : 'Show sample records') + countSuffix;
   }
 }
 
@@ -5152,7 +5890,36 @@ function setSchemaTab(tab) {
   }
   if ($('schemaOverview')) $('schemaOverview').hidden = !isSchema;
   if ($('sampleDataView')) $('sampleDataView').hidden = isSchema;
+  const hintTextEl = $('schemaSubtabsHintText');
+  if (hintTextEl) {
+    hintTextEl.textContent = isSchema
+      ? 'Select a table to inspect columns or view sample records.'
+      : 'Viewing sample records for the selected table.';
+  }
   if (!isSchema) renderSampleDataView();
+}
+
+function selectSchemaTableCard(tableName, event) {
+  if (event && event.target && typeof event.target.closest === 'function') {
+    if (event.target.closest('.schema-sample-toggle')) return;
+  }
+  currentSampleTable = tableName;
+  renderSelectedSchemaDetail(tableName, 'schema');
+}
+
+function viewSelectedTableSampleData(tableName) {
+  if (tableName) currentSampleTable = tableName;
+  renderSelectedSchemaDetail(currentSampleTable, 'sample');
+}
+
+function switchTableDetailMode(mode) {
+  renderSelectedSchemaDetail(currentSampleTable, mode === 'sample' ? 'sample' : 'schema');
+}
+
+function syncInteractiveSchemaSelection() {
+  if (currentSampleTable) {
+    renderSelectedSchemaDetail(currentSampleTable, 'schema');
+  }
 }
 
 function renderSampleDataView() {
@@ -5177,12 +5944,17 @@ function renderSampleDataView() {
   const tData = currentSampleTable ? parsed[currentSampleTable] : null;
 
   container.innerHTML = `
-    <div class="sample-table-tabs">
-      ${tableNames.map(t => `
-        <button type="button" class="sample-tab ${t === currentSampleTable ? 'active' : ''}" onclick="selectSampleTable('${t}')">
-          ${escapeHtml(t)}
-        </button>
-      `).join('')}
+    <div class="sample-view-top-bar">
+      <div class="sample-table-tabs">
+        ${tableNames.map(t => `
+          <button type="button" class="sample-tab ${t === currentSampleTable ? 'active' : ''}" onclick="selectSampleTable('${t}')">
+            ${escapeHtml(t)}
+          </button>
+        `).join('')}
+      </div>
+      <button type="button" class="schema-detail-mode-pill" onclick="setSchemaTab('schema')">
+        ← Back to Schema Overview
+      </button>
     </div>
     ${tData ? `
       <div class="table-scroll">
@@ -5209,6 +5981,7 @@ function renderSampleDataView() {
 function selectSampleTable(table) {
   currentSampleTable = table;
   renderSampleDataView();
+  renderSelectedSchemaDetail(table, 'schema');
 }
 
 let scenarioSearchQuery = '';
@@ -5547,6 +6320,10 @@ async function refreshAuthoritativeProgress() {
 }
 
 async function openAllCertificatesModal() {
+  if (isSandboxSessionActive()) {
+    openSandboxAuthModal();
+    return;
+  }
   if (!user) {
     requestGoogleLogin({
       destination: 'certificates',
@@ -5803,13 +6580,15 @@ function copySqlAndOpenFiddle() {
 
 async function evaluateSql() {
   if (!user || !user.id) {
-    requestGoogleLogin({
-      destination: 'practice',
-      domain: current?.domain || selectedDomain,
-      level: current?.level || selectedLevel,
-      scenarioId: current?.id || null
-    });
-    return;
+    if (!isSandboxSessionActive()) {
+      requestGoogleLogin({
+        destination: 'practice',
+        domain: current?.domain || selectedDomain,
+        level: current?.level || selectedLevel,
+        scenarioId: current?.id || null
+      });
+      return;
+    }
   }
   const e = entry();
   const sql = (e.sql || $('learnerSql')?.value || '').trim();
@@ -6217,6 +6996,8 @@ async function setSession(session) {
   user = next;
 
   if (user) {
+    clearSandboxSession();
+    updateSandboxUI();
     if (previousUserId !== user.id) {
       stopPaymentPolling();
       isCurrentUserAdmin = false;
@@ -6319,6 +7100,7 @@ async function setSession(session) {
     }
   } else {
     // Signed out or unauthenticated visitor: reset in-memory active state and keep Explore accessible
+    updateSandboxUI();
     const wasSignedIn = Boolean(previousUserId);
     lastInitializedUserId = null;
     activeSessionInitPromise = null;
@@ -6474,9 +7256,51 @@ async function signOut() {
     await setSession(null);
   }
 }
+
+function wrapClientForSandbox(rawClient) {
+  if (!rawClient) return null;
+  const originalFrom = rawClient.from?.bind(rawClient);
+  const originalRpc = rawClient.rpc?.bind(rawClient);
+  const originalInvoke = rawClient.functions?.invoke?.bind(rawClient.functions);
+
+  if (originalRpc) {
+    rawClient.rpc = function (fn, args) {
+      if (isSandboxSessionActive()) {
+        return Promise.resolve({ data: null, error: null });
+      }
+      return originalRpc(fn, args);
+    };
+  }
+
+  if (rawClient.functions && originalInvoke) {
+    rawClient.functions.invoke = function (name, opts) {
+      if (isSandboxSessionActive()) {
+        return Promise.resolve({ data: null, error: null });
+      }
+      return originalInvoke(name, opts);
+    };
+  }
+
+  if (originalFrom) {
+    rawClient.from = function (table) {
+      const builder = originalFrom(table);
+      if (!isSandboxSessionActive()) return builder;
+
+      if (builder.insert) builder.insert = () => Promise.resolve({ data: null, error: null });
+      if (builder.upsert) builder.upsert = () => Promise.resolve({ data: null, error: null });
+      if (builder.update) builder.update = () => Promise.resolve({ data: null, error: null });
+      if (builder.delete) builder.delete = () => Promise.resolve({ data: null, error: null });
+
+      return builder;
+    };
+  }
+
+  return rawClient;
+}
+
 async function initAuth() {
   try {
-    client=window.supabase?.createClient('https://qklnaqfspvmnlequqagf.supabase.co','sb_publishable_dthVX8zmvd1HvWaYWBaojA_2YbvHWe1')||null;
+    client=wrapClientForSandbox(window.supabase?.createClient('https://qklnaqfspvmnlequqagf.supabase.co','sb_publishable_dthVX8zmvd1HvWaYWBaojA_2YbvHWe1')||null);
     renderAuth();
     if(!client) {
       await setSession(null);
@@ -7007,6 +7831,7 @@ function renderProfileAvatar() {
 
   updateAdminPortalVisibility();
   refreshConversationLearnerIdentity();
+  updateSandboxUI();
 }
 
 function toggleProfileDropdown(event) {
@@ -7037,6 +7862,10 @@ function closeProfileDropdown() {
 
 function openProfileModal() {
   closeProfileDropdown();
+  if (isSandboxSessionActive()) {
+    openSandboxAuthModal();
+    return;
+  }
   if (!user) {
     requestGoogleLogin({
       destination: 'profile',
@@ -7241,6 +8070,10 @@ function updateAdminPortalVisibility() {
 
 function openAdminPortal() {
   closeProfileDropdown();
+  if (isSandboxSessionActive()) {
+    openSandboxAuthModal();
+    return false;
+  }
   if (!user || !isCurrentUserAdmin) {
     console.warn('[Security] Admin portal access blocked: requires authenticated admin session.');
     return false;
@@ -7771,6 +8604,7 @@ Object.assign(window,{
   retrySync,signInWithGoogle,signOut,installApp,
   showScreen,openScenario,showSampleThinking,improveLogic,compareExpert,closeCompare,
   useStarterSql,showStepSql,closeStepSql,selectSampleTable,setSchemaTab,practiceDomain,
+  selectSchemaTableCard,viewSelectedTableSampleData,switchTableDetailMode,syncInteractiveSchemaSelection,renderSelectedSchemaDetail,
   filterScenarioSearch,filterProgressDomain,filterProgressStatus,filterProgressSearch,
   setDomainTrack,openOnboarding,closeOnboarding,toggleLandscapeMode,
   toggleProfileDropdown,closeProfileDropdown,openProfileModal,closeProfileModal,
@@ -7814,7 +8648,22 @@ Object.assign(window,{
   getScenarioConversationDialogue,
   toggleSchemaSampleCard,
   openEmptyThinkingModal,
-  closeEmptyThinkingModal
+  closeEmptyThinkingModal,
+  scenarioVideos,
+  getScenarioVideoUrl,
+  syncScenarioVideoState,
+  playScenarioVideo,
+  replayScenarioVideo,
+  cleanupScenarioVideo,
+  isSandboxSessionActive,
+  getSandboxState,
+  saveSandboxState,
+  clearSandboxSession,
+  updateSandboxUI,
+  openSandboxAuthModal,
+  closeSandboxAuthModal,
+  handleSandboxSignInClick,
+  startSandboxSession
 });
 try {
   initLandscapeMode();
@@ -7834,7 +8683,23 @@ try {
   const thinkingEl = $('thinking');
   if (thinkingEl) {
     thinkingEl.addEventListener('input',()=>{
+      activeEvaluateRequestToken += 1;
+      const evalBtn = $('evaluate');
+      if (evalBtn) {
+        evalBtn.disabled = false;
+        evalBtn.removeAttribute('aria-busy');
+      }
       if (!user || !user.id) return;
+      const prev = entry();
+      if (isCompleted(current, prev)) {
+        changeEntry({
+          thinking: readThinking(),
+          completed: true,
+          status: 'completed'
+        }, false);
+        updateGates();
+        return;
+      }
       changeEntry({
         thinking: readThinking(),
         assessment: null,
@@ -7855,7 +8720,7 @@ try {
     thinkingEl.addEventListener('keydown', event => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
         event.preventDefault();
-        evaluatePlan();
+        void evaluatePlan();
       }
     });
   }
@@ -7898,6 +8763,11 @@ try {
   selectedLevel = null;
   current = null;
   setDomainTrack('all');
+  if (isSandboxSessionActive()) {
+    const sb = getSandboxState();
+    state = { version: 2, resetAt: 0, entries: sb.entries || {} };
+    updateSandboxUI();
+  }
   updateProgress();
   renderDomainAndLevelPickers();
   renderScenarioCatalog();

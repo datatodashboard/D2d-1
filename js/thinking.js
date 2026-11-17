@@ -464,8 +464,46 @@ export function evaluateThinking(scenario, input) {
   };
 }
 
+export const THINKING_ENGINE_3_VERSION = 7;
+export const PILOT_SCENARIO_IDS = Object.freeze([
+  'BAN_BEG_001',
+  'BAN_BEG_002',
+  'BAN_BEG_003',
+  'BAN_BEG_004',
+  'BAN_BEG_005',
+  'BAN_BEG_006',
+  'BAN_BEG_007',
+  'BAN_BEG_008',
+  'BAN_BEG_009',
+  'BAN_BEG_010'
+]);
+
+export function isEngine3Assessment(assessment) {
+  return Boolean(
+    assessment &&
+      typeof assessment === 'object' &&
+      (assessment.version === THINKING_ENGINE_3_VERSION || assessment.engine === 'thinking_3.0')
+  );
+}
+
 export function thinkingIsReady(scenario, entry) {
-  if (!entry?.thinking) return false;
+  if (!entry) return false;
+  if (
+    entry.completed === true &&
+    ((typeof entry.score === 'number' && entry.score >= PASS_THRESHOLD) ||
+      (typeof entry.thinkingScore === 'number' && entry.thinkingScore >= PASS_THRESHOLD))
+  ) {
+    return true;
+  }
+  if (isEngine3Assessment(entry.assessment)) {
+    return Boolean(
+      entry.assessment.ready === true &&
+        typeof entry.assessment.score === 'number' &&
+        entry.assessment.score >= PASS_THRESHOLD
+    );
+  }
+  if (!entry.thinking) return false;
   const assessment = evaluateThinking(scenario, entry.thinking);
   return assessment.ready || (entry.assessment?.score >= PASS_THRESHOLD);
 }
+

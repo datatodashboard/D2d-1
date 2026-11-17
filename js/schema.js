@@ -252,7 +252,7 @@ function resolveDomainAssetForTables(tables, options = {}) {
 
 function buildSampleRecordsTableHtml(tableObj, parsedSampleTable) {
   if (!parsedSampleTable || !Array.isArray(parsedSampleTable.rows) || parsedSampleTable.rows.length === 0) {
-    return '<div class="schema-sample-empty" role="status">No sample records available for this table.</div>';
+    return '';
   }
   const schemaColNames = tableObj.columns.map(c => c.name);
   const sampleColMap = new Map();
@@ -263,11 +263,11 @@ function buildSampleRecordsTableHtml(tableObj, parsedSampleTable) {
   // Use exact matching column headers from the table's declared schema
   const activeCols = schemaColNames.filter(colName => sampleColMap.has(colName.toLowerCase()));
   if (activeCols.length === 0) {
-    return '<div class="schema-sample-empty" role="status">No matching sample records available for this table schema.</div>';
+    return '';
   }
 
-  const displayRows = parsedSampleTable.rows.slice(0, 8);
-  const theadCells = activeCols.map(colName => '<th>' + escapeHtml(colName) + '</th>').join('');
+  const displayRows = parsedSampleTable.rows;
+  const theadCells = activeCols.map(colName => '<th scope="col">' + escapeHtml(colName) + '</th>').join('');
   const tbodyRows = displayRows.map(row => {
     const cells = activeCols.map(colName => {
       const colIdx = sampleColMap.get(colName.toLowerCase());
@@ -280,20 +280,159 @@ function buildSampleRecordsTableHtml(tableObj, parsedSampleTable) {
     return '<tr>' + cells + '</tr>';
   }).join('');
 
-  const totalCount = parsedSampleTable.rows.length;
-  const footerNote = totalCount > displayRows.length
-    ? '<div class="schema-sample-caption">Showing ' + displayRows.length + ' of ' + totalCount + ' sample records</div>'
-    : '<div class="schema-sample-caption">Showing all ' + totalCount + ' sample records</div>';
-
   return (
     '<div class="table-scroll" tabindex="0" role="region" aria-label="Sample records for ' + escapeHtml(tableObj.name) + '">' +
-      '<table class="sample-table">' +
+      '<table class="sample-table sample-records-table">' +
         '<thead><tr>' + theadCells + '</tr></thead>' +
         '<tbody>' + tbodyRows + '</tbody>' +
       '</table>' +
-    '</div>' +
-    footerNote
+    '</div>'
   );
+}
+
+export function toggleSchemaSampleCard(btn) {
+  if (!btn) return;
+  const panelId = btn.getAttribute('aria-controls');
+  const card = typeof btn.closest === 'function' ? btn.closest('.schema-card') : null;
+  const panel = (panelId && typeof document !== 'undefined' && document.getElementById(panelId)) ||
+    (card && typeof card.querySelector === 'function' && card.querySelector('.schema-sample-panel'));
+  if (!panel) return;
+  const willExpand = Boolean(panel.hidden);
+  panel.hidden = !willExpand;
+  btn.setAttribute('aria-expanded', willExpand ? 'true' : 'false');
+  if (card && card.classList) {
+    card.classList.toggle('sample-expanded', willExpand);
+  }
+  const labelEl = typeof btn.querySelector === 'function' ? btn.querySelector('.schema-sample-toggle-label') : null;
+  if (labelEl) {
+    const countAttr = btn.getAttribute('data-sample-count');
+    const countSuffix = countAttr ? ' (' + countAttr + ')' : '';
+    labelEl.textContent = (willExpand ? 'Hide sample records' : 'Show sample records') + countSuffix;
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.toggleSchemaSampleCard = toggleSchemaSampleCard;
+}
+
+let lastRenderedSchemaContext = null;
+
+function buildTableDetailPanelHtml(t, tableDdlMeta, tableSample, tableNames, viewMode = 'schema') {
+  if (!t) return '';
+  const icon = TABLE_ICONS[t.name] || '🗂️';
+  const isSampleMode = viewMode === 'sample';
+
+  if (isSampleMode) {
+    const sampleHtml = buildSampleRecordsTableHtml(t, tableSample);
+    return (
+      '<div class="schema-detail-card" data-detail-table="' + escapeHtml(t.name) + '" data-detail-mode="sample">' +
+        '<div class="schema-detail-header">' +
+          '<div class="schema-detail-title-row">' +
+            '<div class="schema-detail-title-left schema-detail-title-group">' +
+              '<span class="schema-detail-icon" aria-hidden="true">' + icon + '</span>' +
+              '<h4 class="schema-detail-title schema-detail-table-name">' + escapeHtml(t.name) + '</h4>' +
+            '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+              '<span class="schema-detail-badge schema-detail-mode-badge">Sample Records</span>' +
+              '<button type="button" class="schema-detail-mode-pill schema-back-to-cols-btn" onclick="if(window.switchTableDetailMode)window.switchTableDetailMode(\'schema\')">' +
+                '← Back to Schema Overview' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="schema-detail-table-wrap schema-detail-sample-wrap">' +
+          sampleHtml +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  const colRows = t.columns.map(c => {
+    const colDdl = tableDdlMeta[c.name] || null;
+    const dataType = c.dataType || (colDdl && colDdl.dataType ? colDdl.dataType : null);
+    let keyBadges = '';
+    if (c.key === 'PK' || (colDdl && colDdl.isPk)) {
+      keyBadges += '<span class="badge-pk" title="Primary Key">PK</span>';
+    }
+    if (c.key === 'FK' || (colDdl && colDdl.isFk)) {
+      const explicitTarget = c.references || (colDdl && colDdl.refTable ? colDdl.refTable : null);
+      const target = explicitTarget || inferReference(c.name, tableNames, t.name);
+      keyBadges += '<span class="badge-fk" title="Foreign Key">FK</span>';
+      if (target) {
+        keyBadges += '<span class="fk-ref" title="References ' + escapeHtml(target) + '">→ ' + escapeHtml(target) + '</span>';
+      }
+    }
+
+    return (
+      '<tr>' +
+        '<td class="detail-col-name schema-detail-col-name">' + escapeHtml(c.name) + '</td>' +
+        '<td class="detail-col-type schema-detail-col-type">' + (dataType ? '<span class="schema-col-type">' + escapeHtml(dataType) + '</span>' : '<span class="detail-col-unspecified">—</span>') + '</td>' +
+        '<td class="detail-col-keys schema-detail-key-cell">' + (keyBadges || '<span class="detail-col-unspecified">—</span>') + '</td>' +
+      '</tr>'
+    );
+  }).join('');
+
+  return (
+    '<div class="schema-detail-card" data-detail-table="' + escapeHtml(t.name) + '" data-detail-mode="schema">' +
+      '<div class="schema-detail-header">' +
+        '<div class="schema-detail-title-row">' +
+          '<div class="schema-detail-title-left schema-detail-title-group">' +
+            '<span class="schema-detail-icon" aria-hidden="true">' + icon + '</span>' +
+            '<h4 class="schema-detail-title schema-detail-table-name">' + escapeHtml(t.name) + '</h4>' +
+          '</div>' +
+          '<span class="schema-detail-badge schema-detail-mode-badge">Table Schema</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="schema-detail-table-wrap">' +
+        '<table class="schema-detail-table schema-detail-cols-table" aria-label="Schema details for ' + escapeHtml(t.name) + '">' +
+          '<thead>' +
+            '<tr>' +
+              '<th>Column</th>' +
+              '<th>Data Type</th>' +
+              '<th>Key / Reference</th>' +
+            '</tr>' +
+          '</thead>' +
+          '<tbody>' + colRows + '</tbody>' +
+        '</table>' +
+      '</div>' +
+      '<div class="schema-detail-actions schema-detail-actions-row">' +
+        '<button type="button" class="schema-view-sample-btn schema-view-sample-cta-btn" id="viewSelectedTableSampleBtn" onclick="if(window.viewSelectedTableSampleData)window.viewSelectedTableSampleData(\'' + escapeHtml(t.name) + '\')">' +
+          '<span aria-hidden="true">⊞</span>' +
+          '<span>View Sample Data</span>' +
+        '</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+export function renderSelectedSchemaDetail(tableName, viewMode = 'schema') {
+  if (!lastRenderedSchemaContext || typeof document === 'undefined') return;
+  const detailPane = document.getElementById('schemaTableDetailPane');
+  if (!detailPane) return;
+
+  const { tables, ddlMetadata, parsedSamples, tableNames } = lastRenderedSchemaContext;
+  const target = tables.find(t => t.name === tableName) || tables[0];
+  if (!target) {
+    detailPane.innerHTML = '';
+    return;
+  }
+
+  lastRenderedSchemaContext.selectedTable = target.name;
+  lastRenderedSchemaContext.viewMode = viewMode;
+
+  const tableDdlMeta = ddlMetadata[target.name] || {};
+  const tableSample = parsedSamples[target.name] || null;
+  detailPane.innerHTML = buildTableDetailPanelHtml(target, tableDdlMeta, tableSample, tableNames, viewMode);
+
+  const container = document.getElementById('schema');
+  if (container && typeof container.querySelectorAll === 'function') {
+    const cards = container.querySelectorAll('.schema-card');
+    cards.forEach(card => {
+      const isSelected = card.getAttribute('data-table') === target.name;
+      if (card.classList) card.classList.toggle('selected', isSelected);
+      card.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+    });
+  }
 }
 
 export function renderSchemaCards(schemaText, options = {}) {
@@ -302,7 +441,10 @@ export function renderSchemaCards(schemaText, options = {}) {
   const tables = parseSchema(schemaText);
 
   if (!tables.length) {
+    lastRenderedSchemaContext = null;
     container.innerHTML = '<div class="schema-text">' + escapeHtml(String(schemaText || '')) + '</div>';
+    const detailPane = typeof document !== 'undefined' ? document.getElementById('schemaTableDetailPane') : null;
+    if (detailPane) detailPane.innerHTML = '';
     return;
   }
 
@@ -313,28 +455,46 @@ export function renderSchemaCards(schemaText, options = {}) {
   const parsedSamples = options?.sampleData || parseSampleRecords(sampleSql);
 
   const tableNames = tables.map(t => t.name);
+  const initialSelected = options?.selectedTable && tableNames.includes(options.selectedTable)
+    ? options.selectedTable
+    : tableNames[0];
+
+  lastRenderedSchemaContext = {
+    tables,
+    ddlMetadata,
+    parsedSamples,
+    tableNames,
+    selectedTable: initialSelected,
+    viewMode: 'schema'
+  };
+
   container.innerHTML = tables.map(t => {
     const tableDdlMeta = ddlMetadata[t.name] || {};
     const tableSample = parsedSamples[t.name] || null;
-    const sampleCount = tableSample && Array.isArray(tableSample.rows) ? tableSample.rows.length : 0;
+    const schemaColNames = t.columns.map(c => c.name);
+    const sampleColMap = new Map();
+    if (tableSample && Array.isArray(tableSample.cols)) {
+      tableSample.cols.forEach((colName, idx) => {
+        sampleColMap.set(colName.toLowerCase(), idx);
+      });
+    }
+    const activeSampleCols = schemaColNames.filter(colName => sampleColMap.has(colName.toLowerCase()));
+    const sampleCount = (tableSample && Array.isArray(tableSample.rows) && activeSampleCols.length > 0)
+      ? tableSample.rows.length
+      : 0;
     const panelId = 'schema-sample-panel-' + escapeHtml(t.name);
+    const colCountLabel = t.columns.length === 1 ? '1 column' : (t.columns.length + ' columns');
 
     const rows = t.columns.map(c => {
       const colDdl = tableDdlMeta[c.name] || null;
       const dataType = c.dataType || (colDdl && colDdl.dataType ? colDdl.dataType : null);
       let badges = '';
-      let ref = '';
 
       if (c.key === 'PK') {
         badges += '<span class="badge-pk" title="Primary Key">PK</span>';
       }
       if (c.key === 'FK') {
         badges += '<span class="badge-fk" title="Foreign Key">FK</span>';
-        const explicitTarget = c.references || (colDdl && colDdl.refTable ? colDdl.refTable : null);
-        const target = explicitTarget || inferReference(c.name, tableNames, t.name);
-        if (target) {
-          ref = '<span class="fk-ref" title="References ' + escapeHtml(target) + '">→ ' + escapeHtml(target) + '</span>';
-        }
       }
 
       const typeHtml = dataType
@@ -342,47 +502,58 @@ export function renderSchemaCards(schemaText, options = {}) {
         : '';
 
       return (
-        '<li class="schema-row">' +
-          '<div class="schema-col-main">' +
-            '<span class="schema-col-name">' + escapeHtml(c.name) + '</span>' +
+        '<tr class="schema-row">' +
+          '<td class="schema-col-cell">' +
+            '<div class="schema-col-main">' +
+              '<span class="schema-col-name">' + escapeHtml(c.name) + '</span>' +
+              (badges ? '<span class="schema-badges">' + badges + '</span>' : '') +
+            '</div>' +
+          '</td>' +
+          '<td class="schema-type-cell">' +
             typeHtml +
-          '</div>' +
-          (ref || badges ? '<div class="schema-badges">' + ref + badges + '</div>' : '') +
-        '</li>'
+          '</td>' +
+        '</tr>'
       );
     }).join('');
 
-    const icon = TABLE_ICONS[t.name] || '🗂️';
-    const sampleHtml = buildSampleRecordsTableHtml(t, tableSample);
-    const countBadge = sampleCount > 0
-      ? '<span class="schema-sample-count">' + sampleCount + ' rows</span>'
-      : '<span class="schema-sample-count empty">0 rows</span>';
-
-    return (
-      '<article class="schema-card" data-table="' + escapeHtml(t.name) + '">' +
-        '<header class="schema-card-head">' +
-          '<div class="schema-card-title-wrap">' +
-            '<span class="tbl-icon" aria-hidden="true">' + icon + '</span>' +
-            '<h4 class="schema-table-name">' + escapeHtml(t.name) + '</h4>' +
-          '</div>' +
-          '<span class="schema-col-count">' + t.columns.length + ' cols</span>' +
-        '</header>' +
-        '<ul class="schema-card-body" aria-label="Columns for ' + escapeHtml(t.name) + '">' + rows + '</ul>' +
+    const sampleHtml = sampleCount > 0 ? buildSampleRecordsTableHtml(t, tableSample) : '';
+    const sampleSectionHtml = sampleCount > 0
+      ? (
         '<div class="schema-sample-section">' +
-          '<button type="button" class="schema-sample-toggle" aria-expanded="false" aria-controls="' + panelId + '" onclick="if(window.toggleSchemaSampleCard)window.toggleSchemaSampleCard(this)">' +
-            '<span class="schema-sample-toggle-label">View sample records</span>' +
-            '<span class="schema-sample-toggle-right">' +
-              countBadge +
-              '<span class="schema-sample-chevron" aria-hidden="true">▾</span>' +
-            '</span>' +
+          '<button type="button" class="schema-sample-toggle" aria-expanded="false" aria-controls="' + panelId + '" data-sample-count="' + sampleCount + '" onclick="if(window.toggleSchemaSampleCard)window.toggleSchemaSampleCard(this)">' +
+            '<span class="schema-sample-toggle-label">Show sample records (' + sampleCount + ')</span>' +
+            '<span class="schema-sample-chevron" aria-hidden="true">▾</span>' +
           '</button>' +
           '<div class="schema-sample-panel" id="' + panelId + '" hidden>' +
             sampleHtml +
           '</div>' +
+        '</div>'
+      )
+      : '';
+
+    return (
+      '<article class="schema-card" data-table="' + escapeHtml(t.name) + '">' +
+        '<header class="schema-card-head">' +
+          '<h4 class="schema-table-name">' + escapeHtml(t.name) + '</h4>' +
+          '<span class="schema-col-count">' + colCountLabel + '</span>' +
+        '</header>' +
+        '<div class="schema-cols-table-wrap">' +
+          '<table class="schema-card-body schema-cols-table" aria-label="Columns for ' + escapeHtml(t.name) + '">' +
+            '<thead class="schema-cols-head">' +
+              '<tr>' +
+                '<th scope="col">Column</th>' +
+                '<th scope="col">Type</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' + rows + '</tbody>' +
+          '</table>' +
         '</div>' +
+        sampleSectionHtml +
       '</article>'
     );
   }).join('');
+
+  renderSelectedSchemaDetail(initialSelected, 'schema');
 }
 
 /**

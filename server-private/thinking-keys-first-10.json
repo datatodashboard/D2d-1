@@ -1,0 +1,291 @@
+{
+  "status": "Prepared teacher keys; not live-model calibrated",
+  "rubric": [
+    [
+      "data",
+      2
+    ],
+    [
+      "understanding",
+      2
+    ],
+    [
+      "conditions",
+      3
+    ],
+    [
+      "approach",
+      2
+    ],
+    [
+      "result",
+      1
+    ]
+  ],
+  "passThreshold": 7,
+  "keys": [
+    {
+      "scenarioId": "BAN_BEG_001",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts whose status is Active. Exclude other status values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM accounts WHERE status = 'Active';",
+      "sourceDigest": "7308db4db314a19e4ce06e48cbe9955312c1a22cbad5ad92cc28f08f56bbf17d",
+      "requiredTables": [
+        "accounts"
+      ],
+      "relevantColumns": [
+        "status"
+      ],
+      "businessObjective": "Show the recorded details of accounts whose status is Active. Exclude other status values.",
+      "criticalRequirements": [
+        "Keep accounts with status Active; exclude every other status.",
+        "No aggregation or join; return matching account records."
+      ],
+      "boundaryChecks": [
+        "Inactive accounts must not be included."
+      ],
+      "teacherAnswer": "Use accounts, keep only rows whose status is Active, and return their recorded details.",
+      "acceptedParaphrase": "Keep Active accounts and show their details.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_002",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts with balance above 50,000. Do not include a value of exactly 50,000.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM accounts WHERE balance > 50000;",
+      "sourceDigest": "181d8ea42f4cacc7ae0510a1bc5e32300d800009da1a19159e1c5c4daa0926a2",
+      "requiredTables": [
+        "accounts"
+      ],
+      "relevantColumns": [
+        "balance"
+      ],
+      "businessObjective": "Show the recorded details of accounts with balance above 50,000. Do not include a value of exactly 50,000.",
+      "criticalRequirements": [
+        "balance > 50000; exactly 50000 is excluded.",
+        "Filter account rows and return recorded account details."
+      ],
+      "boundaryChecks": [
+        "49999 and 50000 excluded; 50001 included."
+      ],
+      "teacherAnswer": "Use accounts and keep balance strictly greater than 50000, excluding exactly 50000; return the matching account details.",
+      "acceptedParaphrase": "Show account details where balance exceeds 50,000; omit exactly 50,000.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_003",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of customers.\n\nShow the recorded details of customers whose city is Chennai. Exclude other city values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM customers WHERE city = 'Chennai';",
+      "sourceDigest": "8d232879e02c0bbb746312191fe522b051343bdba9360cbdc89b9e8947f0ef08",
+      "requiredTables": [
+        "customers"
+      ],
+      "relevantColumns": [
+        "city"
+      ],
+      "businessObjective": "Show the recorded details of customers whose city is Chennai. Exclude other city values.",
+      "criticalRequirements": [
+        "city equals Chennai; exclude all other city values.",
+        "Filter customer records and return their recorded details."
+      ],
+      "boundaryChecks": [
+        "Chennai included; Mumbai excluded."
+      ],
+      "teacherAnswer": "Use customers, keep rows whose city is Chennai, exclude other cities, and return their recorded details.",
+      "acceptedParaphrase": "Keep Chennai customers and show their details.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_004",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of accounts.\n\nFind the total number of accounts on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT COUNT(*) AS total_records FROM accounts;",
+      "sourceDigest": "cb188218ae918ae1acd5a50dc5a2c657904aa0a6ea12b1bb7eb6ac257b4eb56f",
+      "requiredTables": [
+        "accounts"
+      ],
+      "relevantColumns": [],
+      "businessObjective": "Find the total number of accounts on record. Count each record once, regardless of its status or other details. Show one total, using zero when there are no records.",
+      "criticalRequirements": [
+        "Count every account row once, regardless of status or other details.",
+        "COUNT rows, not SUM balance and not a distinct customer count.",
+        "Return one total, including 0 for an empty table."
+      ],
+      "boundaryChecks": [
+        "Empty table returns one row with 0; duplicate customer IDs still count separate accounts."
+      ],
+      "teacherAnswer": "Use accounts and count every record once without filtering by status; return one total number, or zero if there are no accounts.",
+      "acceptedParaphrase": "Count all account records once, any status; give one number, zero if empty.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_005",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of accounts.\n\nShow all accounts with their recorded details, arranged by balance, highest value first. Records with equal values can appear in any order.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM accounts ORDER BY balance DESC;",
+      "sourceDigest": "64470774ab9242a0a3d0dadbd841906ded17a1c65ce5d0b70653a4f0f9153523",
+      "requiredTables": [
+        "accounts"
+      ],
+      "relevantColumns": [
+        "balance"
+      ],
+      "businessObjective": "Show all accounts with their recorded details, arranged by balance, highest value first. Records with equal values can appear in any order.",
+      "criticalRequirements": [
+        "Keep all account records; do not filter or take only a top subset.",
+        "Sort balance descending (highest first).",
+        "Return all recorded account details; equal balances may appear in any order."
+      ],
+      "boundaryChecks": [
+        "Balances 10 and 20 appear as 20 then 10; both remain."
+      ],
+      "teacherAnswer": "Use accounts, return all account details sorted by balance from highest to lowest; accounts with equal balances can appear in any order.",
+      "acceptedParaphrase": "Show every account, biggest balance first; ties can be in any order.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_006",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of account products.\n\nPrepare a list of the different category values found in the account products records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT DISTINCT category FROM account_products ORDER BY category;",
+      "sourceDigest": "7f672eefb4376e63156ff7285786324a10393982e21d4f8d036cf95d5d8a455f",
+      "requiredTables": [
+        "account_products"
+      ],
+      "relevantColumns": [
+        "category"
+      ],
+      "businessObjective": "Prepare a list of the different category values found in the account products records. Include each value once and arrange the list alphabetically. If a value is missing, include one empty entry at the end.",
+      "criticalRequirements": [
+        "Each distinct category appears once.",
+        "Retain one missing-value entry if any category is missing.",
+        "Read category from account_products, deduplicate, and sort alphabetically ascending with missing values last.",
+        "Return category values only, not product records or category counts."
+      ],
+      "boundaryChecks": [
+        "B,A,A,NULL,NULL becomes A,B,NULL; missing values do not disappear."
+      ],
+      "teacherAnswer": "Use account_products and collect distinct category values once each, sort them alphabetically, and include one empty entry at the end if any category is missing.",
+      "acceptedParaphrase": "List account product categories once each, A to Z, keeping one missing entry last.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_007",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts with open date on or after 1 January 2026. Include 1 January 2026 itself.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM accounts WHERE open_date >= DATE '2026-01-01';",
+      "sourceDigest": "88afc68f7430f6fb42f4ca74909c1c9efceaf0182c3b83a446fb260a8263fb6b",
+      "requiredTables": [
+        "accounts"
+      ],
+      "relevantColumns": [
+        "open_date"
+      ],
+      "businessObjective": "Show the recorded details of accounts with open date on or after 1 January 2026. Include 1 January 2026 itself.",
+      "criticalRequirements": [
+        "open_date >= 2026-01-01; include 1 January itself.",
+        "Filter accounts by opening date and return matching account details."
+      ],
+      "boundaryChecks": [
+        "2025-12-31 excluded; 2026-01-01 and later included."
+      ],
+      "teacherAnswer": "Use accounts and keep open_date on or after 1 January 2026, including that date, then return matching account details.",
+      "acceptedParaphrase": "Show account details opened starting January 1, 2026, including that day.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_008",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of transactions.\n\nShow the recorded details of transactions whose transaction type is Credit. Exclude other transaction type values.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM transactions WHERE transaction_type = 'Credit';",
+      "sourceDigest": "74f7dee952607541af90f08834b89d6df928e54f356aeb3ace95f3c9d97ca72f",
+      "requiredTables": [
+        "transactions"
+      ],
+      "relevantColumns": [
+        "transaction_type"
+      ],
+      "businessObjective": "Show the recorded details of transactions whose transaction type is Credit. Exclude other transaction type values.",
+      "criticalRequirements": [
+        "transaction_type equals Credit; exclude all other transaction types.",
+        "Filter transactions and return recorded transaction details."
+      ],
+      "boundaryChecks": [
+        "Credit included; Debit excluded; do not substitute status for transaction_type."
+      ],
+      "teacherAnswer": "Use transactions and keep transaction_type Credit only, excluding other types, then return recorded transaction details.",
+      "acceptedParaphrase": "Keep Credit transactions and show their details.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_009",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of customers.\n\nShow up to 5 customers with their recorded details, arranged by customer number, smallest number first. If fewer records are available, show all of them.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM customers ORDER BY customer_id LIMIT 5;",
+      "sourceDigest": "2a6347c7d0f0e4578928f633f1cc97c9120cd8b203dd365f34fa89d24add67db",
+      "requiredTables": [
+        "customers"
+      ],
+      "relevantColumns": [
+        "customer_id"
+      ],
+      "businessObjective": "Show up to 5 customers with their recorded details, arranged by customer number, smallest number first. If fewer records are available, show all of them.",
+      "criticalRequirements": [
+        "Return up to 5 customers; return all if fewer than 5 exist.",
+        "Sort customer_id ascending BEFORE limiting to 5.",
+        "Return customer records, not a count or five largest IDs."
+      ],
+      "boundaryChecks": [
+        "IDs 9,2,7,1,6,4 become 1,2,4,6,7; two input rows yield two output rows."
+      ],
+      "teacherAnswer": "Use customers, sort by customer_id smallest first, then take up to five and return their recorded details; if fewer than five exist return all.",
+      "acceptedParaphrase": "Show the first five customers by increasing customer number, or all when fewer exist.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    },
+    {
+      "scenarioId": "BAN_BEG_010",
+      "keyVersion": "thinking-3.0-pilot-1",
+      "catalog": "data/Crack_SQL_420_Simple.json",
+      "question": "A bank manager is preparing a review of accounts.\n\nShow the recorded details of accounts with balance from 25,000 through 75,000. Include both end values and exclude anything outside this range.\n\nHow would you prepare this information? Explain your approach in your own words. You do not need to write SQL.",
+      "schema": "customers(customer_id PK, customer_name, city, segment, joined_date); account_products(product_id PK, product_name, category, status, base_value); accounts(account_id PK, customer_id FK, product_id FK, open_date, status, balance); transactions(transaction_id PK, account_id FK, transaction_date, transaction_type, quantity, amount, status)",
+      "referenceSql": "SELECT * FROM accounts WHERE balance BETWEEN 25000 AND 75000;",
+      "sourceDigest": "8acdd1ca4fec9ecc993029a0336943ebc7215ea30f4c054010146a83edcc133e",
+      "requiredTables": [
+        "accounts"
+      ],
+      "relevantColumns": [
+        "balance"
+      ],
+      "businessObjective": "Show the recorded details of accounts with balance from 25,000 through 75,000. Include both end values and exclude anything outside this range.",
+      "criticalRequirements": [
+        "25000 <= balance <= 75000; include both boundaries and exclude outside values.",
+        "Filter accounts by the inclusive balance range and return account details."
+      ],
+      "boundaryChecks": [
+        "24999 excluded; 25000,50000,75000 included; 75001 excluded."
+      ],
+      "teacherAnswer": "Use accounts and keep balances from 25000 through 75000 inclusive of both endpoints; exclude values outside the range and return matching account details.",
+      "acceptedParaphrase": "Show account details with balance at least 25,000 and at most 75,000, including both ends.",
+      "irrelevantRequirements": "Do not add unstated joins, status filters, aggregation, validation prose, or SQL syntax requirements. Do not require long answers or exact table spelling when the entity is unambiguous."
+    }
+  ]
+}

@@ -42,6 +42,8 @@ const FORBIDDEN_DIST_ENTRIES = [
   '.env.production',
   '.env.example',
   'server.js',
+  'server',
+  'server-private',
   'deploy',
   'scripts',
   'screenshots',

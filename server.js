@@ -5,6 +5,11 @@ import fs from 'fs';
 import zlib from 'zlib';
 import { fileURLToPath } from 'url';
 import { evaluateThinking, PASS_THRESHOLD } from './js/thinking.js';
+import {
+  evaluateThinkingEngine3,
+  isEngine3Scenario,
+  THINKING_ENGINE_3_PASS_THRESHOLD
+} from './server/thinking-engine-3.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +19,11 @@ const HOST = '0.0.0.0';
 
 // Enable JSON request body parsing
 app.use(express.json());
+
+// Block any direct HTTP access to server-private or server directories
+app.use(['/server-private', '/server'], (req, res) => {
+  res.status(404).type('text/plain').send('Not Found');
+});
 
 // Lightweight in-memory gzip cache for compressible static files
 const compressedFileCache = new Map();
@@ -110,14 +120,38 @@ app.get('/api/scenarios/catalog', (req, res) => {
 });
 
 // Trusted Backend Thinking Evaluation Route
-// Evaluates learner thinking using the authoritative evaluator in Node.js
-app.post('/api/evaluate-thinking', (req, res) => {
-  const { scenarioId, thinking } = req.body || {};
+// Evaluates learner thinking using Thinking Engine 3.0 (or legacy fallback only when Engine 3.0 scope disables it)
+app.post('/api/evaluate-thinking', async (req, res) => {
+  const { scenarioId, thinking, userId } = req.body || {};
 
   if (!scenarioId || !scenariosMap.has(scenarioId)) {
     return res.status(400).json({
       error: `Invalid scenario ID: "${scenarioId}". Not found in trusted scenario catalog.`
     });
+  }
+
+  if (isEngine3Scenario(scenarioId)) {
+    try {
+      const requireApiKey = req.headers['x-require-gemini-key'] === 'true';
+      const assessment = await evaluateThinkingEngine3(
+        { scenarioId, thinking: thinking || {}, userId: userId || null },
+        { requireApiKey }
+      );
+      const score = typeof assessment?.score === 'number' ? assessment.score : 0;
+      const passed = Boolean(assessment?.ready && score >= THINKING_ENGINE_3_PASS_THRESHOLD);
+      return res.json({
+        scenarioId,
+        assessment,
+        score,
+        passed
+      });
+    } catch (err) {
+      const status = err?.status || 503;
+      return res.status(status).json({
+        error: err?.message || 'Thinking evaluation service is temporarily unavailable.',
+        code: err?.code || 'EVALUATION_UNAVAILABLE'
+      });
+    }
   }
 
   const scenario = scenariosMap.get(scenarioId);
@@ -135,7 +169,7 @@ app.post('/api/evaluate-thinking', (req, res) => {
 
 // Trusted Backend Completion Verification Route
 // Validates completion using trusted scoring logic; does not accept or trust client-supplied score or userId
-app.post('/api/progress/complete', (req, res) => {
+app.post('/api/progress/complete', async (req, res) => {
   const { scenarioId, thinking } = req.body || {};
 
   if (!scenarioId || !scenariosMap.has(scenarioId)) {
@@ -143,6 +177,43 @@ app.post('/api/progress/complete', (req, res) => {
       success: false,
       error: `Invalid scenario ID: "${scenarioId}". Not found in trusted scenario catalog.`
     });
+  }
+
+  if (isEngine3Scenario(scenarioId)) {
+    try {
+      const requireApiKey = req.headers['x-require-gemini-key'] === 'true';
+      const assessment = await evaluateThinkingEngine3(
+        { scenarioId, thinking: thinking || {} },
+        { requireApiKey }
+      );
+      const score = typeof assessment?.score === 'number' ? assessment.score : 0;
+      const passed = Boolean(assessment?.ready && score >= THINKING_ENGINE_3_PASS_THRESHOLD);
+
+      if (!passed) {
+        return res.status(422).json({
+          success: false,
+          passed: false,
+          score,
+          assessment,
+          message: `Thinking response (score ${score}/10) does not meet all Thinking Engine 3.0 requirements (>= ${THINKING_ENGINE_3_PASS_THRESHOLD}/10 and all critical requirements met).`
+        });
+      }
+
+      return res.json({
+        success: true,
+        passed: true,
+        scenarioId,
+        score,
+        assessment
+      });
+    } catch (err) {
+      const status = err?.status || 503;
+      return res.status(status).json({
+        success: false,
+        error: err?.message || 'Completion verification service is temporarily unavailable.',
+        code: err?.code || 'EVALUATION_UNAVAILABLE'
+      });
+    }
   }
 
   const scenario = scenariosMap.get(scenarioId);

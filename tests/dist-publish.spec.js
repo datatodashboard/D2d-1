@@ -121,7 +121,7 @@ test.describe('Netlify Publish Directory (dist/) Static Serving & Launch Verific
     });
 
     expect(cacheResult.hasActiveWorker).toBe(true);
-    expect(cacheResult.activeCacheName).toBe('crack-sql-v3-netlify');
-    expect(cacheResult.keysAfter).toEqual(['crack-sql-v3-netlify']);
+    expect(cacheResult.activeCacheName).toBe('crack-sql-v5-netlify');
+    expect(cacheResult.keysAfter).toEqual(['crack-sql-v5-netlify']);
   });
 });

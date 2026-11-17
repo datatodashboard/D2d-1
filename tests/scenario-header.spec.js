@@ -34,7 +34,7 @@ for (const width of [1280, 768, 390]) {
       if (!hasInstruction) await expect(page.locator('#thinkingInstructionCard')).toBeHidden();
     }
     await isolateRenderedCard(page);
-    await expect(page.locator('#scenarioId')).toBeVisible();
+    await expect(page.locator('#scenarioId')).toBeHidden();
     await expect(page.locator('#question')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });

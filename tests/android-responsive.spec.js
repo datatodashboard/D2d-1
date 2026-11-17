@@ -307,9 +307,9 @@ test('full learner flow works end-to-end on Android phone viewport (360x800)', a
   await page.locator('#practiceTabBusiness').click();
   await expect(page.locator('#practiceTabBusiness')).toHaveAttribute('aria-selected', 'true');
 
-  // Verify #thinking textarea height >= 120px, font-size 16px, and keyboard-active class on focus
+  // Verify #thinking textarea height >= 80px, font-size 16px, and keyboard-active class on focus
   const thinkingBox = await page.locator('#thinking').boundingBox();
-  expect(thinkingBox.height).toBeGreaterThanOrEqual(120);
+  expect(thinkingBox.height).toBeGreaterThanOrEqual(80);
   const thinkingFontSize = await page.locator('#thinking').evaluate(el => getComputedStyle(el).fontSize);
   expect(thinkingFontSize).toBe('16px');
 

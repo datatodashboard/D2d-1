@@ -5,6 +5,11 @@ export function createCloudSync({client,getContext,onMerged,onStatus}) {
   let generation=0, running=false, requested=false;
   async function drain() {
     if(running) return;
+    try {
+      if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('sandbox:active') === 'true') {
+        return;
+      }
+    } catch (_) {}
     running=true;
     try {
       while(requested) {

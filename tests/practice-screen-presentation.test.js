@@ -82,16 +82,16 @@ test('renderSchemaCards renders authoritative tables across domains without hard
     assert.ok(container.innerHTML.includes('badge-pk'), 'must show declared PK badge');
     assert.ok(container.innerHTML.includes('badge-fk'), 'must show declared FK badge');
     assert.ok(container.innerHTML.includes('NUMERIC(14,2)'), 'must show DDL data types when available');
-    assert.ok(container.innerHTML.includes('View sample records'), 'must include View sample records toggle');
+    assert.ok(container.innerHTML.includes('Show sample records ('), 'must include Show sample records (n) toggle');
     assert.ok(!container.innerHTML.includes('+ Insert'), 'must not include old click-to-insert pills');
     assert.ok(!container.innerHTML.includes('+ Use Table'), 'must not include old + Use Table buttons');
 
     // Verify accounts card does NOT include customer_name in its sample table headers
     const accountsCardSplit = container.innerHTML.split('data-table="accounts"')[1].split('</article>')[0];
     const accountsThead = accountsCardSplit.split('<thead>')[1].split('</thead>')[0];
-    assert.ok(accountsThead.includes('<th>account_id</th>'));
-    assert.ok(accountsThead.includes('<th>customer_id</th>'));
-    assert.ok(accountsThead.includes('<th>balance</th>'));
+    assert.ok(accountsThead.includes('<th scope="col">account_id</th>'));
+    assert.ok(accountsThead.includes('<th scope="col">customer_id</th>'));
+    assert.ok(accountsThead.includes('<th scope="col">balance</th>'));
     assert.ok(!accountsThead.includes('customer_name'), 'accounts sample records must not include joined customer_name');
 
     // Verify sample panel is collapsed initially
@@ -107,7 +107,7 @@ test('renderSchemaCards renders authoritative tables across domains without hard
     assert.ok(container.innerHTML.includes('data-table="visits"'));
     assert.ok(!container.innerHTML.includes('data-table="accounts"'), 'Healthcare must not show Banking tables');
 
-    // 3. Custom schema without PK/FK, types, or sample data: must not invent anything and must show empty state
+    // 3. Custom schema without PK/FK, types, or sample data: must not invent anything and must omit toggle when no sample rows exist
     renderSchemaCards('audit_logs(log_entry, recorded_by)', { asset: null, sampleData: {}, ddlSql: '' });
     assert.ok(container.innerHTML.includes('data-table="audit_logs"'));
     assert.ok(container.innerHTML.includes('log_entry'));
@@ -116,8 +116,8 @@ test('renderSchemaCards renders authoritative tables across domains without hard
     assert.ok(!container.innerHTML.includes('badge-fk'), 'must not invent FK badge when undeclared');
     assert.ok(!container.innerHTML.includes('schema-col-type'), 'must not invent data types when unavailable');
     assert.ok(
-      container.innerHTML.includes('No sample records available for this table.'),
-      'must show clear empty state when sample data is unavailable'
+      !container.innerHTML.includes('schema-sample-toggle'),
+      'must not show sample records toggle when a table has no sample rows'
     );
   } finally {
     delete global.document;
@@ -589,15 +589,11 @@ test('Practice Schema & Sample Data tabs default to Schema Overview, switch smoo
     'schemaOverview must be visible by default and sampleDataView hidden by default'
   );
 
-  // 2. CSS hides inline sample records inside #schemaOverview and keeps both #tabSchema and #tabSample visible
+  // 2. CSS styles responsive grid of table cards with collapsible sample records inside #schemaOverview
   assert.ok(
-    css.includes('#practice #schemaOverview .schema-sample-section') &&
-      css.includes('display: none !important;'),
-    'Schema Overview must not display sample records in the default view'
-  );
-  assert.ok(
-    !css.includes('#practice #tabSample {\n  display: none !important;\n}'),
-    '#tabSample must not be hidden via display: none in CSS'
+    css.includes('grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)) !important;') &&
+      css.includes('#practice .schema-sample-panel[hidden]'),
+    'Schema & Records must use responsive card grid and keep sample panels collapsed when hidden'
   );
 
   // 3. renderAuth Continue with Google button does not reference module-scoped selectedDomain in inline onclick
@@ -616,6 +612,190 @@ test('Practice Schema & Sample Data tabs default to Schema Overview, switch smoo
     'renderSampleDataView must auto-select the first scenario table so clicking Sample Data immediately shows sample records'
   );
 });
+
+test('Full-Screen Responsive Layout & 50/50 Visual Business Challenge video lifecycle (BAN_BEG_001-020)', () => {
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const css = fs.readFileSync(new URL('../styles.css', import.meta.url), 'utf8');
+  const appJs = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
+
+  // 1. Markup verification for 50/50 split & native HTML5 video with preload="none" and no initial src
+  assert.ok(
+    html.includes('id="businessScenarioSplitGrid"'),
+    'must include businessScenarioSplitGrid container inside Business Scenario panel'
+  );
+  assert.ok(
+    html.includes('id="visualChallengeColumn"'),
+    'must include visualChallengeColumn for Left 50% Visual Business Challenge'
+  );
+  assert.ok(
+    html.includes('id="writtenScenarioColumn"'),
+    'must include writtenScenarioColumn for Right 50% Written Business Scenario'
+  );
+  const videoTagMatch = html.match(/<video\b[^>]*id="scenarioChallengeVideo"[^>]*>/);
+  assert.ok(videoTagMatch, 'must use native HTML5 <video> element with id="scenarioChallengeVideo"');
+  assert.ok(videoTagMatch[0].includes('preload="none"'), 'video element must have preload="none"');
+  assert.ok(videoTagMatch[0].includes('controls'), 'video element must expose native controls');
+  assert.ok(!/\bautoplay\b/i.test(videoTagMatch[0]), 'video element must not autoplay');
+  assert.ok(!/\bsrc=/i.test(videoTagMatch[0]), 'video element must not have a static src attribute on page load');
+
+  // 2. CSS verification for full-screen viewport utilization, 50/50 split, 16:9 aspect ratio, and single-column fallback
+  assert.ok(
+    css.includes('aspect-ratio: 16 / 9;'),
+    'visual challenge frame must maintain 16:9 aspect ratio'
+  );
+  assert.ok(
+    css.includes('#practice .business-scenario-split-grid[data-has-video="true"]') &&
+      css.includes('grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);'),
+    'Business Scenario must use a 50/50 two-column grid when scenario has a video'
+  );
+  assert.ok(
+    css.includes('#practice .visual-challenge-column[hidden]') &&
+      css.includes('display: none !important;'),
+    'Visual challenge column must hide completely when scenario has no video'
+  );
+
+  // 3. Behavioral verification of scenarioVideos mapping (BAN_BEG_001-020), lazy src assignment on Play, replay, and cleanup
+  const videoBlockStart = appJs.indexOf('const SUPABASE_PROJECT_URL =');
+  const videoBlockEnd = appJs.indexOf('let authoritativeCompletedCount = 0;', videoBlockStart);
+  const videoBlockCode = appJs.slice(videoBlockStart, videoBlockEnd);
+
+  const attrs = new Map([['preload', 'none']]);
+  const listeners = new Map();
+  let pauseCalls = 0;
+  let loadCalls = 0;
+  let playCalls = 0;
+
+  const mockVideoEl = {
+    id: 'scenarioChallengeVideo',
+    hidden: true,
+    src: '',
+    currentTime: 0,
+    setAttribute(k, v) {
+      attrs.set(k, String(v));
+      if (k === 'src') this.src = String(v);
+    },
+    getAttribute(k) {
+      return attrs.has(k) ? attrs.get(k) : null;
+    },
+    removeAttribute(k) {
+      attrs.delete(k);
+      if (k === 'src') this.src = '';
+    },
+    pause() { pauseCalls++; },
+    load() { loadCalls++; },
+    play() {
+      playCalls++;
+      return Promise.resolve();
+    },
+    addEventListener(type, fn) {
+      if (!listeners.has(type)) listeners.set(type, new Set());
+      listeners.get(type).add(fn);
+    },
+    dispatchEvent(ev) {
+      listeners.get(ev.type)?.forEach(fn => fn(ev));
+    }
+  };
+
+  const els = {
+    scenarioChallengeVideo: mockVideoEl,
+    visualChallengePlaceholder: { hidden: false },
+    visualChallengeError: { hidden: true },
+    visualChallengeControlsBar: { hidden: true },
+    visualChallengeStatusText: { textContent: '' },
+    visualChallengeScenarioBadge: { textContent: '' },
+    visualChallengeColumn: { hidden: true },
+    businessScenarioSplitGrid: {
+      dataset: {},
+      attrs: new Map(),
+      classList: {
+        classes: new Set(),
+        toggle(c, force) {
+          if (force) this.classes.add(c);
+          else this.classes.delete(c);
+        },
+        contains(c) { return this.classes.has(c); }
+      },
+      setAttribute(k, v) { this.attrs.set(k, String(v)); },
+      getAttribute(k) { return this.attrs.get(k) || null; }
+    }
+  };
+
+  let currentScenario = { id: 'BAN_BEG_001' };
+  const harness = new Function(
+    '$',
+    'window',
+    'getCurrent',
+    `let current = getCurrent();\n${videoBlockCode}\nreturn { scenarioVideos, getScenarioVideoUrl, syncScenarioVideoState, playScenarioVideo, replayScenarioVideo, cleanupScenarioVideo, setCurrent: c => { current = c; } };`
+  );
+
+  const api = harness(id => els[id] || null, {}, () => currentScenario);
+
+  // Verify BAN_BEG_001..020 mapping strictly to crack-sql-videos bucket on configured Supabase URL
+  const expectedBase = 'https://qklnaqfspvmnlequqagf.supabase.co/storage/v1/object/public/crack-sql-videos';
+  const expectedIds = Array.from({ length: 20 }, (_, idx) => `BAN_BEG_${String(idx + 1).padStart(3, '0')}`);
+  assert.deepEqual(Object.keys(api.scenarioVideos), expectedIds);
+  const uniqueUrls = new Set();
+  for (const id of expectedIds) {
+    assert.equal(api.scenarioVideos[id], `${expectedBase}/${id}.mp4`);
+    assert.equal(api.getScenarioVideoUrl(id), `${expectedBase}/${id}.mp4`);
+    uniqueUrls.add(api.scenarioVideos[id]);
+  }
+  assert.equal(uniqueUrls.size, 20, 'Each of the 20 Banking Beginner questions must map to a unique video URL');
+  assert.equal(api.getScenarioVideoUrl('BAN_INT_001'), null);
+  assert.equal(api.getScenarioVideoUrl('RET_BEG_001'), null);
+  assert.equal(api.getScenarioVideoUrl('HEA_BEG_001'), null);
+
+  // Open BAN_BEG_001 -> shows 50/50 split & placeholder, does NOT set video src before Play is clicked
+  api.syncScenarioVideoState('BAN_BEG_001');
+  assert.equal(els.visualChallengeColumn.hidden, false, 'BAN_BEG_001 must show visual challenge column');
+  assert.equal(els.businessScenarioSplitGrid.getAttribute('data-has-video'), 'true');
+  assert.equal(els.visualChallengePlaceholder.hidden, false, 'Placeholder must be visible before Play');
+  assert.equal(mockVideoEl.hidden, true, 'Video element must remain hidden before Play');
+  assert.equal(mockVideoEl.getAttribute('src'), null, 'Video URL must NOT be assigned before Play is clicked');
+
+  // Click Play -> assigns media URL and starts playback
+  const played = api.playScenarioVideo();
+  assert.equal(played, true);
+  assert.equal(mockVideoEl.getAttribute('src'), `${expectedBase}/BAN_BEG_001.mp4`, 'Play must assign scenario video URL');
+  assert.equal(els.visualChallengePlaceholder.hidden, true, 'Placeholder hides when Play is clicked');
+  assert.equal(mockVideoEl.hidden, false, 'Video becomes visible when Play is clicked');
+  assert.equal(playCalls, 1);
+
+  // Replay resets currentTime to 0 and plays again
+  mockVideoEl.currentTime = 42;
+  api.replayScenarioVideo();
+  assert.equal(mockVideoEl.currentTime, 0, 'Replay must reset video currentTime to 0');
+  assert.equal(playCalls, 2, 'Replay must allow unlimited replay');
+
+  // Verify each of BAN_BEG_002..020 resets previous playback, shows lazy placeholder, and plays its matching video
+  for (const id of expectedIds.slice(1)) {
+    mockVideoEl.currentTime = 17;
+    const prevPauseCalls = pauseCalls;
+    api.setCurrent({ id });
+    api.syncScenarioVideoState(id);
+    assert.ok(pauseCalls > prevPauseCalls, `Switching to ${id} must pause the previous video`);
+    assert.equal(mockVideoEl.currentTime, 0, `Switching to ${id} must reset playback position to 0`);
+    assert.equal(els.visualChallengeColumn.hidden, false, `${id} must show visual challenge column`);
+    assert.equal(els.businessScenarioSplitGrid.getAttribute('data-has-video'), 'true');
+    assert.equal(els.visualChallengeScenarioBadge.textContent, id, `${id} badge must match scenario ID`);
+    assert.equal(mockVideoEl.getAttribute('src'), null, `${id} must not pre-assign src before Play`);
+    api.playScenarioVideo();
+    assert.equal(mockVideoEl.getAttribute('src'), `${expectedBase}/${id}.mp4`, `${id} must load its matching video URL`);
+  }
+
+  // Error event handles missing/placeholder stream gracefully without breaking UI
+  mockVideoEl.dispatchEvent({ type: 'error' });
+  assert.equal(els.visualChallengeError.hidden, false, 'Video error must display graceful fallback card');
+  assert.equal(mockVideoEl.hidden, true);
+
+  // Navigate to BAN_INT_001 (no video) -> cleans up active video and hides video panel
+  api.setCurrent({ id: 'BAN_INT_001' });
+  api.syncScenarioVideoState('BAN_INT_001');
+  assert.equal(mockVideoEl.getAttribute('src'), null, 'Navigating to another question must clean up video src');
+  assert.equal(els.visualChallengeColumn.hidden, true, 'Scenario without video must hide visual challenge column');
+  assert.equal(els.businessScenarioSplitGrid.getAttribute('data-has-video'), 'false', 'Scenario without video must use single-column layout');
+});
+
 
 
 

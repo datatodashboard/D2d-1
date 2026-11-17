@@ -23,20 +23,23 @@ export function sanitize(value, ids) {
             ? entry.evaluation.score
             : null;
     const thinkingScore = score;
-    const feedback = typeof entry.feedback === 'string'
+    const feedback = typeof entry.feedback === 'string' && entry.feedback
       ? entry.feedback
-      : (typeof entry.assessment?.message === 'string'
+      : (typeof entry.assessment?.message === 'string' && entry.assessment.message
         ? entry.assessment.message
-        : (typeof entry.evaluation?.message === 'string'
-          ? entry.evaluation.message
-          : ''));
+        : (Array.isArray(entry.assessment?.feedback) && entry.assessment.feedback.length
+          ? entry.assessment.feedback.join(' ')
+          : (typeof entry.evaluation?.message === 'string'
+            ? entry.evaluation.message
+            : '')));
     const evaluation = (entry.evaluation && typeof entry.evaluation === 'object')
       ? entry.evaluation
       : (entry.assessment && typeof entry.assessment === 'object' ? entry.assessment : null);
     const assessment = (entry.assessment && typeof entry.assessment === 'object')
       ? entry.assessment
       : (evaluation ? evaluation : (score !== null ? { version: 6, score, ready: score >= 7, message: feedback } : null));
-    const completed = !!entry.completed || entry.status === 'completed' || (score !== null ? score >= 7 : false);
+    const isV7 = Boolean(assessment && (assessment.version === 7 || assessment.engine === 'thinking_3.0'));
+    const completed = !!entry.completed || entry.status === 'completed' || (isV7 ? Boolean(assessment.ready && score !== null && score >= 7) : (score !== null ? score >= 7 : false));
     const attempts = Number.isFinite(entry.attempts) ? Math.max(0, Math.floor(entry.attempts)) : (assessment || score !== null ? 1 : 0);
     const status = typeof entry.status === 'string' && entry.status
       ? (completed ? 'completed' : entry.status)
@@ -98,6 +101,9 @@ export function isCompleted(scenario, entry) {
   }
   if (entry.status === 'completed') {
     return true;
+  }
+  if (entry.assessment && (entry.assessment.version === 7 || entry.assessment.engine === 'thinking_3.0')) {
+    return Boolean(entry.assessment.ready === true && typeof entry.assessment.score === 'number' && entry.assessment.score >= 7);
   }
   if (typeof entry.score === 'number' && entry.score >= 7) {
     return true;

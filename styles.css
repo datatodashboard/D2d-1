@@ -1,16 +1,46 @@
 :root {
   /* ==========================================================================
+     CRACK SQL — PREMIUM GAMING UI DESIGN SYSTEM TOKENS
+     ========================================================================== */
+  --game-bg: #080f22;
+  --game-surface: #101d35;
+  --game-card: #15243e;
+  --game-card-hover: #1b3151;
+
+  --game-cyan: #00e5ff;
+  --game-blue: #168bff;
+  --game-purple: #9655ff;
+  --game-pink: #ed45e9;
+  --game-green: #00e6aa;
+  --game-gold: #ffc857;
+
+  --game-text: #f5f8ff;
+  --game-muted: #a4b5d2;
+
+  --game-border: rgba(0, 229, 255, 0.28);
+
+  --game-gradient: linear-gradient(
+    110deg,
+    #00c8ff,
+    #4875ff 50%,
+    #a13dff
+  );
+
+  --game-radius: 16px;
+  --game-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+
+  /* ==========================================================================
      CRACK SQL — UNIFIED DARK PREMIUM GLASS DASHBOARD DESIGN TOKENS
      ========================================================================== */
 
   /* 1. Core Canvas & Ambient Glows */
-  --bg-deep: #070b18;
-  --bg-navy: #0b1226;
-  --bg-elevated: #0f172a;
-  --bg-glow-blue: rgba(56, 189, 248, 0.14);
-  --bg-glow-indigo: rgba(99, 102, 241, 0.13);
-  --bg-glow-violet: rgba(139, 92, 246, 0.12);
-  --bg-glow-warm: rgba(249, 115, 22, 0.075);
+  --bg-deep: #080f22;
+  --bg-navy: #101d35;
+  --bg-elevated: #15243e;
+  --bg-glow-blue: rgba(0, 229, 255, 0.14);
+  --bg-glow-indigo: rgba(22, 139, 255, 0.13);
+  --bg-glow-violet: rgba(150, 85, 255, 0.12);
+  --bg-glow-warm: rgba(255, 200, 87, 0.075);
 
   /* 2. Translucent Glass Surfaces & Borders */
   --glass-fill: rgba(15, 23, 42, 0.68);
@@ -5089,10 +5119,6 @@ body {
   color: #67e8f9 !important;
 }
 
-#practice #schemaOverview .schema-sample-section {
-  display: none !important;
-}
-
 #practice .schema-sample-section {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(9, 14, 29, 0.85);
@@ -5547,9 +5573,10 @@ body {
 }
 
 #practice .practice-tabbed-shell {
-  margin-top: 16px;
+  margin-top: 0;
   display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
   min-width: 0;
   max-width: 100%;
 }
@@ -5559,6 +5586,7 @@ body {
   align-items: flex-end;
   gap: 0;
   padding-left: 0;
+  margin: 0;
   position: relative;
   z-index: 3;
   min-width: 0;
@@ -5571,16 +5599,16 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 11px 22px 12px;
+  padding: 9px 22px 10px;
   min-height: 44px;
   border-radius: 14px 14px 0 0;
   font-size: 13.5px;
   font-weight: 800;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
-  margin-bottom: 0;
+  margin: 0;
   background-color: #091326;
   color: #94a3b8;
   border: 1.5px solid rgba(56, 189, 248, 0.24);
@@ -5589,9 +5617,9 @@ body {
   z-index: 1;
   transform-origin: center bottom;
   transition:
-    color var(--motion-base) var(--ease-out) 0s,
-    background-color var(--motion-base) var(--ease-out) 0s,
-    border-color var(--motion-base) var(--ease-out) 0s,
+    color 200ms var(--ease-out) 0s,
+    background-color 200ms var(--ease-out) 0s,
+    border-color 200ms var(--ease-out) 0s,
     transform var(--motion-press) var(--ease-out) 0s;
   min-width: 0;
 }
@@ -5602,11 +5630,11 @@ body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: 0 -4px 16px rgba(34, 211, 238, 0.16),
-              inset 0 1px 0 rgba(103, 232, 249, 0.22);
+  box-shadow: 0 -4px 16px rgba(34, 211, 238, 0.18),
+              inset 0 1px 0 rgba(103, 232, 249, 0.24);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--motion-base) var(--ease-out) 0s;
+  transition: opacity 200ms var(--ease-out) 0s;
 }
 
 /* Subpixel-safe seam cover across 100%, 125%, 150% zoom & high-DPI displays */
@@ -5615,16 +5643,16 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: 2px;
+  bottom: -2px;
+  height: 4px;
   background-color: #0d1730;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--motion-base) var(--ease-out) 0s;
+  transition: opacity 200ms var(--ease-out) 0s;
 }
 
 #practice .practice-tab-btn + .practice-tab-btn {
-  margin-left: -6px;
+  margin-left: -8px;
 }
 
 #practice .practice-tab-btn:hover:not([aria-selected="true"]) {
@@ -5642,6 +5670,8 @@ body {
 
 #practice .practice-tab-btn[aria-selected="true"],
 #practice .practice-tab-btn.active {
+  padding: 11px 24px 12px;
+  min-height: 48px;
   background-color: #0d1730;
   color: #67e8f9;
   border-color: #22d3ee;
@@ -5661,8 +5691,6 @@ body {
 }
 
 #practice .practice-tab-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -5672,9 +5700,11 @@ body {
   background: linear-gradient(180deg, #0d1730 0%, #0a1226 100%);
   border: 1.5px solid #22d3ee;
   border-radius: 0 18px 18px 18px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0 14px 34px rgba(2, 6, 23, 0.52),
               0 0 22px rgba(34, 211, 238, 0.08);
+  flex: 0 0 auto;
+  height: auto;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
@@ -5687,9 +5717,11 @@ body {
 #practice .practice-tab-panels-stack {
   display: block;
   position: relative;
+  flex: 0 0 auto;
+  height: auto;
   min-width: 0;
   max-width: 100%;
-  transition: height var(--motion-base) var(--ease-out) 0s;
+  transition: height 200ms var(--ease-out) 0s;
 }
 
 #practice .practice-tab-panel {
@@ -5714,8 +5746,8 @@ body {
   transform: translate3d(0, 0, 0);
   z-index: 2;
   transition:
-    opacity var(--motion-base) var(--ease-out) 0s,
-    transform var(--motion-base) var(--ease-out) 0s;
+    opacity 200ms var(--ease-out) 0s,
+    transform 200ms var(--ease-out) 0s;
 }
 
 #practice .practice-tab-panel.panel-entering {
@@ -5749,9 +5781,9 @@ body {
   transform: translate3d(0, 6px, 0);
   z-index: 1;
   transition:
-    opacity var(--motion-fast) var(--ease-out) 0s,
-    transform var(--motion-base) var(--ease-out) 0s,
-    visibility 0s linear var(--motion-fast);
+    opacity 200ms var(--ease-out) 0s,
+    transform 200ms var(--ease-out) 0s,
+    visibility 0s linear 200ms;
 }
 
 #practice #practicePanelBusiness > .question-panel:not(.instruction-panel) {
@@ -5825,15 +5857,29 @@ body {
     grid-template-columns: 1fr !important;
   }
 
+  #practice .practice-tabs-bar {
+    width: 100%;
+  }
+
   #practice .practice-tab-btn {
     flex: 1 1 0;
-    padding: 10px 10px 11px;
-    font-size: 12.5px;
+    padding: 9px 8px 10px;
+    font-size: clamp(11.5px, 3.3vw, 13px);
+    letter-spacing: 0;
+  }
+
+  #practice .practice-tab-btn[aria-selected="true"],
+  #practice .practice-tab-btn.active {
+    padding: 11px 8px 12px;
+  }
+
+  #practice .practice-tab-btn + .practice-tab-btn {
+    margin-left: -6px;
   }
 
   #practice .practice-tabbed-window,
   #practice .practice-tabbed-window[data-active-tab="schema"] {
-    border-radius: 0 0 16px 16px;
+    border-radius: 0 14px 16px 16px;
     padding: 14px 12px;
   }
 
@@ -5858,9 +5904,14 @@ body {
   }
 
   #practice .practice-tab-btn {
-    padding: 9px 6px 10px;
-    font-size: 11.5px;
-    letter-spacing: 0.1px;
+    padding: 9px 4px 10px;
+    font-size: clamp(11px, 3.2vw, 12px);
+    letter-spacing: 0;
+  }
+
+  #practice .practice-tab-btn[aria-selected="true"],
+  #practice .practice-tab-btn.active {
+    padding: 11px 4px 12px;
   }
 
   #practice .practice-tabbed-window,
@@ -7976,7 +8027,6 @@ button,
 
 /* Ensure >= 8px gap between interactive neighbours */
 .header-right-actions,
-.practice-tabs-bar,
 .thinking-popup-actions,
 .level-completion-actions,
 .cert-share-buttons-row,
@@ -8170,22 +8220,6 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
     flex-direction: row !important;
     flex-wrap: wrap !important;
     gap: 8px !important;
-  }
-
-  #practice .practice-tabs-bar {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-    width: 100% !important;
-  }
-
-  #practice .practice-tab-btn {
-    width: 100% !important;
-    min-width: 0 !important;
-    padding: 10px 8px !important;
-    font-size: 0.82rem !important;
-    text-align: center !important;
-    justify-content: center !important;
   }
 
   #practice .scenario-conversation-layout {
@@ -8717,29 +8751,69 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
 }
 
 /* ==========================================================================
-   13. Approved Vertical Single-Screen Practice UI
-   Fits Mission Header + Business Scenario + Your Thinking + Check My Thinking
-   together in a single desktop viewport (1366x768 & 1920x1080) without scroll
+   13. Full-Screen Responsive Layout + 50/50 Visual Business Challenge
+   Occupies 100% of available browser viewport width & height with responsive
+   Flexbox/Grid adaptation across 1366x768, 1440x900, 1536x864, 1920x1080,
+   2560x1440, tablets, and mobile devices.
    ========================================================================== */
 
-/* Centered readable desktop width & vertical stack spacing */
-#practice .practice-container {
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* Full-screen adaptive shell across desktop & tablet viewports */
+.app,
+body.landscape-layout .app {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 !important;
+  box-sizing: border-box;
 }
 
-/* Before Check My Thinking: show only Business Scenario, Thinking textarea, and Check My Thinking button */
-#practice:not(:has(#feedback.active)) #sqlSection {
-  display: none !important;
+@media (min-width: 768px) {
+  .app,
+  body.landscape-layout .app {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 20px 76px 20px !important;
+  }
+
+  #missionMap.screen {
+    max-width: 100% !important;
+    padding: 8px 4px 76px 4px;
+  }
+
+  #home #allDomainsGrid,
+  #home #extraDomainsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  }
 }
 
 @media (min-width: 900px) {
-  .app:has(#practice.active) {
-    max-width: 1020px !important;
-    padding: 6px 24px 56px 24px !important;
+  .app:has(#practice.active),
+  body.landscape-layout .app:has(#practice.active) {
+    width: min(96%, 1450px) !important;
+    max-width: 1450px !important;
+    min-height: 100dvh;
+    margin: 0 auto !important;
+    padding: 8px 0 54px 0 !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body:has(#practice.active):not(:has(#feedback.active)):not(:has(#practiceTabbedWindow[data-active-tab="schema"])) .app {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  #practice.screen.active {
+    flex: 1 1 auto;
+    display: flex !important;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
   }
 
   #practice:not(:has(#feedback.active)) > .footer {
@@ -8748,112 +8822,111 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
 
   /* Keep bottom navigation sleek and non-overlapping on desktop Practice view */
   body:has(#practice.active) .bottom-nav {
-    height: 44px !important;
+    height: 46px !important;
     bottom: 4px !important;
     padding: 0 8px !important;
   }
 
   body:has(#practice.active) .bottom-nav .nav-item {
-    min-height: 40px !important;
+    min-height: 44px !important;
+    height: 44px !important;
     padding: 2px 8px !important;
   }
 }
 
-/* TOP — Compact Topbar & Mission Header */
+/* Centered Premium Practice Container */
+#practice .practice-container {
+  width: 100% !important;
+  max-width: 1450px !important;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 auto !important;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Before Check My Thinking: show only Business Scenario / Schema, Thinking textarea, and Check My Thinking button */
+#practice:not(:has(#feedback.active)) #sqlSection {
+  display: none !important;
+}
+
+/* TOP — Practice Header (Change | Domain & Level | Question Progress | Login/Profile) */
 #practice .topbar {
-  max-width: 960px;
+  width: 100% !important;
+  max-width: 1450px !important;
   margin: 0 auto 4px auto !important;
-  padding: 4px 12px !important;
-  min-height: 44px;
+  padding: 6px 14px !important;
+  min-height: 48px;
   border-radius: 14px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(11, 20, 42, 0.9) 0%, rgba(8, 15, 32, 0.94) 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.22) !important;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 #practice .topbar .linkbtn {
   min-height: 44px !important;
-  padding: 5px 12px !important;
+  padding: 6px 14px !important;
   font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #e2e8f0 !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border-radius: 10px !important;
+}
+
+#practice .topbar .linkbtn:hover {
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: #ffffff !important;
+}
+
+#practice .topbar #meta {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #67e8f9;
+  background: rgba(14, 42, 76, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+#practice .topbar #qno {
+  display: inline-flex !important;
+  align-items: center;
+  padding: 5px 11px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #cbd5e1 !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
 }
 
 #practice .practice-unified-workspace-card {
-  padding: 8px 14px 10px !important;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 14px 12px !important;
   margin-bottom: 0 !important;
   border-radius: 16px !important;
-}
-
-#practice .scenario-head {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 10px !important;
-  margin-bottom: 0 !important;
-}
-
-#practice .scenario-head > div:first-child {
+  background: linear-gradient(180deg, rgba(10, 17, 36, 0.94) 0%, rgba(6, 11, 24, 0.98) 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 10px;
+  flex-direction: column;
+  flex: 0 0 auto;
 }
 
-#practice .mission-briefing-kicker {
-  margin-bottom: 0 !important;
-  padding: 3px 9px !important;
-  font-size: 10.5px !important;
-}
-
-#practice .mission-meta-pills {
-  margin-top: 0 !important;
-  gap: 6px !important;
-}
-
-#practice .scenario-id {
-  padding: 3px 10px !important;
-  font-size: 11.5px !important;
-}
-
-#practice .scenario-head-right {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 8px !important;
-  min-height: 0 !important;
-}
-
-#practice .qno {
-  font-size: 12px !important;
-  padding: 4px 10px !important;
-}
-
-#practice .done-tag {
-  font-size: 11.5px !important;
-  padding: 4px 10px !important;
-}
-
-/* Tabs Bar */
-#practice .practice-tabbed-shell {
-  margin-top: 6px !important;
-}
-
-#practice .practice-tabs-bar {
-  gap: 8px !important;
-}
-
-#practice .practice-tab-btn + .practice-tab-btn {
-  margin-left: 0 !important;
-}
-
-#practice .practice-tab-btn {
-  min-height: 44px !important;
-  padding: 5px 16px 6px !important;
-  font-size: 13px !important;
-}
-
-/* MIDDLE — Business Scenario Card */
-#practice .practice-tabbed-window {
-  padding: 8px 12px !important;
-  border-radius: 0 14px 14px 14px !important;
+#practice .scenario-id,
+#practice .mission-briefing-tag,
+#practice .scenario-head #qno,
+#practice .done-tag,
+#practice .scenario-head {
+  display: none !important;
 }
 
 #practice .question-panel {
@@ -8862,6 +8935,12 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #practice .question-panel.instruction-panel:not([hidden]) {
@@ -8876,91 +8955,440 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   display: none !important;
 }
 
-#practice .scenario-conversation-layout {
-  grid-template-columns: 124px minmax(0, 1fr);
-  gap: 10px;
+/* ==========================================================================
+   BUSINESS SCENARIO LAYOUT (TWO-COLUMN CSS GRID: 30% LEFT / 70% RIGHT)
+   Left (30%): Compact Neatly Framed Scenario Video Card
+   Right (70%): Vertically Stacked Card A (Business Scenario) + Card B (Your Thinking)
+   Fallback: 100% single-column when scenario has no video
+   ========================================================================== */
+#practice .business-scenario-split-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
   align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
-#practice .conversation-manager-card {
-  padding: 6px 8px;
-  gap: 4px;
-  border-radius: 12px;
-  justify-content: center;
+#practice .business-scenario-split-grid[data-has-video="true"] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
-#practice .conversation-manager-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+#practice .business-scenario-split-grid.has-video {
+  grid-template-columns: minmax(320px, 3.8fr) minmax(0, 6.2fr);
 }
 
-#practice .conversation-manager-avatar svg {
-  width: 26px;
-  height: 26px;
+#practice .visual-challenge-column[hidden] {
+  display: none !important;
 }
 
-#practice .conversation-manager-name {
-  font-size: 13px;
-  line-height: 1.2;
+#practice .visual-challenge-column {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-#practice .conversation-manager-role {
-  font-size: 11.5px !important;
-  line-height: 1.2 !important;
-  margin-top: 1px;
+/* LEFT — Neatly Framed Video Card */
+#practice .visual-challenge-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(160deg, rgba(12, 22, 46, 0.96) 0%, rgba(7, 13, 28, 0.98) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
 }
 
-#practice .conversation-thread {
+#practice .visual-challenge-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+#practice .visual-challenge-badge {
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #67e8f9;
+  display: inline-flex;
+  align-items: center;
   gap: 5px;
 }
 
-#practice .conversation-bubble {
-  padding: 6px 11px;
-  border-radius: 10px;
+#practice .visual-challenge-meta {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  padding: 2px 8px;
+  border-radius: 8px;
 }
 
-#practice .conversation-speaker {
-  font-size: 11px !important;
-  margin-bottom: 1px;
+/* Video Frame: fills available container cleanly while preserving aspect ratio */
+#practice .visual-challenge-frame {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  flex: 1 1 auto;
+  min-height: 200px;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  background: radial-gradient(circle at 50% 42%, rgba(30, 64, 175, 0.32) 0%, rgba(11, 19, 38, 0.92) 60%, rgba(5, 9, 22, 0.98) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#practice .visual-challenge-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  z-index: 2;
+}
+
+#practice .visual-challenge-placeholder[hidden] {
+  display: none !important;
+}
+
+#practice .visual-challenge-placeholder-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(34, 211, 238, 0.16) 0%, transparent 50%),
+    radial-gradient(circle at 75% 70%, rgba(139, 92, 246, 0.18) 0%, transparent 52%);
+  pointer-events: none;
+}
+
+#practice .visual-challenge-placeholder-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+#practice .visual-challenge-play-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#practice .visual-challenge-play-btn:hover {
+  transform: scale(1.03);
+}
+
+#practice .visual-challenge-play-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #7c3aed 100%);
+  border: 1.5px solid rgba(186, 230, 253, 0.75);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45), inset 0 1px 3px rgba(255, 255, 255, 0.35);
+  font-size: 18px;
+  padding-left: 3px;
+  color: #ffffff;
+}
+
+#practice .visual-challenge-play-label {
+  font-size: clamp(14px, 1.15vw, 16.5px);
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+
+#practice .visual-challenge-caption {
+  margin: 0;
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+#practice .scenario-challenge-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #050914;
+  display: block;
+}
+
+#practice .scenario-challenge-video[hidden] {
+  display: none !important;
+}
+
+#practice .visual-challenge-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 14px;
+  text-align: center;
+  background: rgba(7, 11, 24, 0.94);
+  z-index: 3;
+}
+
+#practice .visual-challenge-error[hidden] {
+  display: none !important;
+}
+
+#practice .visual-challenge-error-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+#practice .visual-challenge-error-copy strong {
+  display: block;
+  font-size: 12.5px;
+  color: #f8fafc;
+  margin-bottom: 2px;
+}
+
+#practice .visual-challenge-error-copy p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #94a3b8;
+  max-width: 340px;
+}
+
+#practice .visual-challenge-retry-btn {
+  min-height: 44px !important;
+  padding: 4px 12px !important;
+  font-size: 12px !important;
+  border-radius: 10px !important;
+}
+
+#practice .visual-challenge-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+#practice .visual-challenge-controls-bar[hidden] {
+  display: none !important;
+}
+
+#practice .visual-challenge-status-text {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+#practice .visual-challenge-inline-replay {
+  min-height: 30px !important;
+  padding: 2px 10px !important;
+  font-size: 11.5px !important;
+  border-radius: 8px !important;
+}
+
+/* ==========================================================================
+   RIGHT COLUMN — TWO VERTICALLY STACKED CARDS (CARD A: SCENARIO + CARD B: THINKING)
+   ========================================================================== */
+#practice .written-scenario-column {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  overflow: visible;
+}
+
+/* Strictly no avatars in the business scenario dialogue */
+#practice .conversation-manager-card,
+#practice .conversation-manager-avatar {
+  display: none !important;
+}
+
+/* CARD A — Enlarged Business Scenario Card (Prominent Viewing Angle) */
+#practice .scenario-conversation-layout {
+  display: flex !important;
+  flex-direction: column;
+  gap: 12px !important;
+  min-width: 0;
+  width: 100%;
+  background: linear-gradient(155deg, rgba(14, 32, 68, 0.96) 0%, rgba(8, 19, 42, 0.98) 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.38) !important;
+  border-radius: 14px !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.5), inset 0 1px 0 rgba(125, 211, 252, 0.16) !important;
+}
+
+#practice .conversation-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px !important;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Disable dialogue reveal delays/animations */
+#practice .conversation-turn {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  align-self: stretch !important;
+}
+
+#practice .conversation-turn[hidden] {
+  display: none !important;
+}
+
+/* 3 Distinct Parts: Part 1 (Manager Question), Part 2 (Learner Response), Part 3 (Manager Confirmation) */
+#practice #managerRequestTurn .conversation-bubble {
+  background: rgba(9, 18, 40, 0.65) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-left: 3px solid rgba(56, 189, 248, 0.8) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  box-shadow: none !important;
+}
+
+#practice #managerRequestTurn .conversation-speaker {
+  font-size: 0 !important;
+  line-height: 1.2 !important;
+  margin-bottom: 4px !important;
+  display: flex;
+  align-items: center;
+}
+
+#practice #managerRequestTurn .conversation-speaker::before {
+  content: "1. Bank Manager";
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #38bdf8;
+}
+
+#practice #question.problem {
+  font-size: clamp(16px, 1.25vw, 18.5px) !important;
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+#practice .scenario-condition-highlight {
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.16);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.5);
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-weight: 800;
+}
+
+#practice #learnerClarificationTurn .conversation-bubble,
+#practice #managerReplyTurn .conversation-bubble {
+  background: rgba(9, 18, 40, 0.62) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  border-left: 3px solid rgba(56, 189, 248, 0.5) !important;
+  border-radius: 10px !important;
+  padding: 9px 14px !important;
+  box-shadow: none !important;
+}
+
+#practice #learnerClarificationTurn .conversation-bubble {
+  border-left-color: rgba(167, 139, 250, 0.8) !important;
+}
+
+#practice #learnerClarificationTurn .conversation-speaker,
+#practice #managerReplyTurn .conversation-speaker {
+  font-size: 0 !important;
+  line-height: 1.2 !important;
+  margin-bottom: 3px !important;
+  display: flex;
+  align-items: center;
+}
+
+#practice #learnerClarificationTurn .conversation-speaker::before {
+  content: "2. You (Learner)";
+  font-size: 12px;
+  font-weight: 800;
+  color: #c4b5fd;
+  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-#practice .conversation-turn.manager-turn .conversation-text,
-#practice .conversation-turn.learner-turn .conversation-text,
-#practice #question.problem {
-  font-size: 13.5px !important;
-  line-height: 1.38 !important;
+#practice #managerReplyTurn .conversation-speaker::before {
+  content: "3. Manager Confirmation";
+  font-size: 12px;
+  font-weight: 800;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#practice #learnerClarificationTurn .conversation-text,
+#practice #managerReplyTurn .conversation-text {
+  font-size: clamp(15px, 1.1vw, 16.5px) !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+  color: #f1f5f9 !important;
 }
 
 #practice .practice-window-status {
   display: none !important;
 }
 
-/* Compact Schema & Sample Data view inside the tabbed window */
-#practice #practicePanelSchema .tab-header {
-  margin-bottom: 8px !important;
-  gap: 8px !important;
-}
-
-#practice #practicePanelSchema .tab-btn {
-  min-height: 44px !important;
-  padding: 6px 14px !important;
-  font-size: 12.5px !important;
-}
-
-#practice #practicePanelSchema #schemaOverview,
-#practice #practicePanelSchema #sampleDataView {
-  max-height: 210px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-/* BOTTOM — Your Thinking Section */
-#practice .thinking-workspace-card {
-  padding: 8px 14px 10px !important;
-  margin-bottom: 0 !important;
-  border-radius: 16px !important;
+/* CARD B — Moderately Sized Thinking Box & Aligned Check My Thinking Button */
+#practice .scenario-thinking-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
+  background: linear-gradient(155deg, rgba(11, 21, 44, 0.94) 0%, rgba(7, 13, 28, 0.98) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 #practice .thinking-workspace-header {
@@ -8969,61 +9397,597 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 4px 12px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
-#practice .thinking-workspace-card label[for="thinking"] {
+#practice label[for="thinking"] {
   margin: 0 !important;
-  font-size: 15px !important;
+  font-size: 14.5px !important;
   font-weight: 800 !important;
   line-height: 1.25 !important;
-  color: #f8fafc;
+  color: #f8fafc !important;
 }
 
-#practice .thinking-workspace-card .thinking-helper-copy {
+#practice .thinking-helper-copy {
   margin: 0 !important;
-  font-size: 12.5px !important;
+  font-size: 12px !important;
   line-height: 1.35 !important;
   color: #94a3b8 !important;
 }
 
-#practice #thinking {
-  min-height: 64px !important;
-  height: 64px;
-  max-height: 150px;
-  padding: 7px 12px !important;
-  font-size: 16px !important;
-  line-height: 1.38 !important;
-  border-radius: 12px !important;
-  resize: vertical;
+#practice .thinking-textarea-Slot {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
 }
 
-#practice .thinking-workspace-actions {
-  margin-top: 6px !important;
+#practice #thinking {
+  width: 100%;
+  min-height: 72px !important;
+  height: clamp(72px, 10vh, 100px);
+  max-height: 130px;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  color: #f8fafc !important;
+  background: rgba(5, 10, 24, 0.92) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  border-radius: 10px !important;
+  box-shadow: inset 0 2px 6px rgba(2, 6, 23, 0.65) !important;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+#practice #thinking:focus {
+  outline: none !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.22), inset 0 2px 6px rgba(2, 6, 23, 0.65) !important;
+}
+
+/* Aligned Check My Thinking Button (Inside Card B, matching the thinking box) */
+#practice .thinking-inline-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 4px;
 }
 
 #practice #checkThinkingBtn {
-  min-height: 44px !important;
-  padding: 7px 18px !important;
+  width: 100% !important;
+  max-width: 260px !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 8px 20px !important;
   font-size: 14.5px !important;
   font-weight: 800 !important;
-  border-radius: 12px !important;
+  letter-spacing: 0.01em;
+  color: #ffffff !important;
+  background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 38%, #6366f1 72%, #8b5cf6 100%) !important;
+  border: 1px solid rgba(125, 211, 252, 0.4) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
   text-transform: capitalize;
+  cursor: pointer;
+  transition: transform 150ms ease, filter 150ms ease;
 }
 
-/* Responsive mobile & small tablet rules */
-@media (max-width: 720px) {
-  #practice .scenario-conversation-layout {
-    grid-template-columns: 1fr;
-    gap: 8px;
+#practice #checkThinkingBtn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ==========================================================================
+   BOTTOM — ONE FULL-WIDTH "CHECK MY THINKING" BUTTON
+   ========================================================================== */
+#practice .thinking-workspace-card {
+  width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+#practice .thinking-workspace-card:has(#feedback.active) {
+  padding: 8px 12px 10px !important;
+  background: rgba(9, 16, 34, 0.92) !important;
+  border: 1px solid rgba(56, 189, 248, 0.24) !important;
+  border-radius: 14px !important;
+}
+
+#practice .thinking-workspace-actions {
+  margin-top: 0 !important;
+  flex-shrink: 0;
+}
+
+#practice #checkThinkingBtn {
+  width: 100%;
+  min-height: 46px !important;
+  padding: 9px 20px !important;
+  font-size: 15.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+  color: #ffffff !important;
+  background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 38%, #6366f1 72%, #8b5cf6 100%) !important;
+  border: 1px solid rgba(125, 211, 252, 0.4) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+#practice #checkThinkingBtn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 8px 22px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ==========================================================================
+   SCHEMA & RECORDS TAB (RESPONSIVE GRID OF TABLE CARDS)
+   ========================================================================== */
+#practice #practicePanelSchema {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#practice #practicePanelSchema .schema-subtabs-bar,
+#practice #practicePanelSchema #schemaTableDetailPane,
+#practice #practicePanelSchema #sampleDataView {
+  display: none !important;
+}
+
+#practice #practicePanelSchema #schemaOverview,
+#practice #practicePanelSchema #schemaOverview:not([hidden]) {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* Responsive grid of table cards inside the tab window (no extra outer card) */
+#practice #schema,
+#practice .schema-cards,
+#practice #practicePanelSchema #schema.schema-table-list-pane {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)) !important;
+  gap: 16px !important;
+  align-items: start !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* Individual Table Card */
+#practice .schema-card,
+#practice #schemaOverview .schema-card,
+#practice #schemaOverview .schema-card.selected {
+  display: flex !important;
+  flex-direction: column !important;
+  align-self: start !important;
+  grid-column: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: linear-gradient(180deg, #0b162c 0%, #081022 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  overflow: hidden !important;
+  cursor: default !important;
+  box-sizing: border-box !important;
+}
+
+#practice .schema-card.sample-expanded,
+#practice #schemaOverview .schema-card.sample-expanded {
+  grid-column: auto !important;
+  border-color: rgba(34, 211, 238, 0.5) !important;
+}
+
+/* Table Card Header: table name (left, monospace, teal) + "N columns" (right) */
+#practice .schema-card-head,
+#practice #schemaOverview .schema-card-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 12px 14px !important;
+  margin: 0 !important;
+  background: rgba(15, 28, 54, 0.9) !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.22) !important;
+}
+
+#practice .schema-table-name,
+#practice #schemaOverview .schema-table-name {
+  margin: 0 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  color: #2dd4bf !important;
+  letter-spacing: 0.01em !important;
+  overflow-wrap: anywhere;
+}
+
+#practice .schema-col-count,
+#practice #schemaOverview .schema-col-count {
+  font-family: var(--font-sans) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: #94a3b8 !important;
+  background: rgba(9, 16, 34, 0.78) !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  padding: 3px 9px !important;
+  border-radius: 999px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+/* Two-Column Table of Column and Type */
+#practice .schema-cols-table-wrap {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+#practice .schema-card-body.schema-cols-table,
+#practice #schemaOverview .schema-card-body.schema-cols-table,
+#practice #schemaOverview .schema-card-body {
+  display: table !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+#practice .schema-cols-head th {
+  padding: 8px 14px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #94a3b8 !important;
+  background: rgba(11, 20, 40, 0.68) !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.16) !important;
+  text-align: left !important;
+}
+
+#practice .schema-cols-head th:last-child {
+  text-align: right !important;
+}
+
+#practice .schema-cols-table tbody tr.schema-row {
+  display: table-row !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+#practice .schema-cols-table tbody tr.schema-row:last-child {
+  border-bottom: none !important;
+}
+
+#practice .schema-cols-table td.schema-col-cell {
+  padding: 8px 14px !important;
+  vertical-align: middle !important;
+  color: #f8fafc !important;
+  text-align: left !important;
+}
+
+#practice .schema-cols-table td.schema-type-cell {
+  padding: 8px 14px !important;
+  vertical-align: middle !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+#practice .schema-col-main {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  min-width: 0 !important;
+}
+
+#practice .schema-col-name {
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #e2e8f0 !important;
+  overflow-wrap: anywhere;
+}
+
+#practice .schema-col-type {
+  font-family: var(--font-mono) !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: #60a5fa !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+#practice .schema-badges {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* PK badge (amber) & FK badge (violet) */
+#practice .badge-pk {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.16) !important;
+  border: 1px solid rgba(251, 191, 36, 0.45) !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+}
+
+#practice .badge-fk {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  color: #c4b5fd !important;
+  background: rgba(139, 92, 246, 0.18) !important;
+  border: 1px solid rgba(167, 139, 250, 0.45) !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+}
+
+/* Collapsible Sample Records Toggle & Region */
+#practice .schema-sample-section,
+#practice #schemaOverview .schema-sample-section {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border-top: 1px solid rgba(56, 189, 248, 0.18) !important;
+  background: rgba(7, 13, 28, 0.92) !important;
+}
+
+#practice .schema-sample-toggle {
+  width: 100% !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  background: rgba(12, 22, 44, 0.78) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: #67e8f9 !important;
+  font-family: var(--font-sans) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+  transition:
+    background-color 150ms var(--ease-out) 0s,
+    color 150ms var(--ease-out) 0s !important;
+}
+
+#practice .schema-sample-toggle:hover {
+  background: rgba(34, 211, 238, 0.12) !important;
+  color: #ffffff !important;
+}
+
+#practice .schema-sample-toggle:focus-visible {
+  outline: 2px solid #22d3ee !important;
+  outline-offset: -2px !important;
+}
+
+#practice .schema-sample-chevron {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  color: #38bdf8 !important;
+  transform: rotate(0deg);
+  transition: transform 180ms var(--ease-out) 0s !important;
+  flex-shrink: 0 !important;
+}
+
+#practice .schema-sample-toggle[aria-expanded="true"] .schema-sample-chevron {
+  transform: rotate(180deg) !important;
+}
+
+#practice .schema-sample-panel {
+  padding: 10px 12px 12px !important;
+  background: #060b18 !important;
+  border-top: 1px solid rgba(56, 189, 248, 0.16) !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#practice .schema-sample-panel[hidden] {
+  display: none !important;
+}
+
+#practice .table-scroll {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px !important;
+  border: 1px solid rgba(56, 189, 248, 0.24) !important;
+  background: #080d1d !important;
+  box-sizing: border-box !important;
+}
+
+#practice .table-scroll:focus,
+#practice .table-scroll:focus-visible {
+  outline: 2px solid #22d3ee !important;
+  outline-offset: 2px !important;
+  border-color: #22d3ee !important;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.22) !important;
+}
+
+#practice .sample-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+#practice .sample-table th {
+  background: #101c38 !important;
+  color: #67e8f9 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  padding: 8px 10px !important;
+  text-align: left !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.24) !important;
+  white-space: nowrap !important;
+}
+
+#practice .sample-table td {
+  background: #080d1d !important;
+  color: #f8fafc !important;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  padding: 7px 10px !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14) !important;
+  white-space: nowrap !important;
+}
+
+#practice .sample-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Compact Laptop Heights (e.g. 1366x768) */
+@media (min-width: 900px) and (max-height: 820px) {
+  #practice .practice-unified-workspace-card {
+    padding: 8px 12px 10px !important;
   }
 
-  #practice .conversation-manager-card {
-    flex-direction: row;
-    justify-content: flex-start;
-    text-align: left;
-    padding: 8px 10px;
-    gap: 10px;
+  #practice .scenario-conversation-layout {
+    padding: 10px 14px !important;
+    gap: 6px;
+  }
+
+  #practice .scenario-thinking-inline {
+    padding: 9px 14px;
+  }
+
+  #practice #thinking {
+    min-height: 68px !important;
+    height: clamp(68px, 11vh, 100px);
+  }
+}
+
+/* Responsive Behavior: Tablets / Narrow Windows & Mobile */
+@media (max-width: 960px) {
+  #practice .business-scenario-split-grid[data-has-video="true"],
+  #practice .business-scenario-split-grid.has-video {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  #practice .visual-challenge-frame {
+    max-width: min(100%, 520px);
+    margin: 0 auto;
+  }
+
+  #practice .written-scenario-column {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 680px) {
+  #practice #schema,
+  #practice .schema-cards,
+  #practice #practicePanelSchema #schema.schema-table-list-pane {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  #practice .practice-unified-workspace-card {
+    padding: 8px 4px !important;
+  }
+
+  #practice .practice-tabbed-window,
+  #practice .practice-tabbed-window[data-active-tab="schema"] {
+    padding: 12px 10px !important;
+  }
+
+  #practice .schema-card-head,
+  #practice #schemaOverview .schema-card-head {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  #practice .schema-table-name,
+  #practice #schemaOverview .schema-table-name {
+    font-size: clamp(13.5px, 3.8vw, 15px) !important;
+    overflow-wrap: break-word;
+  }
+
+  #practice .schema-cols-head th,
+  #practice .schema-cols-table td.schema-col-cell,
+  #practice .schema-cols-table td.schema-type-cell {
+    padding: 7px 10px !important;
+  }
+
+  #practice .schema-col-main {
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  #practice .topbar #qno {
+    display: none !important;
   }
 
   #practice .thinking-workspace-header {
@@ -9035,6 +9999,955 @@ body:has(.cert-page-overlay:not([hidden]):not([style*="display: none"]):not([sty
   #practice #thinking {
     min-height: 88px !important;
     height: 88px;
+    font-size: 16px !important;
+  }
+
+  #practice #practicePanelSchema .schema-subtabs-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #practice .schema-sample-toggle,
+  #practice .schema-sample-chevron {
+    transition: none !important;
+  }
+  #practice .schema-sample-toggle[aria-expanded="true"] .schema-sample-chevron {
+    transform: rotate(180deg) !important;
+  }
+}
+
+/* --- Sandbox Session Styles --- */
+.sandbox-entry-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  white-space: nowrap;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 12px;
+  align-self: center;
+  cursor: pointer;
+  background: rgba(148, 163, 184, 0.1);
+  color: #f1f5f9;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-sizing: border-box;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.sandbox-entry-btn:hover {
+  background: rgba(148, 163, 184, 0.2);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #ffffff;
+}
+
+.sandbox-header-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 36px;
+  white-space: nowrap;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  border: 1px solid rgba(147, 197, 253, 0.4);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.sandbox-header-signin-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .sandbox-entry-btn {
+    width: 100% !important;
+    align-self: stretch !important;
+  }
+}
+
+/* ==========================================================================
+   CRACK SQL — PREMIUM GAMING UI TRANSFORMATION (CSS ONLY)
+   1. Global Layout & Centered Container (width: min(96%, 1450px))
+   2. Explore Page — Neon Domain Cards (4 + 3 Centered Grid & Domain Accents)
+   3. Choose Level Section — Tier Accents & Gradient Action Button
+   4. Practice Page — Mission Console, Dialogue Cards, Video Frame & Thinking
+   5. Schema & Records Tab — Neon Table Cards, Alternating Rows & PK/FK Badges
+   6. Progress Page — Neon Metric Cards, Progress Bars & Certificates
+   7. Profile Page / Modal — Dark Gaming Cards & Neon Highlights
+   8. Navigation — Translucent Gaming Bar & Cyan-to-Purple Active State
+   9. Reduced Motion Support
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. MAIN APPLICATION LAYOUT & GLOBAL THEME
+   -------------------------------------------------------------------------- */
+body {
+  background-color: var(--game-bg);
+  color: var(--game-text);
+}
+
+@media (min-width: 900px) {
+  .app,
+  #appMain,
+  .app:has(#home.active),
+  .app:has(#practice.active),
+  .app:has(#progressScreen.active),
+  body.landscape-layout .app:has(#home.active),
+  body.landscape-layout .app:has(#practice.active),
+  body.landscape-layout .app:has(#progressScreen.active) {
+    width: min(96%, 1450px) !important;
+    max-width: 1450px !important;
+    margin: 0 auto !important;
+    padding-left: clamp(12px, 1.8vw, 24px) !important;
+    padding-right: clamp(12px, 1.8vw, 24px) !important;
+    box-sizing: border-box !important;
+  }
+
+  #home.screen.active,
+  #practice.screen.active,
+  #progressScreen.screen.active {
+    width: 100% !important;
+    max-width: 1450px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. EXPLORE PAGE — NEON DOMAIN CARDS (SCOPED TO #home)
+   Row 1 (4 cards): Banking | Healthcare | Insurance | Retail
+   Row 2 (3 cards centered): Education | Semiconductor | Capital Markets
+   -------------------------------------------------------------------------- */
+#home .domain-mission-card[data-domain="Banking"] {
+  --card-accent: var(--game-cyan);
+  --card-border: rgba(0, 229, 255, 0.64);
+  --card-glow: rgba(0, 229, 255, 0.34);
+}
+
+#home .domain-mission-card[data-domain="Healthcare"] {
+  --card-accent: var(--game-pink);
+  --card-border: rgba(237, 69, 233, 0.64);
+  --card-glow: rgba(237, 69, 233, 0.34);
+}
+
+#home .domain-mission-card[data-domain="Insurance"] {
+  --card-accent: var(--game-blue);
+  --card-border: rgba(22, 139, 255, 0.64);
+  --card-glow: rgba(22, 139, 255, 0.34);
+}
+
+#home .domain-mission-card[data-domain="Retail"] {
+  --card-accent: var(--game-gold);
+  --card-border: rgba(255, 200, 87, 0.64);
+  --card-glow: rgba(255, 200, 87, 0.34);
+}
+
+#home .domain-mission-card[data-domain="Education"] {
+  --card-accent: var(--game-purple);
+  --card-border: rgba(150, 85, 255, 0.64);
+  --card-glow: rgba(150, 85, 255, 0.34);
+}
+
+#home .domain-mission-card[data-domain="Semiconductor"] {
+  --card-accent: #00b8ff;
+  --card-border: rgba(0, 184, 255, 0.64);
+  --card-glow: rgba(0, 184, 255, 0.34);
+}
+
+#home .domain-mission-card[data-domain="Capital Markets"] {
+  --card-accent: var(--game-green);
+  --card-border: rgba(0, 230, 170, 0.64);
+  --card-glow: rgba(0, 230, 170, 0.34);
+}
+
+/* Choose Domain outer boxed container */
+#home #domainMissionsSection.domain-missions-section {
+  width: 100% !important;
+  max-width: 1450px !important;
+  margin: 0 auto 14px auto !important;
+  padding: clamp(16px, 2vw, 24px) clamp(16px, 2.2vw, 28px) !important;
+  border-radius: var(--game-radius) !important;
+  background: linear-gradient(180deg, rgba(16, 29, 53, 0.94) 0%, rgba(8, 15, 34, 0.98) 100%) !important;
+  border: 1px solid var(--game-border) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 26px rgba(0, 229, 255, 0.08),
+    inset 0 1px 0 rgba(245, 248, 255, 0.12) !important;
+  box-sizing: border-box !important;
+}
+
+#home .domain-missions-header {
+  margin-bottom: 14px !important;
+}
+
+#home .domain-missions-title {
+  font-size: clamp(18px, 1.45vw, 22px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--game-text) !important;
+  margin: 0 0 3px 0 !important;
+}
+
+#home .domain-missions-subtitle {
+  font-size: clamp(12.5px, 0.95vw, 14px) !important;
+  color: var(--game-muted) !important;
+  margin: 0 !important;
+}
+
+/* SVG icon inside mission-icon-box */
+#home .mission-domain-svg {
+  width: 24px;
+  height: 24px;
+  color: var(--card-accent, var(--game-cyan));
+  filter: drop-shadow(0 0 8px var(--card-glow, rgba(0, 229, 255, 0.45)));
+  transition: transform 220ms ease, filter 220ms ease;
+  flex-shrink: 0;
+}
+
+/* Subtle illuminated neon pedestal bar at the bottom of each card */
+#home .mission-pedestal {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 999px 999px 0 0;
+  background: var(--card-accent, var(--game-cyan));
+  box-shadow:
+    0 0 12px var(--card-accent, var(--game-cyan)),
+    0 -2px 10px var(--card-glow, rgba(0, 229, 255, 0.45));
+  opacity: 0.82;
+  transition: left 220ms ease, right 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
+  pointer-events: none;
+}
+
+/* Desktop & Tablet Neon Gaming Card Design (>= 601px) */
+@media (min-width: 601px) {
+  #home #allDomainsGrid .domain-mission-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 10px !important;
+    min-height: 142px !important;
+    padding: 18px 16px 20px !important;
+    border-radius: var(--game-radius) !important;
+    background:
+      radial-gradient(120% 95% at 50% 0%, rgba(27, 49, 81, 0.56) 0%, rgba(16, 29, 53, 0.95) 68%),
+      linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+    border: 1.5px solid var(--card-border, var(--game-border)) !important;
+    box-shadow:
+      var(--game-shadow),
+      0 0 18px -4px var(--card-glow, rgba(0, 229, 255, 0.28)),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease,
+      border-color 220ms ease,
+      background 220ms ease,
+      opacity 220ms ease !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card::before {
+    display: none !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card .mission-icon-box {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 14px !important;
+    background: radial-gradient(circle at 50% 30%, rgba(27, 49, 81, 0.94), rgba(8, 15, 34, 0.96)) !important;
+    border: 1.5px solid var(--card-border, var(--game-border)) !important;
+    box-shadow:
+      0 6px 16px -3px var(--card-glow, rgba(0, 229, 255, 0.35)),
+      inset 0 1px 2px rgba(255, 255, 255, 0.16) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 22px !important;
+    margin: 0 auto !important;
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card .mission-info {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card .mission-title-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card .mission-name {
+    font-size: clamp(15px, 1.12vw, 17px) !important;
+    font-weight: 800 !important;
+    color: var(--game-text) !important;
+    letter-spacing: -0.01em !important;
+    white-space: nowrap !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card .mission-note {
+    font-size: clamp(12px, 0.88vw, 13px) !important;
+    color: var(--game-muted) !important;
+    font-weight: 500 !important;
+    line-height: 1.35 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+
+  /* Hover Animation */
+  #home #allDomainsGrid .domain-mission-card:hover {
+    transform: translateY(-4px) !important;
+    border-color: var(--card-accent, var(--game-cyan)) !important;
+    background:
+      radial-gradient(125% 100% at 50% 0%, rgba(27, 49, 81, 0.82) 0%, rgba(16, 29, 53, 0.98) 70%),
+      linear-gradient(180deg, var(--game-card-hover) 0%, var(--game-card) 100%) !important;
+    box-shadow:
+      0 0 22px rgba(0, 229, 255, 0.22),
+      0 14px 28px -6px rgba(2, 6, 23, 0.85),
+      0 0 24px -2px var(--card-glow, rgba(0, 229, 255, 0.52)),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card:hover .mission-icon-box {
+    transform: translateY(-1px) scale(1.04) !important;
+    border-color: var(--card-accent, var(--game-cyan)) !important;
+    box-shadow:
+      0 8px 20px -2px var(--card-glow, rgba(0, 229, 255, 0.55)),
+      inset 0 1px 3px rgba(255, 255, 255, 0.24) !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card:hover .mission-pedestal {
+    left: 14%;
+    right: 14%;
+    opacity: 1;
+  }
+
+  /* Quieter non-selected domains when a domain is selected */
+  #home #allDomainsGrid:has(.domain-mission-card.active, .domain-mission-card.selected, .domain-mission-card[aria-pressed="true"], .domain-mission-card[aria-checked="true"])
+    .domain-mission-card:not(.active):not(.selected):not([aria-pressed="true"]):not([aria-checked="true"]) {
+    opacity: 0.78;
+  }
+
+  /* Active / Selected state */
+  #home #allDomainsGrid .domain-mission-card.active,
+  #home #allDomainsGrid .domain-mission-card.selected,
+  #home #allDomainsGrid .domain-mission-card[aria-pressed="true"],
+  #home #allDomainsGrid .domain-mission-card[aria-checked="true"] {
+    opacity: 1 !important;
+    transform: translateY(-4px) !important;
+    border-width: 2px !important;
+    border-color: var(--card-accent, var(--game-cyan)) !important;
+    background:
+      radial-gradient(125% 100% at 50% 0%, rgba(27, 49, 81, 0.78) 0%, rgba(16, 29, 53, 0.98) 70%),
+      linear-gradient(180deg, var(--game-card-hover) 0%, var(--game-surface) 100%) !important;
+    box-shadow:
+      0 0 28px rgba(0, 229, 255, 0.34),
+      0 14px 30px -6px rgba(2, 6, 23, 0.88),
+      0 0 28px 0 var(--card-glow, rgba(0, 229, 255, 0.62)),
+      inset 0 0 18px var(--card-glow, rgba(0, 229, 255, 0.22)) !important;
+  }
+
+  #home #allDomainsGrid .domain-mission-card.active .mission-pedestal,
+  #home #allDomainsGrid .domain-mission-card.selected .mission-pedestal,
+  #home #allDomainsGrid .domain-mission-card[aria-pressed="true"] .mission-pedestal,
+  #home #allDomainsGrid .domain-mission-card[aria-checked="true"] .mission-pedestal {
+    left: 10%;
+    right: 10%;
+    height: 4px;
+    opacity: 1;
+  }
+}
+
+/* Desktop Grid Arrangement (>= 1024px):
+   Row 1: 4 cards (Banking, Healthcare, Insurance, Retail)
+   Row 2: 3 cards centered evenly (Education, Semiconductor, Capital Markets) */
+@media (min-width: 1024px) {
+  #home #allDomainsGrid.domain-missions-grid {
+    display: grid !important;
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+    gap: clamp(14px, 1.4vw, 18px) !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+
+  #home #allDomainsGrid.domain-missions-grid > .domain-mission-card {
+    grid-column: span 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  #home #allDomainsGrid.domain-missions-grid > .domain-mission-card:nth-child(5) {
+    grid-column: 2 / span 2 !important;
+  }
+
+  #home #allDomainsGrid.domain-missions-grid > .domain-mission-card:nth-child(6) {
+    grid-column: 4 / span 2 !important;
+  }
+
+  #home #allDomainsGrid.domain-missions-grid > .domain-mission-card:nth-child(7) {
+    grid-column: 6 / span 2 !important;
+    justify-self: stretch !important;
+  }
+}
+
+/* Tablet Grid Arrangement (601px - 1023px): 2 columns, 7th card centered */
+@media (min-width: 601px) and (max-width: 1023px) {
+  #home #allDomainsGrid.domain-missions-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  #home #allDomainsGrid.domain-missions-grid > .domain-mission-card:nth-child(7) {
+    grid-column: 1 / -1 !important;
+    width: calc(50% - 7px) !important;
+    max-width: 360px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* Mobile Layout (<= 600px): readable 1-column cards with neon border accent */
+@media (max-width: 600px) {
+  #home #allDomainsGrid .domain-mission-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+    border: 1.5px solid var(--card-border, var(--game-border)) !important;
+    box-shadow: 0 6px 16px -4px rgba(2, 6, 23, 0.7), 0 0 12px -4px var(--card-glow, rgba(0, 229, 255, 0.25)) !important;
+  }
+
+  #home .mission-pedestal {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. CHOOSE LEVEL SECTION & DIALOG
+   Beginner: Cyan/Green | Intermediate: Purple | Expert: Gold
+   Go to Practice: Cyan-to-Purple Gradient (--game-gradient)
+   -------------------------------------------------------------------------- */
+#chooseLevelModal .choose-level-dialog {
+  background: linear-gradient(180deg, var(--game-surface) 0%, var(--game-bg) 100%) !important;
+  border: 1.5px solid var(--game-border) !important;
+  border-radius: var(--game-radius) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 32px rgba(0, 229, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+#chooseLevelModal .choose-level-domain-pill {
+  background: rgba(0, 229, 255, 0.12) !important;
+  border: 1px solid rgba(0, 229, 255, 0.36) !important;
+  color: var(--game-cyan) !important;
+}
+
+#chooseLevelModal .choose-level-title {
+  color: var(--game-text) !important;
+}
+
+#chooseLevelModal .choose-level-desc {
+  color: var(--game-muted) !important;
+}
+
+#chooseLevelModal .level-option-btn {
+  min-height: 62px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+  border: 1.5px solid rgba(164, 181, 210, 0.24) !important;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease !important;
+}
+
+/* Beginner: Cyan / Green accent */
+#chooseLevelModal .level-option-btn[onclick*="Beginner"] {
+  --lvl-accent: var(--game-cyan);
+  --lvl-glow: rgba(0, 230, 170, 0.32);
+  border-left: 3.5px solid var(--game-green) !important;
+}
+
+/* Intermediate: Purple accent */
+#chooseLevelModal .level-option-btn[onclick*="Intermediate"] {
+  --lvl-accent: var(--game-purple);
+  --lvl-glow: rgba(150, 85, 255, 0.34);
+  border-left: 3.5px solid var(--game-purple) !important;
+}
+
+/* Expert: Gold accent */
+#chooseLevelModal .level-option-btn[onclick*="Expert"] {
+  --lvl-accent: var(--game-gold);
+  --lvl-glow: rgba(255, 200, 87, 0.34);
+  border-left: 3.5px solid var(--game-gold) !important;
+}
+
+#chooseLevelModal .level-option-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, var(--game-card-hover) 0%, var(--game-card) 100%) !important;
+  border-color: var(--lvl-accent, var(--game-cyan)) !important;
+  box-shadow: 0 0 18px var(--lvl-glow, rgba(0, 229, 255, 0.26)) !important;
+}
+
+#chooseLevelModal .level-option-btn.active {
+  border-color: var(--lvl-accent, var(--game-cyan)) !important;
+  background: linear-gradient(180deg, var(--game-card-hover) 0%, rgba(0, 229, 255, 0.12) 100%) !important;
+  box-shadow:
+    0 0 22px var(--lvl-glow, rgba(0, 229, 255, 0.38)),
+    inset 0 0 14px rgba(0, 229, 255, 0.14) !important;
+}
+
+#chooseLevelModal #startPracticeBtn.choose-level-go-btn:not(:disabled) {
+  background: var(--game-gradient) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0, 229, 255, 0.48) !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 8px 24px rgba(72, 117, 255, 0.38),
+    0 0 18px rgba(0, 229, 255, 0.26) !important;
+  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease !important;
+}
+
+#chooseLevelModal #startPracticeBtn.choose-level-go-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow:
+    0 10px 28px rgba(161, 61, 255, 0.44),
+    0 0 24px rgba(0, 229, 255, 0.36) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. PRACTICE PAGE — PREMIUM MISSION CONSOLE
+   -------------------------------------------------------------------------- */
+#practice .practice-workspace-tab.active {
+  border-color: var(--game-cyan) !important;
+  color: var(--game-text) !important;
+  box-shadow:
+    0 -4px 18px rgba(0, 229, 255, 0.22),
+    inset 0 1px 0 rgba(0, 229, 255, 0.36) !important;
+}
+
+#practice .practice-tabbed-window {
+  border-color: var(--game-border) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 24px rgba(0, 229, 255, 0.08) !important;
+}
+
+/* Dialogue Cards: Manager Request, Learner Response, Manager Confirmation */
+#practice #managerRequestTurn {
+  background: linear-gradient(180deg, rgba(21, 36, 62, 0.94) 0%, rgba(16, 29, 53, 0.96) 100%) !important;
+  border: 1px solid rgba(0, 229, 255, 0.3) !important;
+  border-left: 3.5px solid var(--game-blue) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24) !important;
+}
+
+#practice #question {
+  color: var(--game-text) !important;
+}
+
+#practice #learnerClarificationTurn {
+  background: linear-gradient(180deg, rgba(28, 25, 62, 0.88) 0%, rgba(18, 22, 48, 0.94) 100%) !important;
+  border: 1px solid rgba(150, 85, 255, 0.38) !important;
+  border-left: 3.5px solid var(--game-purple) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+#practice #managerReplyTurn {
+  background: linear-gradient(180deg, rgba(14, 38, 58, 0.9) 0%, rgba(12, 28, 48, 0.95) 100%) !important;
+  border: 1px solid rgba(0, 229, 255, 0.38) !important;
+  border-left: 3.5px solid var(--game-cyan) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Video Player Frame & Controls */
+#practice .visual-challenge-card {
+  background: linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+  border: 1px solid var(--game-border) !important;
+  border-radius: var(--game-radius) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 20px rgba(0, 229, 255, 0.1) !important;
+}
+
+#practice #visualChallengeFrame.visual-challenge-frame {
+  aspect-ratio: 16 / 9;
+  border-radius: 14px !important;
+  border: 1.5px solid rgba(0, 229, 255, 0.34) !important;
+  background: radial-gradient(circle at 50% 35%, #132342 0%, #070d1e 100%) !important;
+  box-shadow:
+    0 0 20px rgba(0, 229, 255, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+#practice #visualChallengePlayBtn.visual-challenge-play-btn {
+  background: var(--game-gradient) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0, 229, 255, 0.52) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    0 6px 20px rgba(72, 117, 255, 0.4),
+    0 0 16px rgba(0, 229, 255, 0.28) !important;
+  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease !important;
+}
+
+#practice #visualChallengePlayBtn.visual-challenge-play-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow:
+    0 8px 24px rgba(161, 61, 255, 0.48),
+    0 0 22px rgba(0, 229, 255, 0.4) !important;
+}
+
+/* Your Thinking Section & Textarea */
+#practice #thinkingInstructionCard {
+  background: linear-gradient(180deg, rgba(21, 36, 62, 0.92) 0%, rgba(13, 24, 45, 0.96) 100%) !important;
+  border: 1px solid rgba(150, 85, 255, 0.32) !important;
+  border-radius: 14px !important;
+}
+
+#practice textarea#thinking {
+  background: rgba(8, 15, 34, 0.92) !important;
+  color: var(--game-text) !important;
+  border: 1.5px solid rgba(0, 229, 255, 0.32) !important;
+  border-radius: 12px !important;
+  padding: 12px 14px !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.38) !important;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease !important;
+}
+
+#practice textarea#thinking::placeholder {
+  color: var(--game-muted) !important;
+  opacity: 0.82 !important;
+}
+
+#practice textarea#thinking:focus {
+  border-color: var(--game-cyan) !important;
+  background: rgba(10, 19, 40, 0.98) !important;
+  box-shadow:
+    0 0 0 3px rgba(0, 229, 255, 0.2),
+    0 0 18px rgba(150, 85, 255, 0.22),
+    inset 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+  outline: none !important;
+}
+
+/* Check My Thinking Button */
+#practice #checkThinkingBtn {
+  background: var(--game-gradient) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0, 229, 255, 0.46) !important;
+  border-radius: 12px !important;
+  min-height: 44px !important;
+  font-weight: 800 !important;
+  box-shadow:
+    0 6px 20px rgba(72, 117, 255, 0.34),
+    0 0 16px rgba(0, 229, 255, 0.2) !important;
+  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease, opacity 200ms ease !important;
+}
+
+#practice #checkThinkingBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow:
+    0 8px 24px rgba(161, 61, 255, 0.44),
+    0 0 22px rgba(0, 229, 255, 0.34) !important;
+}
+
+#practice #checkThinkingBtn:disabled {
+  opacity: 0.52 !important;
+  filter: grayscale(0.35) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. SCHEMA & RECORDS TAB
+   -------------------------------------------------------------------------- */
+#practice #practicePanelSchema .schema-card {
+  background: linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+  border: 1px solid var(--game-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--game-shadow) !important;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease !important;
+}
+
+#practice #practicePanelSchema .schema-card:hover {
+  border-color: rgba(0, 229, 255, 0.56) !important;
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.36),
+    0 0 18px rgba(0, 229, 255, 0.16) !important;
+}
+
+#practice #practicePanelSchema .schema-card.is-selected,
+#practice #practicePanelSchema .schema-card:has(.schema-sample-toggle[aria-expanded="true"]) {
+  border-color: var(--game-cyan) !important;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.42),
+    0 0 22px rgba(0, 229, 255, 0.24) !important;
+}
+
+#practice #practicePanelSchema .schema-table-title {
+  color: var(--game-text) !important;
+  font-weight: 800 !important;
+}
+
+#practice #practicePanelSchema .schema-cols-table thead th {
+  background: rgba(8, 15, 34, 0.9) !important;
+  color: var(--game-muted) !important;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.22) !important;
+}
+
+#practice #practicePanelSchema .schema-cols-table tbody tr.schema-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+
+#practice #practicePanelSchema .schema-cols-table tbody tr.schema-row:hover {
+  background: rgba(0, 229, 255, 0.07) !important;
+}
+
+#practice #practicePanelSchema .badge-pk {
+  background: rgba(255, 200, 87, 0.16) !important;
+  color: var(--game-gold) !important;
+  border: 1px solid rgba(255, 200, 87, 0.45) !important;
+}
+
+#practice #practicePanelSchema .badge-fk {
+  background: rgba(0, 229, 255, 0.14) !important;
+  color: var(--game-cyan) !important;
+  border: 1px solid rgba(0, 229, 255, 0.42) !important;
+}
+
+#practice #practicePanelSchema .schema-sample-toggle {
+  background: rgba(16, 29, 53, 0.9) !important;
+  border: 1px solid rgba(0, 229, 255, 0.28) !important;
+  color: var(--game-cyan) !important;
+  border-radius: 10px !important;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease !important;
+}
+
+#practice #practicePanelSchema .schema-sample-toggle:hover,
+#practice #practicePanelSchema .schema-sample-toggle[aria-expanded="true"] {
+  background: rgba(27, 49, 81, 0.95) !important;
+  border-color: var(--game-cyan) !important;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.2) !important;
+}
+
+#practice #practicePanelSchema .sample-table {
+  border-color: rgba(0, 229, 255, 0.22) !important;
+}
+
+#practice #practicePanelSchema .sample-table thead th {
+  background: rgba(8, 15, 34, 0.94) !important;
+  color: var(--game-cyan) !important;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.26) !important;
+}
+
+#practice #practicePanelSchema .sample-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. PROGRESS PAGE
+   -------------------------------------------------------------------------- */
+#progressScreen .progress-metric-card {
+  background: linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+  border: 1.5px solid var(--game-border) !important;
+  border-radius: var(--game-radius) !important;
+  box-shadow: var(--game-shadow) !important;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease !important;
+}
+
+#progressScreen .progress-metric-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--game-cyan) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 20px rgba(0, 229, 255, 0.2) !important;
+}
+
+/* Completed challenges & completion %: Cyan / Green highlights */
+#progressScreen .progress-metric-card:nth-child(1) .metric-val,
+#progressScreen .progress-metric-card:nth-child(2) .metric-val {
+  color: var(--game-cyan) !important;
+  text-shadow: 0 0 14px rgba(0, 229, 255, 0.28);
+}
+
+#progressScreen .progress-metric-card:nth-child(3) .metric-val {
+  color: var(--game-green) !important;
+  text-shadow: 0 0 14px rgba(0, 230, 170, 0.28);
+}
+
+/* Score information: Purple highlight */
+#progressScreen .progress-metric-card:nth-child(4) {
+  border-color: rgba(150, 85, 255, 0.36) !important;
+}
+
+#progressScreen .progress-metric-card:nth-child(4) .metric-val {
+  color: #c4b5fd !important;
+  text-shadow: 0 0 14px rgba(150, 85, 255, 0.35);
+}
+
+#progressScreen .domain-summary-card {
+  background: linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+  border: 1.5px solid var(--game-border) !important;
+  border-radius: var(--game-radius) !important;
+  box-shadow: var(--game-shadow) !important;
+}
+
+/* Certificates card: Gold accent */
+#progressScreen #progressCertificatesCard.cert-compact-card {
+  border-color: rgba(255, 200, 87, 0.42) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 20px rgba(255, 200, 87, 0.12) !important;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease !important;
+}
+
+#progressScreen #progressCertificatesCard.cert-compact-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--game-gold) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 24px rgba(255, 200, 87, 0.24) !important;
+}
+
+#progressScreen #earnedCertificatesBadge {
+  color: var(--game-gold) !important;
+  background: rgba(255, 200, 87, 0.14) !important;
+  border-color: rgba(255, 200, 87, 0.45) !important;
+}
+
+#progressScreen .domain-bar-fill,
+#progressScreen [class*="bar-fill"],
+#progressScreen [class*="progress-fill"] {
+  transition: width 360ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. PROFILE PAGE / MODAL
+   -------------------------------------------------------------------------- */
+#profileModal .modal-dialog,
+#profileSetupModal .modal-dialog {
+  background: linear-gradient(180deg, var(--game-surface) 0%, var(--game-bg) 100%) !important;
+  border: 1.5px solid var(--game-border) !important;
+  border-radius: var(--game-radius) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 32px rgba(0, 229, 255, 0.16) !important;
+}
+
+#profileModal #modalProfileAvatar,
+#profileDropdown .dropdown-user-avatar {
+  border: 2px solid var(--game-cyan) !important;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.32) !important;
+}
+
+#profileModal #modalProfileContactInfoCard {
+  background: rgba(16, 29, 53, 0.88) !important;
+  border: 1px solid var(--game-border) !important;
+  border-radius: 14px !important;
+}
+
+#profileDropdown.profile-dropdown {
+  background: linear-gradient(180deg, var(--game-card) 0%, var(--game-surface) 100%) !important;
+  border: 1.5px solid var(--game-border) !important;
+  border-radius: var(--game-radius) !important;
+  box-shadow:
+    var(--game-shadow),
+    0 0 24px rgba(0, 229, 255, 0.18) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. NAVIGATION (TOP HEADER & BOTTOM FLOATING BAR)
+   -------------------------------------------------------------------------- */
+.app > .screen > .header,
+#practice .practice-StickyHeader,
+#progressScreen .header {
+  background: linear-gradient(180deg, rgba(21, 36, 62, 0.9) 0%, rgba(16, 29, 53, 0.94) 100%);
+  border: 1px solid var(--game-border);
+  border-radius: var(--game-radius);
+  box-shadow: var(--game-shadow);
+}
+
+#bottomNav.bottom-nav {
+  background: rgba(16, 29, 53, 0.9) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1.5px solid var(--game-border) !important;
+  border-radius: 18px !important;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(0, 229, 255, 0.14) !important;
+}
+
+#bottomNav.bottom-nav .nav-item {
+  border-radius: 12px !important;
+  color: var(--game-muted) !important;
+  transition: transform 180ms ease, color 180ms ease, background 180ms ease, box-shadow 180ms ease !important;
+}
+
+#bottomNav.bottom-nav .nav-item:hover:not(.active) {
+  color: var(--game-text) !important;
+  background: rgba(0, 229, 255, 0.08) !important;
+}
+
+#bottomNav.bottom-nav .nav-item.active {
+  background: var(--game-gradient) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 4px 16px rgba(72, 117, 255, 0.42),
+    0 0 14px rgba(0, 229, 255, 0.28) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. REDUCED MOTION SUPPORT
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .app *,
+  .app *::before,
+  .app *::after,
+  #home #allDomainsGrid .domain-mission-card,
+  #home #allDomainsGrid .domain-mission-card:hover,
+  #home #allDomainsGrid .domain-mission-card.active,
+  #home #allDomainsGrid .domain-mission-card.selected,
+  #home #allDomainsGrid .domain-mission-card .mission-icon-box,
+  #home #allDomainsGrid .domain-mission-card:hover .mission-icon-box,
+  #home .mission-domain-svg,
+  #home .mission-pedestal {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 }
 
